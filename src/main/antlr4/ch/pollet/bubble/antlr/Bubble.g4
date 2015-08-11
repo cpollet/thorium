@@ -26,7 +26,7 @@ grammar Bubble;
 
 // starting point for parsing a bubble file
 compilationUnit
-    : statement EOF
+    : statement* EOF
     ;
 
 // STATEMENTS / BLOCKS
@@ -42,10 +42,10 @@ statementExpression
     ;
 
 expression
-    : expression '*' expression
-    | expression '+' expression
-    | literal
-    | '(' expression ')'
+    : expression '*' expression # multiplicationExpression
+    | expression '+' expression # additionExpression
+    | literal                   # literalExpression
+    | '(' expression ')'        # parenthesisExpression
     ;
 
 literal

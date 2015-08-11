@@ -31,7 +31,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 public class Bubble {
     public static void main(String argv[]) throws Exception {
         // create a CharStream that reads from standard input
-        ANTLRInputStream input = new ANTLRInputStream(System.in);
+        ANTLRInputStream input = new ANTLRInputStream("1*1+2+(2+3*(2+1))*4");
         // create a lexer that feeds off of input CharStream
         BubbleLexer lexer = new BubbleLexer(input);
         // create a buffer of tokens pulled from the lexer
@@ -52,6 +52,7 @@ public class Bubble {
         // Walk the tree created during the parse, trigger callbacks
         walker.walk(evaluator, tree);
 
+        System.out.println(evaluationContext.popStack());
         System.out.println(evaluationContext.popStack());
 
         System.out.println(); // print a \n after translation

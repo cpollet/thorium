@@ -31,13 +31,19 @@ public class Evaluator extends BubbleBaseListener {
     }
 
     @Override
-    public void exitExpression(BubbleParser.ExpressionContext ctx) {
-        if (ctx.getChildCount() == 3) {
-            Integer right = (Integer) evaluationContext.popStack();
-            Integer left = (Integer) evaluationContext.popStack();
+    public void exitAdditionExpression(BubbleParser.AdditionExpressionContext ctx) {
+        Integer right = (Integer) evaluationContext.popStack();
+        Integer left = (Integer) evaluationContext.popStack();
 
-            evaluationContext.pushStack(right + left);
-        }
+        evaluationContext.pushStack(right + left);
+    }
+
+    @Override
+    public void exitMultiplicationExpression(BubbleParser.MultiplicationExpressionContext ctx) {
+        Integer right = (Integer) evaluationContext.popStack();
+        Integer left = (Integer) evaluationContext.popStack();
+
+        evaluationContext.pushStack(right * left);
     }
 
     @Override
