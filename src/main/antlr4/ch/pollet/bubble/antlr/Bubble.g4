@@ -42,21 +42,68 @@ statementExpression
     ;
 
 expression
-    : expression '*' expression # multiplicationExpression
-    | expression '+' expression # additionExpression
-    | literal                   # literalExpression
-    | '(' expression ')'        # parenthesisExpression
+    : expression '*' expression                         # multiplicationExpression
+    | expression '+' expression                         # additionExpression
+    | literal                                           # literalExpression
+    | '(' expression ')'                                # parenthesisExpression
+    // | expression ':' expression '?' expression       # inlineConditionExpression
+    // | <assoc=right> expression '=' expression        # assignmentExpression
     ;
 
 literal
     :   IntegerLiteral
     ;
 
-// Integer Literals
-
 IntegerLiteral
     :   '0'
     |   [1-9][0-9]*
+    ;
+
+Identifier
+    : ObjectOrClassName
+    | VariableName
+    | ConstantName
+    ;
+
+ObjectOrClassName
+    : [A-Z] IdentifierChars
+    ;
+
+VariableName
+    : [a-z_] IdentifierChars*
+    ;
+
+fragment
+SymbolMethodName
+    : '+=' | '++' | '+'
+    | '-=' | '--' | '-'
+    | '*=' | '*'
+    | '/=' | '/'
+    | '%=' | '%'
+    | '^=' | '^'
+    | '~=' | '~'
+    | '===' | '=='
+    | '!==' | '!=' | '!'
+    | '&&=' | '&&' | '&=' | '&'
+    | '||=' | '||' | '|=' | '|'
+    | '<<=' | '<<' | '<=' | '<'
+    | '>>=' | '>>' | '>=' | '>'
+    | '..'
+    | '->'
+    ;
+
+MethodName
+    : [a-z_] IdentifierChars*
+    | SymbolMethodName
+    ;
+
+fragment
+IdentifierChars
+    : [a-zA-Z0-9_$]+
+    ;
+
+ConstantName
+    : [A-Z0-9_$]+
     ;
 
 //
