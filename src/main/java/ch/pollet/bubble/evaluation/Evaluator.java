@@ -33,9 +33,14 @@ public class Evaluator extends BubbleBaseListener {
 
     private Map<OperationSignature, Operator<Type, Type, Type>> operators = new HashMap<OperationSignature, Operator<Type, Type, Type>>() {{
         put(new OperationSignature("+", IntegerType.class, IntegerType.class), (left, right) -> ((IntegerType) left).operatorPlus((IntegerType) right));
-        put(new OperationSignature("*", IntegerType.class, IntegerType.class), (left, right) -> ((IntegerType) left).operatorMultiply((IntegerType) right));
         put(new OperationSignature("+", FloatType.class, FloatType.class), (left, right) -> ((FloatType) left).operatorPlus((FloatType) right));
+        put(new OperationSignature("+", IntegerType.class, FloatType.class), (left, right) -> ((IntegerType) left).operatorPlus((FloatType) right));
+        put(new OperationSignature("+", FloatType.class, IntegerType.class), (left, right) -> ((FloatType) left).operatorPlus((IntegerType) right));
+
+        put(new OperationSignature("*", IntegerType.class, IntegerType.class), (left, right) -> ((IntegerType) left).operatorMultiply((IntegerType) right));
         put(new OperationSignature("*", FloatType.class, FloatType.class), (left, right) -> ((FloatType) left).operatorMultiply((FloatType) right));
+        put(new OperationSignature("*", IntegerType.class, FloatType.class), (left, right) -> ((IntegerType) left).operatorMultiply((FloatType) right));
+        put(new OperationSignature("*", FloatType.class, IntegerType.class), (left, right) -> ((FloatType) left).operatorMultiply((IntegerType) right));
     }};
 
     public Evaluator(EvaluationContext evaluationContext) {
@@ -51,7 +56,7 @@ public class Evaluator extends BubbleBaseListener {
         Type right = (Type) evaluationContext.popStack();
         Type left = (Type) evaluationContext.popStack();
 
-        Operator<Type, Type, Type> op = operators.get(new OperationSignature(operator, right.getClass(), left.getClass()));
+        Operator<Type, Type, Type> op = operators.get(new OperationSignature(operator, left.getClass(), right.getClass()));
 
         evaluationContext.pushStack(op.apply(left, right));
     }
@@ -68,6 +73,6 @@ public class Evaluator extends BubbleBaseListener {
 
     @Override
     public void exitFloatLiteral(BubbleParser.FloatLiteralContext ctx) {
-        evaluationContext.pushStack(new FloatType(Float.valueOf(ctx.getText())));
+        evaluationContext.pushStack(new FloatType(Double.valueOf(ctx.getText())));
     }
 }

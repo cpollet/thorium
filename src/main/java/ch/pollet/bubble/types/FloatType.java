@@ -22,18 +22,30 @@ import java.util.Objects;
  * @author Christophe Pollet
  */
 public class FloatType implements Type {
-    public double value;
+    public Double value;
 
-    public FloatType(double value) {
+    public FloatType(Double value) {
         this.value = value;
     }
 
+    Double getValue() {
+        return value;
+    }
+
     public FloatType operatorPlus(FloatType right) {
-        return new FloatType(value + right.value);
+        return new FloatType(value + right.getValue());
+    }
+
+    public FloatType operatorPlus(IntegerType right) {
+        return new FloatType(value + right.getValue());
     }
 
     public FloatType operatorMultiply(FloatType right) {
-        return new FloatType(value * right.value);
+        return new FloatType(value * right.getValue());
+    }
+
+    public FloatType operatorMultiply(IntegerType right) {
+        return new FloatType(value * right.getValue());
     }
 
     @Override

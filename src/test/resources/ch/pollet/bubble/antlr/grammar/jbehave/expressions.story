@@ -15,3 +15,7 @@ Examples:
 | 2 * (2 + 2 * (2 + 2)) | 20                | IntegerType |
 | 1.0 + 1.0             | 2.0               | FloatType   |
 | 1.0 * 1.0             | 1.0               | FloatType   |
+| 1.0 + 1               | 2.0               | FloatType   |
+| 1 + 1.0               | 2.0               | FloatType   |
+| 1.0 * 1               | 1.0               | FloatType   |
+| 1 * 1.0               | 1.0               | FloatType   |

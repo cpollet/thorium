@@ -28,12 +28,24 @@ public class IntegerType implements Type {
         this.value = value;
     }
 
+    Long getValue() {
+        return value;
+    }
+
     public IntegerType operatorPlus(IntegerType right) {
-        return new IntegerType(value + right.value);
+        return new IntegerType(value + right.getValue());
+    }
+
+    public FloatType operatorPlus(FloatType right) {
+        return new FloatType(value + right.getValue());
     }
 
     public IntegerType operatorMultiply(IntegerType right) {
-        return new IntegerType(value * right.value);
+        return new IntegerType(value * right.getValue());
+    }
+
+    public FloatType operatorMultiply(FloatType right) {
+        return new FloatType(value * right.getValue());
     }
 
     @Override

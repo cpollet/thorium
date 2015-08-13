@@ -17,6 +17,7 @@
 package ch.pollet.bubble.antlr.grammar.ch.pollet.bubble.types;
 
 import ch.pollet.bubble.types.FloatType;
+import ch.pollet.bubble.types.IntegerType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -29,28 +30,54 @@ import static org.fest.assertions.Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class TestFloatType {
     @Test
-    public void operatorPlus() {
+    public void operatorPlusFloatType() {
         // GIVEN
-        FloatType left = new FloatType(1);
-        FloatType right = new FloatType(2);
+        FloatType left = new FloatType(1.0);
+        FloatType right = new FloatType(2.0);
 
         // WHEN
         FloatType result = left.operatorPlus(right);
 
         // THEN
-        assertThat(result).isEqualTo(new FloatType(3));
+        assertThat(result).isEqualTo(new FloatType(3.0));
     }
 
     @Test
-    public void operatorMultiply() {
+    public void operatorPlusIntegerType() {
         // GIVEN
-        FloatType left = new FloatType(1);
-        FloatType right = new FloatType(2);
+        FloatType left = new FloatType(1.0);
+        IntegerType right = new IntegerType(2L);
+
+        // WHEN
+        FloatType result = left.operatorPlus(right);
+
+        // THEN
+        assertThat(result).isEqualTo(new FloatType(3.0));
+    }
+
+    @Test
+    public void operatorMultiplyFloatType() {
+        // GIVEN
+        FloatType left = new FloatType(1.0);
+        FloatType right = new FloatType(2.0);
 
         // WHEN
         FloatType result = left.operatorMultiply(right);
 
         // THEN
-        assertThat(result).isEqualTo(new FloatType(2));
+        assertThat(result).isEqualTo(new FloatType(2.0));
+    }
+
+    @Test
+    public void operatorMultiplyIntegerType() {
+        // GIVEN
+        FloatType left = new FloatType(1.0);
+        IntegerType right = new IntegerType(2L);
+
+        // WHEN
+        FloatType result = left.operatorMultiply(right);
+
+        // THEN
+        assertThat(result).isEqualTo(new FloatType(2.0));
     }
 }

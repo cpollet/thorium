@@ -37,7 +37,10 @@ public class Expressions extends JUnitStory {
                 // where to find the stories
                 .useStoryLoader(new LoadFromClasspath(this.getClass()))
                         // CONSOLE and TXT reporting
-                .useStoryReporterBuilder(new StoryReporterBuilder().withDefaultFormats().withFormats(Format.CONSOLE, Format.TXT));
+                .useStoryReporterBuilder(new StoryReporterBuilder()
+                        .withFailureTrace(true)
+                        .withDefaultFormats()
+                        .withFormats(Format.CONSOLE, Format.TXT));
     }
 
     // Here we specify the steps classes

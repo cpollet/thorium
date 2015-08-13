@@ -16,6 +16,7 @@
 
 package ch.pollet.bubble.antlr.grammar.ch.pollet.bubble.types;
 
+import ch.pollet.bubble.types.FloatType;
 import ch.pollet.bubble.types.IntegerType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,7 @@ import static org.fest.assertions.Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class TestIntegerType {
     @Test
-    public void operatorPlus() {
+    public void operatorPlusIntegerType() {
         // GIVEN
         IntegerType left = new IntegerType(1L);
         IntegerType right = new IntegerType(2L);
@@ -42,7 +43,20 @@ public class TestIntegerType {
     }
 
     @Test
-    public void operatorMultiply() {
+    public void operatorPlusFloatType() {
+        // GIVEN
+        IntegerType left = new IntegerType(1L);
+        FloatType right = new FloatType(2.0);
+
+        // WHEN
+        FloatType result = left.operatorPlus(right);
+
+        // THEN
+        assertThat(result).isEqualTo(new FloatType(3.0));
+    }
+
+    @Test
+    public void operatorMultiplyIntegerType() {
         // GIVEN
         IntegerType left = new IntegerType(1L);
         IntegerType right = new IntegerType(2L);
@@ -52,5 +66,18 @@ public class TestIntegerType {
 
         // THEN
         assertThat(result).isEqualTo(new IntegerType(2L));
+    }
+
+    @Test
+    public void operatorMultiplyFloatType() {
+        // GIVEN
+        IntegerType left = new IntegerType(1L);
+        FloatType right = new FloatType(2.0);
+
+        // WHEN
+        FloatType result = left.operatorMultiply(right);
+
+        // THEN
+        assertThat(result).isEqualTo(new FloatType(2.0));
     }
 }
