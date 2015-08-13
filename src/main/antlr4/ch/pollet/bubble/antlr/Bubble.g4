@@ -51,12 +51,17 @@ expression
     ;
 
 literal
-    :   IntegerLiteral                                  # integerLiteral
+    : IntegerLiteral                                    # integerLiteral
+    | FloatLiteral                                      # floatLiteral
+    ;
+
+FloatLiteral
+    : IntegerLiteral '.' [0]* IntegerLiteral
     ;
 
 IntegerLiteral
-    :   '0'
-    |   [1-9][0-9]*
+    : '0'
+    | [1-9][0-9]*
     ;
 
 Identifier

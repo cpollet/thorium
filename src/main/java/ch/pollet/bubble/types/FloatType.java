@@ -21,24 +21,24 @@ import java.util.Objects;
 /**
  * @author Christophe Pollet
  */
-public class IntegerType implements Type {
-    private Long value;
+public class FloatType implements Type {
+    public double value;
 
-    public IntegerType(Long value) {
+    public FloatType(double value) {
         this.value = value;
     }
 
-    public IntegerType operatorPlus(IntegerType right) {
-        return new IntegerType(value + right.value);
+    public FloatType operatorPlus(FloatType right) {
+        return new FloatType(value + right.value);
     }
 
-    public IntegerType operatorMultiply(IntegerType right) {
-        return new IntegerType(value * right.value);
+    public FloatType operatorMultiply(FloatType right) {
+        return new FloatType(value * right.value);
     }
 
     @Override
     public String toString() {
-        return "IntegerType{" +
+        return "FloatType{" +
                 "value=" + value +
                 '}';
     }
@@ -46,9 +46,9 @@ public class IntegerType implements Type {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof IntegerType)) return false;
-        IntegerType that = (IntegerType) o;
-        return Objects.equals(value, that.value);
+        if (!(o instanceof FloatType)) return false;
+        FloatType floatType = (FloatType) o;
+        return Objects.equals(value, floatType.value);
     }
 
     @Override

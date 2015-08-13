@@ -33,6 +33,13 @@
             <artifactId>fest-assert</artifactId>
             <version>${fest-assert.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <version>4.0.3</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

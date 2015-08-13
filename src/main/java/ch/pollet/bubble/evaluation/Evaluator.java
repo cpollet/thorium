@@ -18,6 +18,7 @@ package ch.pollet.bubble.evaluation;
 
 import ch.pollet.bubble.antlr.BubbleBaseListener;
 import ch.pollet.bubble.antlr.BubbleParser;
+import ch.pollet.bubble.types.FloatType;
 import ch.pollet.bubble.types.IntegerType;
 import ch.pollet.bubble.types.Type;
 
@@ -33,6 +34,8 @@ public class Evaluator extends BubbleBaseListener {
     private Map<OperationSignature, Operator<Type, Type, Type>> operators = new HashMap<OperationSignature, Operator<Type, Type, Type>>() {{
         put(new OperationSignature("+", IntegerType.class, IntegerType.class), (left, right) -> ((IntegerType) left).operatorPlus((IntegerType) right));
         put(new OperationSignature("*", IntegerType.class, IntegerType.class), (left, right) -> ((IntegerType) left).operatorMultiply((IntegerType) right));
+        put(new OperationSignature("+", FloatType.class, FloatType.class), (left, right) -> ((FloatType) left).operatorPlus((FloatType) right));
+        put(new OperationSignature("*", FloatType.class, FloatType.class), (left, right) -> ((FloatType) left).operatorMultiply((FloatType) right));
     }};
 
     public Evaluator(EvaluationContext evaluationContext) {
@@ -61,5 +64,10 @@ public class Evaluator extends BubbleBaseListener {
     @Override
     public void exitIntegerLiteral(BubbleParser.IntegerLiteralContext ctx) {
         evaluationContext.pushStack(new IntegerType(Long.valueOf(ctx.getText())));
+    }
+
+    @Override
+    public void exitFloatLiteral(BubbleParser.FloatLiteralContext ctx) {
+        evaluationContext.pushStack(new FloatType(Float.valueOf(ctx.getText())));
     }
 }
