@@ -58,7 +58,7 @@ public class TestExpressionEvaluation {
         evaluator = new Evaluator(evaluationContext);
 
         integers = new ArrayList<>(30);
-        for (int i = 0; i < 30; i++) {
+        for (long i = 0; i < 30; i++) {
             integers.add(new IntegerType(i));
         }
     }

@@ -60,6 +60,6 @@ public class Evaluator extends BubbleBaseListener {
 
     @Override
     public void exitIntegerLiteral(BubbleParser.IntegerLiteralContext ctx) {
-        evaluationContext.pushStack(new IntegerType(Integer.valueOf(ctx.getText())));
+        evaluationContext.pushStack(new IntegerType(Long.valueOf(ctx.getText())));
     }
 }

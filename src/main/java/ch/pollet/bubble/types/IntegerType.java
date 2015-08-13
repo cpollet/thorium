@@ -22,9 +22,9 @@ import java.util.Objects;
  * @author Christophe Pollet
  */
 public class IntegerType implements Type {
-    private Integer value;
+    private Long value;
 
-    public IntegerType(Integer value) {
+    public IntegerType(Long value) {
         this.value = value;
     }
 
