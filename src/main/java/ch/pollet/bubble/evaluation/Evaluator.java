@@ -18,7 +18,11 @@ package ch.pollet.bubble.evaluation;
 
 import ch.pollet.bubble.antlr.BubbleBaseListener;
 import ch.pollet.bubble.antlr.BubbleParser;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import ch.pollet.bubble.types.IntegerType;
+import ch.pollet.bubble.types.Type;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Christophe Pollet
@@ -26,30 +30,36 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class Evaluator extends BubbleBaseListener {
     private EvaluationContext evaluationContext;
 
+    private Map<OperationSignature, Operator<Type, Type, Type>> operators = new HashMap<OperationSignature, Operator<Type, Type, Type>>() {{
+        put(new OperationSignature("+", IntegerType.class, IntegerType.class), (left, right) -> ((IntegerType) left).operatorPlus((IntegerType) right));
+        put(new OperationSignature("*", IntegerType.class, IntegerType.class), (left, right) -> ((IntegerType) left).operatorMultiply((IntegerType) right));
+    }};
+
     public Evaluator(EvaluationContext evaluationContext) {
         this.evaluationContext = evaluationContext;
     }
 
     @Override
     public void exitAdditionExpression(BubbleParser.AdditionExpressionContext ctx) {
-        Integer right = (Integer) evaluationContext.popStack();
-        Integer left = (Integer) evaluationContext.popStack();
+        evalOperator("+");
+    }
 
-        evaluationContext.pushStack(right + left);
+    private void evalOperator(String operator) {
+        Type right = (Type) evaluationContext.popStack();
+        Type left = (Type) evaluationContext.popStack();
+
+        Operator<Type, Type, Type> op = operators.get(new OperationSignature(operator, right.getClass(), left.getClass()));
+
+        evaluationContext.pushStack(op.apply(left, right));
     }
 
     @Override
     public void exitMultiplicationExpression(BubbleParser.MultiplicationExpressionContext ctx) {
-        Integer right = (Integer) evaluationContext.popStack();
-        Integer left = (Integer) evaluationContext.popStack();
-
-        evaluationContext.pushStack(right * left);
+        evalOperator("*");
     }
 
     @Override
-    public void visitTerminal(TerminalNode node) {
-        if (node.getSymbol().getType() == BubbleParser.IntegerLiteral) {
-            evaluationContext.pushStack(Integer.valueOf(node.getText()));
-        }
+    public void exitIntegerLiteral(BubbleParser.IntegerLiteralContext ctx) {
+        evaluationContext.pushStack(new IntegerType(Integer.valueOf(ctx.getText())));
     }
 }

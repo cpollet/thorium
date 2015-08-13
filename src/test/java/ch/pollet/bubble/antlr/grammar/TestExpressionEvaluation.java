@@ -19,12 +19,16 @@ package ch.pollet.bubble.antlr.grammar;
 import ch.pollet.bubble.antlr.BubbleParser;
 import ch.pollet.bubble.evaluation.EvaluationContext;
 import ch.pollet.bubble.evaluation.Evaluator;
+import ch.pollet.bubble.types.IntegerType;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -36,6 +40,7 @@ public class TestExpressionEvaluation {
     private ParseTreeWalker walker;
     private EvaluationContext evaluationContext;
     private Evaluator evaluator;
+    private List<IntegerType> integers;
 
     private ParseTree parseTreeForExpression(String expression) {
         BubbleParser parser = ParserBuilder
@@ -51,6 +56,15 @@ public class TestExpressionEvaluation {
         walker = new ParseTreeWalker();
         evaluationContext = EvaluationContext.createEmpty();
         evaluator = new Evaluator(evaluationContext);
+
+        integers = new ArrayList<>(30);
+        for (int i = 0; i < 30; i++) {
+            integers.add(new IntegerType(i));
+        }
+    }
+
+    private IntegerType i(int i) {
+        return integers.get(i);
     }
 
     @Test
@@ -63,7 +77,7 @@ public class TestExpressionEvaluation {
 
         // THEN
         assertThat(evaluationContext.popStack())
-                .isEqualTo(2);
+                .isEqualTo(i(2));
     }
 
     @Test
@@ -76,7 +90,7 @@ public class TestExpressionEvaluation {
 
         // THEN
         assertThat(evaluationContext.popStack())
-                .isEqualTo(3);
+                .isEqualTo(i(3));
     }
 
     @Test
@@ -89,7 +103,7 @@ public class TestExpressionEvaluation {
 
         // THEN
         assertThat(evaluationContext.popStack())
-                .isEqualTo(4);
+                .isEqualTo(i(4));
     }
 
     @Test
@@ -102,7 +116,7 @@ public class TestExpressionEvaluation {
 
         // THEN
         assertThat(evaluationContext.popStack())
-                .isEqualTo(8);
+                .isEqualTo(i(8));
     }
 
     @Test
@@ -115,7 +129,7 @@ public class TestExpressionEvaluation {
 
         // THEN
         assertThat(evaluationContext.popStack())
-                .isEqualTo(2);
+                .isEqualTo(i(2));
     }
 
     @Test
@@ -128,7 +142,7 @@ public class TestExpressionEvaluation {
 
         // THEN
         assertThat(evaluationContext.popStack())
-                .isEqualTo(2);
+                .isEqualTo(i(2));
     }
 
     @Test
@@ -141,7 +155,7 @@ public class TestExpressionEvaluation {
 
         // THEN
         assertThat(evaluationContext.popStack())
-                .isEqualTo(2);
+                .isEqualTo(i(2));
     }
 
     @Test
@@ -154,7 +168,7 @@ public class TestExpressionEvaluation {
 
         // THEN
         assertThat(evaluationContext.popStack())
-                .isEqualTo(0);
+                .isEqualTo(i(0));
     }
 
     @Test
@@ -167,6 +181,6 @@ public class TestExpressionEvaluation {
 
         // THEN
         assertThat(evaluationContext.popStack())
-                .isEqualTo(20);
+                .isEqualTo(i(20));
     }
 }

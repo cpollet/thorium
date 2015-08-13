@@ -51,7 +51,7 @@ expression
     ;
 
 literal
-    :   IntegerLiteral
+    :   IntegerLiteral                                  # integerLiteral
     ;
 
 IntegerLiteral
