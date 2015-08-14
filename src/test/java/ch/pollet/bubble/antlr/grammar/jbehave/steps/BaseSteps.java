@@ -72,7 +72,7 @@ public class BaseSteps {
         assertThat(symbol.getValue()).isEqualTo(toTypeValue(expectedValue, expectedType));
     }
 
-    @Given("the symbols $symbols have values $values of types $types")
+    @Then("the symbols $symbols have values $values of types $types")
     @Alias("the symbols <symbols> have values <values> of types <types>")
     public void symbolsHaveValues(@Named("symbols") String expectedSymbols, @Named("values") String expectedValues, @Named("types") String expectedTypes) {
         String[] symbols = expectedSymbols.split(",");
