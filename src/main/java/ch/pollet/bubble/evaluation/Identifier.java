@@ -14,12 +14,37 @@
  * limitations under the License.
  */
 
-package ch.pollet.bubble.types;
+package ch.pollet.bubble.evaluation;
 
-import ch.pollet.bubble.evaluation.Value;
+import ch.pollet.bubble.types.Type;
 
 /**
  * @author Christophe Pollet
  */
-public interface Type extends Value {
+public class Identifier implements Value {
+    private String name;
+
+    public Identifier(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean isWritable() {
+        return true;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Class<? extends Type> getType(EvaluationContext ctx) {
+        return ctx.lookupSymbol(getName()).getType();
+    }
+
+    @Override
+    public Type getValue(EvaluationContext ctx) {
+        return ctx.lookupSymbol(name).getValue();
+    }
 }

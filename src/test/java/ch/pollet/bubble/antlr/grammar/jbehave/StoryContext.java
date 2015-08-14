@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package ch.pollet.bubble.types;
+package ch.pollet.bubble.antlr.grammar.jbehave;
 
-import ch.pollet.bubble.evaluation.Value;
+import ch.pollet.bubble.evaluation.EvaluationContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 /**
  * @author Christophe Pollet
  */
-public interface Type extends Value {
+public class StoryContext {
+    public ParseTree tree;
+    public EvaluationContext evaluationContext;
 }

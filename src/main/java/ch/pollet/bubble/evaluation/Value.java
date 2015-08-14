@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package ch.pollet.bubble.types;
+package ch.pollet.bubble.evaluation;
 
-import ch.pollet.bubble.evaluation.Value;
+import ch.pollet.bubble.types.Type;
 
 /**
  * @author Christophe Pollet
  */
-public interface Type extends Value {
+public interface Value {
+    boolean isWritable();
+
+    String getName();
+
+    Class<? extends Type> getType(EvaluationContext ctx);
+
+    Type getValue(EvaluationContext ctx);
 }

@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package ch.pollet.bubble.antlr.grammar.jbehave.steps;
+package ch.pollet.bubble.antlr.grammar;
 
 import ch.pollet.bubble.antlr.BubbleParser;
-import ch.pollet.bubble.antlr.grammar.ParserBuilder;
-import ch.pollet.bubble.antlr.grammar.jbehave.StoryContext;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.jbehave.core.annotations.Alias;
-import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Named;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Christophe Pollet
  */
-public class ExpressionsSteps extends BaseSteps {
-    public ExpressionsSteps(StoryContext storyContext) {
-        super(storyContext);
+@RunWith(JUnit4.class)
+public class TestStatements {
+    private String parseTreeToString(BubbleParser parser) {
+        ParseTree tree = parser.statements();
+        return tree.toStringTree(parser);
     }
 
-    @Given("an expression $expression")
-    @Alias("an expression <expression>")
-    public void anExpression(@Named("expression") String expression) {
-        storyContext.tree = parseTreeForExpression(expression);
-    }
-
-    private ParseTree parseTreeForExpression(String expression) {
+    @Test
+    public void literalExpression() {
+        // GIVEN
         BubbleParser parser = ParserBuilder
                 .create()
-                .withCode(expression)
+                .withCode("1;2;3;")
                 .build();
 
-        return parser.expression();
+        // WHEN + THEN
+        assertThat(parseTreeToString(parser))
+                .isEqualTo("(statements (statement (expression (literal 1)) ;) (statement (expression (literal 2)) ;) (statement (expression (literal 3)) ;))");
     }
 }

@@ -16,8 +16,31 @@
 
 package ch.pollet.bubble;
 
+import ch.pollet.bubble.evaluation.EvaluationContext;
+import ch.pollet.bubble.evaluation.Value;
+import ch.pollet.bubble.types.Type;
+
 /**
  * @author Christophe Pollet
  */
 public class Symbol {
+    Class<? extends Type> type;
+    Type value;
+
+    public Symbol(Value value, EvaluationContext ctx) {
+        this.type = value.getType(ctx);
+        this.value = value.getValue(ctx);
+    }
+
+    public Symbol(Class<? extends Type> type) {
+        this.type = type;
+    }
+
+    public Class<? extends Type> getType() {
+        return type;
+    }
+
+    public Type getValue() {
+        return value;
+    }
 }

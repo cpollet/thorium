@@ -16,36 +16,43 @@
 
 package ch.pollet.bubble.types;
 
+import ch.pollet.bubble.evaluation.EvaluationContext;
+
 import java.util.Objects;
 
 /**
  * @author Christophe Pollet
  */
-public class IntegerType implements Type {
+public class IntegerType extends BaseType {
     private Long value;
 
     public IntegerType(Long value) {
         this.value = value;
     }
 
-    Long getValue() {
+    Long getInternalValue() {
         return value;
     }
 
     public IntegerType operatorPlus(IntegerType right) {
-        return new IntegerType(value + right.getValue());
+        return new IntegerType(value + right.getInternalValue());
     }
 
     public FloatType operatorPlus(FloatType right) {
-        return new FloatType(value + right.getValue());
+        return new FloatType(value + right.getInternalValue());
     }
 
     public IntegerType operatorMultiply(IntegerType right) {
-        return new IntegerType(value * right.getValue());
+        return new IntegerType(value * right.getInternalValue());
     }
 
     public FloatType operatorMultiply(FloatType right) {
-        return new FloatType(value * right.getValue());
+        return new FloatType(value * right.getInternalValue());
+    }
+
+    @Override
+    public Class<? extends Type> getType(EvaluationContext ctx) {
+        return getClass();
     }
 
     @Override

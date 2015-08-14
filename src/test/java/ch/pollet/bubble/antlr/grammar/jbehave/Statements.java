@@ -17,6 +17,7 @@
 package ch.pollet.bubble.antlr.grammar.jbehave;
 
 import ch.pollet.bubble.antlr.grammar.jbehave.steps.ExpressionsSteps;
+import ch.pollet.bubble.antlr.grammar.jbehave.steps.StatementsSteps;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
@@ -29,7 +30,7 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 /**
  * @author Christophe Pollet
  */
-public class Expressions extends JUnitStory {
+public class Statements extends JUnitStory {
     @Override
     public Configuration configuration() {
         return new MostUsefulConfiguration()
@@ -44,6 +45,7 @@ public class Expressions extends JUnitStory {
     public InjectableStepsFactory stepsFactory() {
         StoryContext storyContext = new StoryContext();
         return new InstanceStepsFactory(configuration(),
-                new ExpressionsSteps(storyContext));
+                new ExpressionsSteps(storyContext),
+                new StatementsSteps(storyContext));
     }
 }

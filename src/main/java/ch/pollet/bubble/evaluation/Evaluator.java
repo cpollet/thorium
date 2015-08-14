@@ -16,6 +16,7 @@
 
 package ch.pollet.bubble.evaluation;
 
+import ch.pollet.bubble.Symbol;
 import ch.pollet.bubble.antlr.BubbleBaseListener;
 import ch.pollet.bubble.antlr.BubbleParser;
 import ch.pollet.bubble.types.FloatType;
@@ -67,6 +68,19 @@ public class Evaluator extends BubbleBaseListener {
     }
 
     @Override
+    public void exitAssignmentExpression(BubbleParser.AssignmentExpressionContext ctx) {
+        Value right = evaluationContext.popStack();
+        Value left = evaluationContext.popStack();
+
+        // TODO: move this to a semantic tree walker (as well as type checking and symbol existence checking)
+        if (!left.isWritable()) {
+            throw new IllegalStateException(left.toString() + " is not writable");
+        }
+
+        evaluationContext.insertSymbol(left.getName(), new Symbol(right, evaluationContext));
+    }
+
+    @Override
     public void exitIntegerLiteral(BubbleParser.IntegerLiteralContext ctx) {
         evaluationContext.pushStack(new IntegerType(Long.valueOf(ctx.getText())));
     }
@@ -74,5 +88,10 @@ public class Evaluator extends BubbleBaseListener {
     @Override
     public void exitFloatLiteral(BubbleParser.FloatLiteralContext ctx) {
         evaluationContext.pushStack(new FloatType(Double.valueOf(ctx.getText())));
+    }
+
+    @Override
+    public void exitIdentifierLiteral(BubbleParser.IdentifierLiteralContext ctx) {
+        evaluationContext.pushStack(new Identifier(ctx.getText()));
     }
 }

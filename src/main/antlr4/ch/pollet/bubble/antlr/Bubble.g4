@@ -31,15 +31,16 @@ compilationUnit
 
 // STATEMENTS / BLOCKS
 
+// used mainly for testing purposes at the moment
+statements
+    : statement+
+    ;
+
 statement
-    :   statementExpression ';'
+    : expression ';'
     ;
 
 // EXPRESSIONS
-
-statementExpression
-    :   expression
-    ;
 
 expression
     : expression '*' expression                         # multiplicationExpression
@@ -47,12 +48,13 @@ expression
     | literal                                           # literalExpression
     | '(' expression ')'                                # parenthesisExpression
     // | expression ':' expression '?' expression       # inlineConditionExpression
-    // | <assoc=right> expression '=' expression        # assignmentExpression
+    | <assoc=right> expression '=' expression           # assignmentExpression
     ;
 
 literal
     : IntegerLiteral                                    # integerLiteral
     | FloatLiteral                                      # floatLiteral
+    | Identifier                                        # identifierLiteral
     ;
 
 FloatLiteral

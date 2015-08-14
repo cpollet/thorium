@@ -16,10 +16,24 @@
 
 package ch.pollet.bubble.types;
 
-import ch.pollet.bubble.evaluation.Value;
+import ch.pollet.bubble.evaluation.EvaluationContext;
 
 /**
  * @author Christophe Pollet
  */
-public interface Type extends Value {
+public abstract class BaseType implements Type {
+    @Override
+    public boolean isWritable() {
+        return false;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public Type getValue(EvaluationContext ctx) {
+        return this;
+    }
 }

@@ -27,23 +27,23 @@ import org.jbehave.core.annotations.Named;
 /**
  * @author Christophe Pollet
  */
-public class ExpressionsSteps extends BaseSteps {
-    public ExpressionsSteps(StoryContext storyContext) {
+public class StatementsSteps extends BaseSteps {
+    public StatementsSteps(StoryContext storyContext) {
         super(storyContext);
     }
 
-    @Given("an expression $expression")
-    @Alias("an expression <expression>")
-    public void anExpression(@Named("expression") String expression) {
-        storyContext.tree = parseTreeForExpression(expression);
+    @Given("a list of statements $statements")
+    @Alias("a list of statements <statements>")
+    public void aListOfStatements(@Named("statements") String statements) {
+        storyContext.tree = parseTreeForStatements(statements);
     }
 
-    private ParseTree parseTreeForExpression(String expression) {
+    private ParseTree parseTreeForStatements(String expression) {
         BubbleParser parser = ParserBuilder
                 .create()
                 .withCode(expression)
                 .build();
 
-        return parser.expression();
+        return parser.statements();
     }
 }

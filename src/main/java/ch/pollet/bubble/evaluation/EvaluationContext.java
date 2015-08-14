@@ -28,15 +28,15 @@ import java.util.Stack;
 public class EvaluationContext {
     private EvaluationContext parentContext;
     private Map<String, Symbol> symbolsTable;
-    private Stack<Object> stack;
+    private Stack<Value> stack;
 
     private EvaluationContext() {
         this(null);
     }
 
     private EvaluationContext(EvaluationContext parentContext) {
-        stack = new Stack<>();
-        symbolsTable = new HashMap<>();
+        this.stack = new Stack<>();
+        this.symbolsTable = new HashMap<>();
         this.parentContext = parentContext;
     }
 
@@ -48,18 +48,19 @@ public class EvaluationContext {
         return new EvaluationContext(this);
     }
 
-    public Object popStack() {
+    public Value popStack() {
         return stack.pop();
     }
 
-    public void pushStack(Object object) {
+    public void pushStack(Value object) {
         stack.push(object);
     }
 
     public void insertSymbol(String name, Symbol symbol) {
-        if (symbolsTable.containsKey(name)) {
-            throw new SymbolAlreadyDefinedException(name);
-        }
+        // TODO move this in a semantic checker
+        // if (symbolsTable.containsKey(name)) {
+        //     throw new SymbolAlreadyDefinedException(name);
+        // }
         symbolsTable.put(name, symbol);
     }
 
