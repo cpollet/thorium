@@ -30,7 +30,7 @@ import java.util.Map;
  * @author Christophe Pollet
  */
 public class Evaluator extends BubbleBaseListener {
-    private EvaluationContext evaluationContext;
+    private EvaluationContext context;
 
     private Map<OperationSignature, Operator<Type, Type, Type>> operators = new HashMap<OperationSignature, Operator<Type, Type, Type>>() {{
         put(new OperationSignature("+", IntegerType.class, IntegerType.class), (left, right) -> ((IntegerType) left).operatorPlus((IntegerType) right));
@@ -44,8 +44,8 @@ public class Evaluator extends BubbleBaseListener {
         put(new OperationSignature("*", FloatType.class, IntegerType.class), (left, right) -> ((FloatType) left).operatorMultiply((IntegerType) right));
     }};
 
-    public Evaluator(EvaluationContext evaluationContext) {
-        this.evaluationContext = evaluationContext;
+    public Evaluator(EvaluationContext context) {
+        this.context = context;
     }
 
     @Override
@@ -54,12 +54,15 @@ public class Evaluator extends BubbleBaseListener {
     }
 
     private void evalOperator(String operator) {
-        Type right = (Type) evaluationContext.popStack();
-        Type left = (Type) evaluationContext.popStack();
+        Value right = context.popStack();
+        Value left = context.popStack();
 
-        Operator<Type, Type, Type> op = operators.get(new OperationSignature(operator, left.getClass(), right.getClass()));
+        Type rightValue = right.getValue(context);
+        Type leftValue = left.getValue(context);
 
-        evaluationContext.pushStack(op.apply(left, right));
+        Operator<Type, Type, Type> op = operators.get(new OperationSignature(operator, leftValue.getClass(), rightValue.getClass()));
+
+        context.pushStack(op.apply(leftValue, rightValue));
     }
 
     @Override
@@ -69,29 +72,29 @@ public class Evaluator extends BubbleBaseListener {
 
     @Override
     public void exitAssignmentExpression(BubbleParser.AssignmentExpressionContext ctx) {
-        Value right = evaluationContext.popStack();
-        Value left = evaluationContext.popStack();
+        Value right = context.popStack();
+        Value left = context.popStack();
 
         // TODO: move this to a semantic tree walker (as well as type checking and symbol existence checking)
         if (!left.isWritable()) {
             throw new IllegalStateException(left.toString() + " is not writable");
         }
 
-        evaluationContext.insertSymbol(left.getName(), new Symbol(right, evaluationContext));
+        context.insertSymbol(left.getName(), new Symbol(right, context));
     }
 
     @Override
     public void exitIntegerLiteral(BubbleParser.IntegerLiteralContext ctx) {
-        evaluationContext.pushStack(new IntegerType(Long.valueOf(ctx.getText())));
+        context.pushStack(new IntegerType(Long.valueOf(ctx.getText())));
     }
 
     @Override
     public void exitFloatLiteral(BubbleParser.FloatLiteralContext ctx) {
-        evaluationContext.pushStack(new FloatType(Double.valueOf(ctx.getText())));
+        context.pushStack(new FloatType(Double.valueOf(ctx.getText())));
     }
 
     @Override
     public void exitIdentifierLiteral(BubbleParser.IdentifierLiteralContext ctx) {
-        evaluationContext.pushStack(new Identifier(ctx.getText()));
+        context.pushStack(new Identifier(ctx.getText()));
     }
 }

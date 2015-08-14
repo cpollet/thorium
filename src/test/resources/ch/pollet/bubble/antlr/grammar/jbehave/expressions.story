@@ -30,3 +30,4 @@ Then the symbol <symbol> has value <value> of type <type>
 Examples:
 | expression            | symbol    | value | type              |
 | a = 1                 | a         | 1     | IntegerType       |
+| a = 1.0               | a         | 1.0   | FloatType         |
