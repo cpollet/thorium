@@ -33,4 +33,8 @@ public interface Type extends Value {
     static String getName(Class<? extends Type> typeClass) {
         return types.get(typeClass);
     }
+
+    static boolean isAssignableFrom(Class<? extends Type> target, Class<? extends Type> source) {
+        return target == null || target.equals(source);
+    }
 }

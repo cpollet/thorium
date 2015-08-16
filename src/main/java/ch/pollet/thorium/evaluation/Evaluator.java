@@ -96,7 +96,7 @@ public class Evaluator extends ThoriumBaseListener {
             throw new InvalidAssignmentSourceException("Cannot assign from " + right.toString());
         }
 
-        if (left.getType() != null && !right.getType().equals(left.getType())) {
+        if (!Type.isAssignableFrom(left.getType(), right.getType())) {
             throw new InvalidTypeException(Value.typeName(right) + " is no assignable to " + Value.typeName(left));
         }
     }
