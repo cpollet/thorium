@@ -35,6 +35,7 @@ Examples:
 | A = 1                 | A         | 1         | IntegerType           |
 | A = 1.0               | A         | 1.0       | FloatType             |
 | b = (a = 1) * 1.0     | a,b       | 1,1.0     | IntegerType,FloatType |
+| b = a = 1 * 1.0       | a,b       | 1.0,1.0   | FloatType,FloatType   |
 
 Scenario: expressions with exceptions
 Given an expression <expression>
