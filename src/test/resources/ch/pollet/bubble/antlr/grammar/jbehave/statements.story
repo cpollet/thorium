@@ -14,5 +14,7 @@ When being executed
 Then the result is <result> of type <type>
 
 Examples:
-| statements                | result    | type      |
-| a = 1; b = 2.0; a * b;    | 2.0       | FloatType |
+| statements                    | result    | type          |
+| a = 1; b = 2.0; a * b;        | 2.0       | FloatType     |
+| a = 1; a * 2.0;               | 2.0       | FloatType     |
+| a = 1 * 2; b = a * 2; b * 1;  | 4         | IntegerType   |
