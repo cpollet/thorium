@@ -25,7 +25,7 @@ import java.util.Map;
  * @author Christophe Pollet
  */
 public interface Type extends Value {
-    Map<? extends Type, String> types = new HashMap(){{
+    Map<Class<? extends Type>, String> types = new HashMap<Class<? extends Type>, String>(){{
         put(FloatType.class, "Float");
         put(IntegerType.class, "Integer");
     }};
