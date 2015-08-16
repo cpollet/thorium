@@ -60,7 +60,7 @@ public abstract class Symbol implements Value {
     public String toString() {
         return "Symbol{" +
                 "name='" + name + '\'' +
-                ", type=" + type +
+                ", type=" + Type.getName(type) +
                 ", value=" + value +
                 '}';
     }

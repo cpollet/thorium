@@ -42,3 +42,5 @@ Then the exception <exception> is thrown with message <message>
 Examples:
 | expression    | exception                                                             | message                               |
 | 1 = 1         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign to IntegerType{value=1} |
+| 1 = a         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign to IntegerType{value=1} |
+| 1 = A         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign to IntegerType{value=1} |
