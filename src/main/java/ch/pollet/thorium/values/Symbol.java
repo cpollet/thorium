@@ -55,4 +55,13 @@ public abstract class Symbol implements Value {
     public Type getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "Symbol{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", value=" + value +
+                '}';
+    }
 }

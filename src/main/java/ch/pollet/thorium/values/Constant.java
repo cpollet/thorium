@@ -16,21 +16,31 @@
 
 package ch.pollet.thorium.values;
 
+import ch.pollet.thorium.values.types.Type;
+
 /**
  * @author Christophe Pollet
  */
-public class UntypedSymbol extends Symbol {
-    public UntypedSymbol(String name) {
+public class Constant extends Variable {
+    private boolean valueDefined;
+
+    public Constant(String name) {
         super(name);
+        valueDefined = false;
+    }
+
+    public Constant(String name, Type type) {
+        super(name, type);
+        valueDefined = false;
+    }
+
+    public Constant(String name, Value value) {
+        super(name, value);
+        valueDefined = true;
     }
 
     @Override
     public boolean isWritable() {
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "UntypedSymbol{name=" + getName() + "}";
+        return !valueDefined;
     }
 }

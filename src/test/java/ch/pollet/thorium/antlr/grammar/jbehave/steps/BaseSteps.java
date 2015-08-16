@@ -24,10 +24,7 @@ import ch.pollet.thorium.values.types.FloatType;
 import ch.pollet.thorium.values.types.IntegerType;
 import ch.pollet.thorium.values.types.Type;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.jbehave.core.annotations.Alias;
-import org.jbehave.core.annotations.Named;
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.annotations.When;
+import org.jbehave.core.annotations.*;
 
 import static org.fest.assertions.Assertions.assertThat;
 

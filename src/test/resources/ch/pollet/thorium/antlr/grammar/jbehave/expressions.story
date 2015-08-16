@@ -31,6 +31,8 @@ Examples:
 | expression            | symbol    | value | type              |
 | a = 1                 | a         | 1     | IntegerType       |
 | a = 1.0               | a         | 1.0   | FloatType         |
+| A = 1                 | A         | 1     | IntegerType       |
+| A = 1.0               | A         | 1.0   | FloatType         |
 
 Scenario: expressions with exceptions
 Given an expression <expression>

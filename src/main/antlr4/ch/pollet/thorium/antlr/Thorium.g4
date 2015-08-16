@@ -54,7 +54,13 @@ expression
 literal
     : IntegerLiteral                                    # integerLiteral
     | FloatLiteral                                      # floatLiteral
-    | Identifier                                        # identifierLiteral
+    | identifier                                        # identifierLiteral
+    ;
+
+identifier
+    : ObjectOrClassName                                 # objectOrClassName
+    | VariableName                                      # variableName
+    | ConstantName                                      # constantName
     ;
 
 FloatLiteral
@@ -66,11 +72,7 @@ IntegerLiteral
     | [1-9][0-9]*
     ;
 
-Identifier
-    : ObjectOrClassName
-    | VariableName
-    | ConstantName
-    ;
+
 
 ObjectOrClassName
     : [A-Z] IdentifierChars
@@ -78,6 +80,10 @@ ObjectOrClassName
 
 VariableName
     : [a-z_] IdentifierChars*
+    ;
+
+ConstantName
+    : [A-Z0-9_$]+
     ;
 
 fragment
@@ -107,10 +113,6 @@ MethodName
 fragment
 IdentifierChars
     : [a-zA-Z0-9_$]+
-    ;
-
-ConstantName
-    : [A-Z0-9_$]+
     ;
 
 //

@@ -22,10 +22,7 @@ import ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException;
 import ch.pollet.thorium.semantic.exception.InvalidTypeException;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
-import ch.pollet.thorium.values.Symbol;
-import ch.pollet.thorium.values.UntypedSymbol;
-import ch.pollet.thorium.values.Value;
-import ch.pollet.thorium.values.Variable;
+import ch.pollet.thorium.values.*;
 import ch.pollet.thorium.values.types.FloatType;
 import ch.pollet.thorium.values.types.IntegerType;
 import ch.pollet.thorium.values.types.Type;
@@ -81,13 +78,10 @@ public class Evaluator extends ThoriumBaseListener {
 
         assertValidAssignment(left, right);
 
-        if (left instanceof UntypedSymbol) {
-            context.insertSymbol(new Variable(left.getName(), right));
-        } else {
-            // TODO SEM: move this
-            if (left.getType() != right.getType()) {
-                throw new InvalidTypeException(Value.typeName(right) + " is no assignable to " + Value.typeName(left));
-            }
+        // TODO refactor without instanceof?
+        if (left instanceof Constant) {
+            context.insertSymbol(new Constant(left.getName(), right));
+        } else if (left instanceof Variable) {
             context.insertSymbol(new Variable(left.getName(), right));
         }
     }
@@ -98,8 +92,12 @@ public class Evaluator extends ThoriumBaseListener {
             throw new InvalidAssignmentTargetException("Cannot assign to " + left.toString());
         }
 
-        if (right instanceof UntypedSymbol) {
+        if (right.getType() == null) {
             throw new InvalidAssignmentSourceException("Cannot assign from " + right.toString());
+        }
+
+        if (left.getType() != null && !right.getType().equals(left.getType())) {
+            throw new InvalidTypeException(Value.typeName(right) + " is no assignable to " + Value.typeName(left));
         }
     }
 
@@ -114,13 +112,26 @@ public class Evaluator extends ThoriumBaseListener {
     }
 
     @Override
-    public void exitIdentifierLiteral(ThoriumParser.IdentifierLiteralContext ctx) {
+    public void exitVariableName(ThoriumParser.VariableNameContext ctx) {
         Symbol symbol;
 
         try {
             symbol = context.lookupSymbol(ctx.getText());
         } catch (SymbolNotFoundException e) {
-            symbol = new UntypedSymbol(ctx.getText()); // TODO EVAL: should be symbol reference instead?
+            symbol = new Variable(ctx.getText()); // TODO EVAL: should be symbol reference instead?
+        }
+
+        context.pushStack(symbol);
+    }
+
+    @Override
+    public void exitConstantName(ThoriumParser.ConstantNameContext ctx) {
+        Symbol symbol;
+
+        try {
+            symbol = context.lookupSymbol(ctx.getText());
+        } catch (SymbolNotFoundException e) {
+            symbol = new Constant(ctx.getText()); // TODO EVAL: should be symbol reference instead?
         }
 
         context.pushStack(symbol);

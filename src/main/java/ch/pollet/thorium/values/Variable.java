@@ -22,25 +22,20 @@ import ch.pollet.thorium.values.types.Type;
  * @author Christophe Pollet
  */
 public class Variable extends Symbol {
-    private String name;
+    public Variable(String name) {
+        super(name);
+    }
 
     public Variable(String name, Class<? extends Type> type) {
         super(name, type);
-        this.name = name;
     }
 
     public Variable(String name, Value value) {
         super(name, value.getValue());
-        this.name = name;
     }
 
     @Override
     public boolean isWritable() {
         return true;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 }
