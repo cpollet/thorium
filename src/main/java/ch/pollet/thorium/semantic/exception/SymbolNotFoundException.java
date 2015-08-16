@@ -14,37 +14,13 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.evaluation;
-
-import ch.pollet.thorium.types.Type;
+package ch.pollet.thorium.semantic.exception;
 
 /**
  * @author Christophe Pollet
  */
-public class Identifier implements Value {
-    private String name;
-
-    public Identifier(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean isWritable() {
-        return true;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public Class<? extends Type> getType(EvaluationContext ctx) {
-        return ctx.lookupSymbol(getName()).getType();
-    }
-
-    @Override
-    public Type getValue(EvaluationContext ctx) {
-        return ctx.lookupSymbol(name).getValue();
+public class SymbolNotFoundException extends RuntimeException {
+    public SymbolNotFoundException(String name) {
+        super(name);
     }
 }

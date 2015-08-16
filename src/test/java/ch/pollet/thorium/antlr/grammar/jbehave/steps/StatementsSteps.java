@@ -16,13 +16,16 @@
 
 package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
+import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.antlr.grammar.ParserBuilder;
 import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
-import ch.pollet.thorium.antlr.ThoriumParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.Then;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Christophe Pollet
@@ -44,6 +47,11 @@ public class StatementsSteps extends BaseSteps {
                 .withCode(expression)
                 .build();
 
-        return parser.statements();
+        try {
+            return parser.statements();
+        } catch (Exception e) {
+            storyContext.exception = e;
+            return null;
+        }
     }
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.evaluation;
+package ch.pollet.thorium.semantic.exception;
 
 /**
  * @author Christophe Pollet
  */
-public class SymbolAlreadyDefinedException extends RuntimeException {
-    public SymbolAlreadyDefinedException(String name) {
-        super(name);
+public class InvalidTypeException extends RuntimeException {
+    public InvalidTypeException(String message) {
+        super(message);
     }
 }

@@ -16,7 +16,9 @@
 
 package ch.pollet.thorium.evaluation;
 
-import ch.pollet.thorium.Symbol;
+import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
+import ch.pollet.thorium.values.Symbol;
+import ch.pollet.thorium.values.Value;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,12 +58,9 @@ public class EvaluationContext {
         stack.push(object);
     }
 
-    public void insertSymbol(String name, Symbol symbol) {
-        // TODO move this in a semantic checker
-        // if (symbolsTable.containsKey(name)) {
-        //     throw new SymbolAlreadyDefinedException(name);
-        // }
-        symbolsTable.put(name, symbol);
+    public void insertSymbol(Symbol symbol) {
+        // TODO(SEM): check symbol does not already exists
+        symbolsTable.put(symbol.getName(), symbol);
     }
 
     public Symbol lookupSymbol(String name) {

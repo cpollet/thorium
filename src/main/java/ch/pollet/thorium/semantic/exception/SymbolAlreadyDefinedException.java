@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.antlr.grammar.jbehave;
-
-import ch.pollet.thorium.evaluation.EvaluationContext;
-import org.antlr.v4.runtime.tree.ParseTree;
+package ch.pollet.thorium.semantic.exception;
 
 /**
  * @author Christophe Pollet
  */
-public class StoryContext {
-    public ParseTree tree;
-    public EvaluationContext evaluationContext;
-    public Exception exception;
+public class SymbolAlreadyDefinedException extends RuntimeException {
+    public SymbolAlreadyDefinedException(String name) {
+        super(name);
+    }
 }

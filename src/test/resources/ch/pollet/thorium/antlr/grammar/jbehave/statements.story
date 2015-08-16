@@ -18,3 +18,13 @@ Examples:
 | a = 1; b = 2.0; a * b;        | 2.0       | FloatType     |
 | a = 1; a * 2.0;               | 2.0       | FloatType     |
 | a = 1 * 2; b = a * 2; b * 1;  | 4         | IntegerType   |
+
+Scenario: statements with exceptions
+Given a list of statements <statements>
+When being executed
+Then the exception <exception> is thrown with message <message>
+
+Examples:
+| statements                    | exception                                                             | message                                   |
+| a = 1; b = 1.0; a = b;        | ch.pollet.thorium.semantic.exception.InvalidTypeException             | Float is no assignable to Integer         |
+| a; b = a;                     | ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException | Cannot assign from UntypedSymbol{name=a}  |

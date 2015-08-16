@@ -14,12 +14,29 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.types;
+package ch.pollet.thorium.values.types;
 
-import ch.pollet.thorium.evaluation.Value;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Christophe Pollet
  */
-public interface Type extends Value {
+public abstract class BaseType<T extends Type> implements Type {
+
+
+    @Override
+    public boolean isWritable() {
+        return false;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public T getValue() {
+        return (T) this;
+    }
 }

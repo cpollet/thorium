@@ -16,12 +16,19 @@
 
 package ch.pollet.thorium.evaluation;
 
-import ch.pollet.thorium.Symbol;
-import ch.pollet.thorium.types.FloatType;
-import ch.pollet.thorium.types.IntegerType;
-import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.antlr.ThoriumBaseListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
+import ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException;
+import ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException;
+import ch.pollet.thorium.semantic.exception.InvalidTypeException;
+import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
+import ch.pollet.thorium.values.Symbol;
+import ch.pollet.thorium.values.UntypedSymbol;
+import ch.pollet.thorium.values.Value;
+import ch.pollet.thorium.values.Variable;
+import ch.pollet.thorium.values.types.FloatType;
+import ch.pollet.thorium.values.types.IntegerType;
+import ch.pollet.thorium.values.types.Type;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,12 +64,9 @@ public class Evaluator extends ThoriumBaseListener {
         Value right = context.popStack();
         Value left = context.popStack();
 
-        Type rightValue = right.getValue(context);
-        Type leftValue = left.getValue(context);
+        Operator<Type, Type, Type> op = operators.get(new OperationSignature(operator, left.getType(), right.getType()));
 
-        Operator<Type, Type, Type> op = operators.get(new OperationSignature(operator, leftValue.getClass(), rightValue.getClass()));
-
-        context.pushStack(op.apply(leftValue, rightValue));
+        context.pushStack(op.apply(left.getValue(), right.getValue()));
     }
 
     @Override
@@ -75,12 +79,28 @@ public class Evaluator extends ThoriumBaseListener {
         Value right = context.popStack();
         Value left = context.popStack();
 
-        // TODO: move this to a semantic tree walker (as well as type checking and symbol existence checking)
+        assertValidAssignment(left, right);
+
+        if (left instanceof UntypedSymbol) {
+            context.insertSymbol(new Variable(left.getName(), right));
+        } else {
+            // TODO SEM: move this
+            if (left.getType() != right.getType()) {
+                throw new InvalidTypeException(Value.typeName(right) + " is no assignable to " + Value.typeName(left));
+            }
+            context.insertSymbol(new Variable(left.getName(), right));
+        }
+    }
+
+    private void assertValidAssignment(Value left, Value right) {
+        // TODO SEM: move this
         if (!left.isWritable()) {
-            throw new IllegalStateException(left.toString() + " is not writable");
+            throw new InvalidAssignmentTargetException("Cannot assign to " + left.toString());
         }
 
-        context.insertSymbol(left.getName(), new Symbol(right, context));
+        if (right instanceof UntypedSymbol) {
+            throw new InvalidAssignmentSourceException("Cannot assign from " + right.toString());
+        }
     }
 
     @Override
@@ -95,6 +115,14 @@ public class Evaluator extends ThoriumBaseListener {
 
     @Override
     public void exitIdentifierLiteral(ThoriumParser.IdentifierLiteralContext ctx) {
-        context.pushStack(new Identifier(ctx.getText()));
+        Symbol symbol;
+
+        try {
+            symbol = context.lookupSymbol(ctx.getText());
+        } catch (SymbolNotFoundException e) {
+            symbol = new UntypedSymbol(ctx.getText()); // TODO EVAL: should be symbol reference instead?
+        }
+
+        context.pushStack(symbol);
     }
 }

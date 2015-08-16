@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.antlr.grammar.jbehave;
+package ch.pollet.thorium.values;
 
-import ch.pollet.thorium.evaluation.EvaluationContext;
-import org.antlr.v4.runtime.tree.ParseTree;
+import ch.pollet.thorium.values.types.Type;
 
 /**
  * @author Christophe Pollet
  */
-public class StoryContext {
-    public ParseTree tree;
-    public EvaluationContext evaluationContext;
-    public Exception exception;
+public interface Value {
+    static String typeName(Value value) {
+        return Type.getName(value.getType());
+    }
+
+    boolean isWritable();
+
+    String getName();
+
+    Class<? extends Type> getType();
+
+    Type getValue();
 }

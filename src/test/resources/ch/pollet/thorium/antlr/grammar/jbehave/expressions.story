@@ -31,3 +31,12 @@ Examples:
 | expression            | symbol    | value | type              |
 | a = 1                 | a         | 1     | IntegerType       |
 | a = 1.0               | a         | 1.0   | FloatType         |
+
+Scenario: expressions with exceptions
+Given an expression <expression>
+When being executed
+Then the exception <exception> is thrown with message <message>
+
+Examples:
+| expression    | exception                                                             | message                               |
+| 1 = 1         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign to IntegerType{value=1} |

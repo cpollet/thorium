@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.types;
-
-import ch.pollet.thorium.evaluation.EvaluationContext;
+package ch.pollet.thorium.values;
 
 /**
  * @author Christophe Pollet
  */
-public abstract class BaseType implements Type {
+public class UntypedSymbol extends Symbol {
+    public UntypedSymbol(String name) {
+        super(name);
+    }
+
     @Override
     public boolean isWritable() {
-        return false;
+        return true;
     }
 
     @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public Type getValue(EvaluationContext ctx) {
-        return this;
+    public String toString() {
+        return "UntypedSymbol{name=" + getName() + "}";
     }
 }

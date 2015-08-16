@@ -16,15 +16,18 @@
 
 package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
-import ch.pollet.thorium.Symbol;
 import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
 import ch.pollet.thorium.evaluation.EvaluationContext;
 import ch.pollet.thorium.evaluation.Evaluator;
-import ch.pollet.thorium.types.FloatType;
-import ch.pollet.thorium.types.IntegerType;
-import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.values.Symbol;
+import ch.pollet.thorium.values.types.FloatType;
+import ch.pollet.thorium.values.types.IntegerType;
+import ch.pollet.thorium.values.types.Type;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.jbehave.core.annotations.*;
+import org.jbehave.core.annotations.Alias;
+import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -43,7 +46,12 @@ public class BaseSteps {
         ParseTreeWalker walker = new ParseTreeWalker();
         storyContext.evaluationContext = EvaluationContext.createEmpty();
         Evaluator evaluator = new Evaluator(storyContext.evaluationContext);
-        walker.walk(evaluator, storyContext.tree);
+
+        try {
+            walker.walk(evaluator, storyContext.tree);
+        } catch (Exception e) {
+            storyContext.exception = e;
+        }
     }
 
     @Then("the result is $value of type $type")
@@ -85,6 +93,15 @@ public class BaseSteps {
             assertThat(storyContext.evaluationContext.lookupSymbol(symbols[i]).getValue())
                     .isEqualTo(toTypeValue(values[i], types[i]));
         }
+    }
+
+    @Then("the exception $exception is thrown with message $message")
+    @Alias("the exception <exception> is thrown with message <message>")
+    public void exceptionIsThrown(@Named("exception") String exception, @Named("message") String message) throws ClassNotFoundException {
+        assertThat(storyContext.exception)
+                .isNotNull()
+                .isInstanceOf((Class<? extends Throwable>) Class.forName(exception))
+                .hasMessage(message);
     }
 
     protected Class<? extends Type> toTypeClass(String type) {

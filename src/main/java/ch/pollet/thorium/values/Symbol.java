@@ -14,32 +14,44 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium;
+package ch.pollet.thorium.values;
 
-import ch.pollet.thorium.evaluation.EvaluationContext;
-import ch.pollet.thorium.evaluation.Value;
-import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.values.types.Type;
 
 /**
  * @author Christophe Pollet
  */
-public class Symbol {
-    Class<? extends Type> type;
-    Type value;
+public abstract class Symbol implements Value {
+    private String name;
+    private Class<? extends Type> type;
+    private Type value;
 
-    public Symbol(Value value, EvaluationContext ctx) {
-        this.type = value.getType(ctx);
-        this.value = value.getValue(ctx);
+    protected Symbol(String name) {
+        this.name = name;
     }
 
-    public Symbol(Class<? extends Type> type) {
+    public Symbol(String name, Value value) {
+        this.name = name;
+        this.type = value.getType();
+        this.value = value.getValue();
+    }
+
+    public Symbol(String name, Class<? extends Type> type) {
+        this.name = name;
         this.type = type;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     public Class<? extends Type> getType() {
         return type;
     }
 
+    @Override
     public Type getValue() {
         return value;
     }

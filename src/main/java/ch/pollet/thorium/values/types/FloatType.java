@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.types;
-
-import ch.pollet.thorium.evaluation.EvaluationContext;
+package ch.pollet.thorium.values.types;
 
 import java.util.Objects;
 
 /**
  * @author Christophe Pollet
  */
-public class FloatType extends BaseType {
+public class FloatType extends BaseType<FloatType> {
     public Double value;
 
     public FloatType(Double value) {
@@ -51,7 +49,7 @@ public class FloatType extends BaseType {
     }
 
     @Override
-    public Class<? extends Type> getType(EvaluationContext ctx) {
+    public Class<? extends Type> getType() {
         return getClass();
     }
 

@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.evaluation;
+package ch.pollet.thorium.values.types;
+
+import ch.pollet.thorium.values.Value;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Christophe Pollet
  */
-public class SymbolNotFoundException extends RuntimeException {
-    public SymbolNotFoundException(String name) {
-        super(name);
+public interface Type extends Value {
+    Map<? extends Type, String> types = new HashMap(){{
+        put(FloatType.class, "Float");
+        put(IntegerType.class, "Integer");
+    }};
+
+    static String getName(Class<? extends Type> typeClass) {
+        return types.get(typeClass);
     }
 }

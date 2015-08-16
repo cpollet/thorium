@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.types;
+package ch.pollet.thorium.values.types;
 
-import ch.pollet.thorium.types.FloatType;
-import ch.pollet.thorium.types.IntegerType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -28,24 +26,11 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Christophe Pollet
  */
 @RunWith(JUnit4.class)
-public class TestIntegerType {
-    @Test
-    public void operatorPlusIntegerType() {
-        // GIVEN
-        IntegerType left = new IntegerType(1L);
-        IntegerType right = new IntegerType(2L);
-
-        // WHEN
-        IntegerType result = left.operatorPlus(right);
-
-        // THEN
-        assertThat(result).isEqualTo(new IntegerType(3L));
-    }
-
+public class TestFloatType {
     @Test
     public void operatorPlusFloatType() {
         // GIVEN
-        IntegerType left = new IntegerType(1L);
+        FloatType left = new FloatType(1.0);
         FloatType right = new FloatType(2.0);
 
         // WHEN
@@ -56,23 +41,36 @@ public class TestIntegerType {
     }
 
     @Test
-    public void operatorMultiplyIntegerType() {
+    public void operatorPlusIntegerType() {
         // GIVEN
-        IntegerType left = new IntegerType(1L);
+        FloatType left = new FloatType(1.0);
         IntegerType right = new IntegerType(2L);
 
         // WHEN
-        IntegerType result = left.operatorMultiply(right);
+        FloatType result = left.operatorPlus(right);
 
         // THEN
-        assertThat(result).isEqualTo(new IntegerType(2L));
+        assertThat(result).isEqualTo(new FloatType(3.0));
     }
 
     @Test
     public void operatorMultiplyFloatType() {
         // GIVEN
-        IntegerType left = new IntegerType(1L);
+        FloatType left = new FloatType(1.0);
         FloatType right = new FloatType(2.0);
+
+        // WHEN
+        FloatType result = left.operatorMultiply(right);
+
+        // THEN
+        assertThat(result).isEqualTo(new FloatType(2.0));
+    }
+
+    @Test
+    public void operatorMultiplyIntegerType() {
+        // GIVEN
+        FloatType left = new FloatType(1.0);
+        IntegerType right = new IntegerType(2L);
 
         // WHEN
         FloatType result = left.operatorMultiply(right);

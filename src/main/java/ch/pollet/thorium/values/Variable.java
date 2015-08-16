@@ -14,19 +14,33 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.evaluation;
+package ch.pollet.thorium.values;
 
-import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.values.types.Type;
 
 /**
  * @author Christophe Pollet
  */
-public interface Value {
-    boolean isWritable();
+public class Variable extends Symbol {
+    private String name;
 
-    String getName();
+    public Variable(String name, Class<? extends Type> type) {
+        super(name, type);
+        this.name = name;
+    }
 
-    Class<? extends Type> getType(EvaluationContext ctx);
+    public Variable(String name, Value value) {
+        super(name, value.getValue());
+        this.name = name;
+    }
 
-    Type getValue(EvaluationContext ctx);
+    @Override
+    public boolean isWritable() {
+        return true;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
 }
