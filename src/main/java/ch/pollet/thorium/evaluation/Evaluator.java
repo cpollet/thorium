@@ -22,7 +22,10 @@ import ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException;
 import ch.pollet.thorium.semantic.exception.InvalidTypeException;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
-import ch.pollet.thorium.values.*;
+import ch.pollet.thorium.values.Constant;
+import ch.pollet.thorium.values.Symbol;
+import ch.pollet.thorium.values.Value;
+import ch.pollet.thorium.values.Variable;
 import ch.pollet.thorium.values.types.FloatType;
 import ch.pollet.thorium.values.types.IntegerType;
 import ch.pollet.thorium.values.types.Type;
@@ -79,11 +82,17 @@ public class Evaluator extends ThoriumBaseListener {
         assertValidAssignment(left, right);
 
         // TODO refactor without instanceof?
+        Symbol value;
         if (left instanceof Constant) {
-            context.insertSymbol(new Constant(left.getName(), right));
+            value = new Constant(left.getName(), right);
         } else if (left instanceof Variable) {
-            context.insertSymbol(new Variable(left.getName(), right));
+            value = new Variable(left.getName(), right);
+        } else {
+            throw new IllegalStateException();
         }
+
+        context.insertSymbol(value);
+        context.pushStack(value);
     }
 
     private void assertValidAssignment(Value left, Value right) {

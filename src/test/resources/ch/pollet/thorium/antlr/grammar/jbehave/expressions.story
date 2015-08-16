@@ -24,15 +24,16 @@ Examples:
 Scenario: assignment expressions
 Given an expression <expression>
 When being executed
-Then the symbol table contains <symbol>
-Then the symbol <symbol> has value <value> of type <type>
+Then the symbol table contains <symbols>
+Then the symbols <symbols> have values <values> of types <types>
 
 Examples:
-| expression            | symbol    | value | type              |
-| a = 1                 | a         | 1     | IntegerType       |
-| a = 1.0               | a         | 1.0   | FloatType         |
-| A = 1                 | A         | 1     | IntegerType       |
-| A = 1.0               | A         | 1.0   | FloatType         |
+| expression            | symbols   | values    | types                 |
+| a = 1                 | a         | 1         | IntegerType           |
+| a = 1.0               | a         | 1.0       | FloatType             |
+| A = 1                 | A         | 1         | IntegerType           |
+| A = 1.0               | A         | 1.0       | FloatType             |
+| b = (a = 1) * 1.0     | a,b       | 1,1.0     | IntegerType,FloatType |
 
 Scenario: expressions with exceptions
 Given an expression <expression>

@@ -5,10 +5,12 @@ Then the symbol table contains <symbols>
 Then the symbols <symbols> have values <values> of types <types>
 
 Examples:
-| statements            | symbols   | values    | types                     |
-| a = 1; b = a; a = 2;  | a,b       | 2,1       | IntegerType,IntegerType   |
-| a = 1; B = a; a = 2;  | a,B       | 2,1       | IntegerType,IntegerType   |
-| A; A = 1;             | A         | 1         | IntegerType               |
+| statements                | symbols   | values    | types                                 |
+| a = 1; b = a; a = 2;      | a,b       | 2,1       | IntegerType,IntegerType               |
+| a = 1; B = a; a = 2;      | a,B       | 2,1       | IntegerType,IntegerType               |
+| A; A = 1;                 | A         | 1         | IntegerType                           |
+| a = 1; c = b = a + 1;     | a,b,c     | 1,2,2     | IntegerType,IntegerType,IntegerType   |
+| a = 1; c = b = a * 1.0;   | a,b,c     | 1,1.0,1.0 | IntegerType,FloatType,FloatType       |
 
 Scenario: statements with result
 Given a list of statements <statements>
@@ -31,3 +33,4 @@ Examples:
 | a = 1; b = 1.0; a = b;        | ch.pollet.thorium.semantic.exception.InvalidTypeException             | Float is no assignable to Integer                                             |
 | a; b = a;                     | ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException | Cannot assign from Symbol{name='a', type=null, value=null}                    |
 | A = 1; A = 2;                 | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign to Symbol{name='A', type=Integer, value=IntegerType{value=1}}   |
+| a = 1; b = 1.0; c = a = b;    | ch.pollet.thorium.semantic.exception.InvalidTypeException             | Float is no assignable to Integer                                             |

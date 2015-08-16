@@ -75,7 +75,7 @@ public class TestExpression {
     }
 
     @Test
-    public void parenthesisExpression() {
+    public void parenthesisExpression1() {
         // GIVEN
         ThoriumParser parser = ParserBuilder
                 .create()
@@ -85,6 +85,19 @@ public class TestExpression {
         // WHEN + THEN
         assertThat(parseTreeToString(parser))
                 .isEqualTo("(expression ( (expression (literal 1)) ))");
+    }
+
+    @Test
+    public void parenthesisExpression2() {
+        // GIVEN
+        ThoriumParser parser = ParserBuilder
+                .create()
+                .withCode("1 * (1 + 1)")
+                .build();
+
+        // WHEN + THEN
+        assertThat(parseTreeToString(parser))
+                .isEqualTo("(expression (expression (literal 1)) * (expression ( (expression (expression (literal 1)) + (expression (literal 1))) )))");
     }
 
     @Test
@@ -137,5 +150,70 @@ public class TestExpression {
         // WHEN + THEN
         assertThat(parseTreeToString(parser))
                 .isEqualTo("(expression (expression (expression (literal 1)) * (expression (literal 2))) * (expression (literal 3)))");
+    }
+
+    @Test
+    public void assignment1() {
+        // GIVEN
+        ThoriumParser parser = ParserBuilder
+                .create()
+                .withCode("a = 1")
+                .build();
+
+        // WHEN + THEN
+        assertThat(parseTreeToString(parser))
+                .isEqualTo("(expression (expression (literal (identifier a))) = (expression (literal 1)))");
+    }
+
+    @Test
+    public void assignment2() {
+        // GIVEN
+        ThoriumParser parser = ParserBuilder
+                .create()
+                .withCode("a = 1 + 1")
+                .build();
+
+        // WHEN + THEN
+        assertThat(parseTreeToString(parser))
+                .isEqualTo("(expression (expression (literal (identifier a))) = (expression (expression (literal 1)) + (expression (literal 1))))");
+    }
+
+    @Test
+    public void assignment3() {
+        // GIVEN
+        ThoriumParser parser = ParserBuilder
+                .create()
+                .withCode("(a = 1) + 1")
+                .build();
+
+        // WHEN + THEN
+        assertThat(parseTreeToString(parser))
+                .isEqualTo("(expression (expression ( (expression (expression (literal (identifier a))) = (expression (literal 1))) )) + (expression (literal 1)))");
+    }
+
+    @Test
+    public void assignment4() {
+        // GIVEN
+        ThoriumParser parser = ParserBuilder
+                .create()
+                .withCode("b = (a = 1) + 1")
+                .build();
+
+        // WHEN + THEN
+        assertThat(parseTreeToString(parser))
+                .isEqualTo("(expression (expression (literal (identifier b))) = (expression (expression ( (expression (expression (literal (identifier a))) = (expression (literal 1))) )) + (expression (literal 1))))");
+    }
+
+    @Test
+    public void assignment5() {
+        // GIVEN
+        ThoriumParser parser = ParserBuilder
+                .create()
+                .withCode("a = b = c")
+                .build();
+
+        // WHEN + THEN
+        assertThat(parseTreeToString(parser))
+                .isEqualTo("(expression (expression (literal (identifier a))) = (expression (expression (literal (identifier b))) = (expression (literal (identifier c)))))");
     }
 }
