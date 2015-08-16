@@ -92,7 +92,7 @@ public class Evaluator extends ThoriumBaseListener {
         }
 
         context.insertSymbol(value);
-        context.pushStack(value);
+        context.pushStack(value.getValue());
     }
 
     private void assertValidAssignment(Value left, Value right) {

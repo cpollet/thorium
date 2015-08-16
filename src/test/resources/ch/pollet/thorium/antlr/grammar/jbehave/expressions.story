@@ -20,6 +20,7 @@ Examples:
 | 1 + 1.0               | 2.0               | FloatType     |
 | 1.0 * 1               | 1.0               | FloatType     |
 | 1 * 1.0               | 1.0               | FloatType     |
+| a = 1.0               | 1.0               | FloatType     |
 
 Scenario: assignment expressions
 Given an expression <expression>

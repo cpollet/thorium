@@ -16,9 +16,6 @@
 
 package ch.pollet.thorium.values.types;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Christophe Pollet
  */
