@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
+import ch.pollet.thorium.ThrowingErrorListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.antlr.grammar.ParserBuilder;
 import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
@@ -45,7 +46,7 @@ public class StatementsSteps extends BaseSteps {
 
     @Then("the statement result is <result> of type <type>")
     @Alias("the statement result is $result of type $type")
-    public void statementResult(@Named("result ") String expectedValue, @Named("type") String expectedType) {
+    public void statementResult(@Named("result") String expectedValue, @Named("type") String expectedType) {
         Object value = storyContext.evaluationContext.lastStatementValue;
 
         assertThat(value).isEqualTo(toTypeValue(expectedValue, expectedType));
@@ -70,11 +71,9 @@ public class StatementsSteps extends BaseSteps {
                 .withCode(expression)
                 .build();
 
-        try {
-            return parser.statements();
-        } catch (Exception e) {
-            storyContext.exception = e;
-            return null;
-        }
+        parser.removeErrorListeners();
+        parser.addErrorListener(ThrowingErrorListener.INSTANCE);
+
+        return parser.statements();
     }
 }

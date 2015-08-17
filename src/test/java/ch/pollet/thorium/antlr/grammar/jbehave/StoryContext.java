@@ -26,4 +26,5 @@ public class StoryContext {
     public ParseTree tree;
     public EvaluationContext evaluationContext;
     public Exception exception;
+    public boolean exceptionExpected;
 }

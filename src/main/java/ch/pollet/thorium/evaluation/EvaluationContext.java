@@ -20,26 +20,26 @@ import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 
 /**
  * @author Christophe Pollet
  */
 public class EvaluationContext {
-    private EvaluationContext parentContext;
-    private Map<String, Symbol> symbolsTable;
-    private Stack<Value> stack;
+    private final EvaluationContext parentContext;
+    private final SymbolTable symbolsTable;
+    private final Stack<Value> stack;
     public Value lastStatementValue;
 
     private EvaluationContext() {
-        this(null);
+        this.stack = new Stack<>();
+        this.symbolsTable = new SymbolTable();
+        this.parentContext = null;
     }
 
     private EvaluationContext(EvaluationContext parentContext) {
         this.stack = new Stack<>();
-        this.symbolsTable = new HashMap<>();
+        this.symbolsTable = new SymbolTable(parentContext.symbolsTable);
         this.parentContext = parentContext;
     }
 
@@ -51,6 +51,13 @@ public class EvaluationContext {
         return new EvaluationContext(this);
     }
 
+    public EvaluationContext destroyAndRestoreParent() {
+        parentContext.lastStatementValue = lastStatementValue;
+
+        return parentContext;
+    }
+
+
     public Value popStack() {
         return stack.pop();
     }
@@ -61,17 +68,10 @@ public class EvaluationContext {
 
     public void insertSymbol(Symbol symbol) {
         // TODO SEM: check symbol does not already exists
-        symbolsTable.put(symbol.getName(), symbol);
+        symbolsTable.put(symbol);
     }
 
     public Symbol lookupSymbol(String name) {
-        if (!symbolsTable.containsKey(name)) {
-            if (parentContext == null) {
-                throw new SymbolNotFoundException(name);
-            }
-            return parentContext.lookupSymbol(name);
-        }
-
         return symbolsTable.get(name);
     }
 }

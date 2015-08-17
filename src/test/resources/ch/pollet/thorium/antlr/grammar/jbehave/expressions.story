@@ -21,24 +21,28 @@ Examples:
 | 1.0 * 1               | 1.0               | FloatType     |
 | 1 * 1.0               | 1.0               | FloatType     |
 | a = 1.0               | 1.0               | FloatType     |
+| { 1.0; }              | 1.0               | FloatType     |
 
 Scenario: assignment expressions
 Given an expression <expression>
 When being executed
 Then the symbol table contains <symbols>
 Then the symbols <symbols> have values <values> of types <types>
+Then the symbols <undefinedSymbols> are not defined
 
 Examples:
-| expression            | symbols   | values    | types                 |
-| a = 1                 | a         | 1         | IntegerType           |
-| a = 1.0               | a         | 1.0       | FloatType             |
-| A = 1                 | A         | 1         | IntegerType           |
-| A = 1.0               | A         | 1.0       | FloatType             |
-| b = (a = 1) * 1.0     | a,b       | 1,1.0     | IntegerType,FloatType |
-| b = a = 1 * 1.0       | a,b       | 1.0,1.0   | FloatType,FloatType   |
+| expression            | symbols   | values    | types                 | undefinedSymbols  |
+| a = 1                 | a         | 1         | IntegerType           |                   |
+| a = 1.0               | a         | 1.0       | FloatType             |                   |
+| A = 1                 | A         | 1         | IntegerType           |                   |
+| A = 1.0               | A         | 1.0       | FloatType             |                   |
+| b = (a = 1) * 1.0     | a,b       | 1,1.0     | IntegerType,FloatType |                   |
+| b = a = 1 * 1.0       | a,b       | 1.0,1.0   | FloatType,FloatType   |                   |
+| b = { a = 1; a + 1; } | b         | 2         | IntegerType           | a                 |
 
 Scenario: expressions with exceptions
 Given an expression <expression>
+Given exception expected
 When being executed
 Then the exception <exception> is thrown with message <message>
 

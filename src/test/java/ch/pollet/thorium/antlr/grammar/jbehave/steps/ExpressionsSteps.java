@@ -16,9 +16,14 @@
 
 package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
+import ch.pollet.thorium.ThrowingErrorListener;
 import ch.pollet.thorium.antlr.grammar.ParserBuilder;
 import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
 import ch.pollet.thorium.antlr.ThoriumParser;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
@@ -43,6 +48,9 @@ public class ExpressionsSteps extends BaseSteps {
                 .create()
                 .withCode(expression)
                 .build();
+
+        parser.removeErrorListeners();
+        parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 
         return parser.expression();
     }

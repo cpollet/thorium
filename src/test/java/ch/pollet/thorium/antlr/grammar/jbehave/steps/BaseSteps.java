@@ -19,10 +19,13 @@ package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
 import ch.pollet.thorium.evaluation.EvaluationContext;
 import ch.pollet.thorium.evaluation.Evaluator;
+import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.types.FloatType;
 import ch.pollet.thorium.values.types.IntegerType;
 import ch.pollet.thorium.values.types.Type;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.jbehave.core.annotations.*;
 
@@ -47,7 +50,15 @@ public class BaseSteps {
         try {
             walker.walk(evaluator, storyContext.tree);
         } catch (Exception e) {
-            storyContext.exception = e;
+            if (e instanceof ParseCancellationException) {
+                throw e;
+            }
+
+            if (storyContext.exceptionExpected && storyContext.exception == null) {
+                storyContext.exception = e;
+            } else {
+                throw e;
+            }
         }
     }
 
@@ -92,6 +103,29 @@ public class BaseSteps {
         }
     }
 
+    @Then("the symbols <undefinedSymbols> are not defined")
+    @Alias("the symbols $undefinedSymbols are not defined")
+    public void symbolsAreNotDefined(@Named("undefinedSymbols") String expectedNotDefinedSymbols) {
+        String[] symbols = expectedNotDefinedSymbols.split(",");
+
+        Exception expectedException = null;
+
+        for (String symbol : symbols) {
+            try {
+                storyContext.evaluationContext.lookupSymbol(symbol);
+            } catch (SymbolNotFoundException e) {
+                expectedException = e;
+            }
+        }
+
+        assertThat(expectedException).isNotNull();
+    }
+
+    @Given("exception expected")
+    public void exceptionExpected() {
+        storyContext.exceptionExpected = true;
+    }
+
     @Then("the exception $exception is thrown with message $message")
     @Alias("the exception <exception> is thrown with message <message>")
     public void exceptionIsThrown(@Named("exception") String exception, @Named("message") String message) throws ClassNotFoundException {
@@ -99,6 +133,9 @@ public class BaseSteps {
                 .isNotNull()
                 .isInstanceOf((Class<? extends Throwable>) Class.forName(exception))
                 .hasMessage(message);
+
+        storyContext.exception = null;
+        storyContext.exceptionExpected = false;
     }
 
     protected Class<? extends Type> toTypeClass(String type) {

@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.antlr.grammar;
 
+import ch.pollet.thorium.ThrowingErrorListener;
 import ch.pollet.thorium.antlr.ThoriumLexer;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -42,8 +43,13 @@ public class ParserBuilder {
 
     public ThoriumParser build() {
         ANTLRInputStream input = new ANTLRInputStream(code);
+
         ThoriumLexer lexer = new ThoriumLexer(input);
+        lexer.removeErrorListeners();
+        lexer.removeErrorListener(ThrowingErrorListener.INSTANCE);
+
         CommonTokenStream tokens = new CommonTokenStream(lexer);
+
         return new ThoriumParser(tokens);
     }
 }

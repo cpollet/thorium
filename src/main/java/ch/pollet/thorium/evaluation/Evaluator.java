@@ -150,4 +150,15 @@ public class Evaluator extends ThoriumBaseListener {
 
         context.pushStack(symbol);
     }
+
+    @Override
+    public void enterBlockExpression(ThoriumParser.BlockExpressionContext ctx) {
+        context = context.createChild();
+    }
+
+    @Override
+    public void exitBlockExpression(ThoriumParser.BlockExpressionContext ctx) {
+        context = context.destroyAndRestoreParent();
+        context.pushStack(context.lastStatementValue);
+    }
 }

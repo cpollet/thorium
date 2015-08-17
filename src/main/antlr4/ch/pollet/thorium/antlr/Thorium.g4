@@ -31,7 +31,6 @@ compilationUnit
 
 // STATEMENTS / BLOCKS
 
-// used mainly for testing purposes at the moment
 statements
     : statement+
     ;
@@ -49,6 +48,7 @@ expression
     | '(' expression ')'                                # parenthesisExpression
     // | expression ':' expression '?' expression       # inlineConditionExpression
     | <assoc=right> expression '=' expression           # assignmentExpression
+    | '{' statements '}'                                # blockExpression
     ;
 
 literal
