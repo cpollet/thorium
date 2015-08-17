@@ -56,6 +56,11 @@ public class Evaluator extends ThoriumBaseListener {
     }
 
     @Override
+    public void exitStatement(ThoriumParser.StatementContext ctx) {
+        context.lastStatementValue = context.popStack();
+    }
+
+    @Override
     public void exitAdditionExpression(ThoriumParser.AdditionExpressionContext ctx) {
         evalOperator("+");
     }

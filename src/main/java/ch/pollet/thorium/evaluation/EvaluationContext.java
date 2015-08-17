@@ -31,6 +31,7 @@ public class EvaluationContext {
     private EvaluationContext parentContext;
     private Map<String, Symbol> symbolsTable;
     private Stack<Value> stack;
+    public Value lastStatementValue;
 
     private EvaluationContext() {
         this(null);

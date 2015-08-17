@@ -2,7 +2,8 @@ Scenario: statements with symbols
 Given a list of statements <statements>
 When being executed
 Then the symbol table contains <symbols>
-Then the symbols <symbols> have values <values> of types <types>
+And the symbols <symbols> have values <values> of types <types>
+And the stack is empty
 
 Examples:
 | statements                | symbols   | values    | types                                 |
@@ -15,7 +16,8 @@ Examples:
 Scenario: statements with result
 Given a list of statements <statements>
 When being executed
-Then the result is <result> of type <type>
+Then the statement result is <result> of type <type>
+And the stack is empty
 
 Examples:
 | statements                    | result    | type          |

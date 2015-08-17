@@ -25,6 +25,8 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 
+import java.util.EmptyStackException;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
@@ -39,6 +41,27 @@ public class StatementsSteps extends BaseSteps {
     @Alias("a list of statements <statements>")
     public void aListOfStatements(@Named("statements") String statements) {
         storyContext.tree = parseTreeForStatements(statements);
+    }
+
+    @Then("the statement result is <result> of type <type>")
+    @Alias("the statement result is $result of type $type")
+    public void statementResult(@Named("result ") String expectedValue, @Named("type") String expectedType) {
+        Object value = storyContext.evaluationContext.lastStatementValue;
+
+        assertThat(value).isEqualTo(toTypeValue(expectedValue, expectedType));
+    }
+
+    @Then("the stack is empty")
+    public void assertStackIsEmpty() {
+        Exception expectedException = null;
+
+        try {
+            storyContext.evaluationContext.popStack();
+        } catch (EmptyStackException e) {
+            expectedException = e;
+        }
+
+        assertThat(expectedException).isNotNull();
     }
 
     private ParseTree parseTreeForStatements(String expression) {
