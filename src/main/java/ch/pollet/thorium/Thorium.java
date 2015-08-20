@@ -17,9 +17,10 @@
 package ch.pollet.thorium;
 
 import ch.pollet.thorium.evaluation.EvaluationContext;
-import ch.pollet.thorium.evaluation.Evaluator;
+import ch.pollet.thorium.evaluation.ListenerEvaluator;
 import ch.pollet.thorium.antlr.ThoriumLexer;
 import ch.pollet.thorium.antlr.ThoriumParser;
+import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -31,7 +32,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 public class Thorium {
     public static void main(String argv[]) throws Exception {
         // create a CharStream that reads from standard input
-        ANTLRInputStream input = new ANTLRInputStream("1+1");
+        ANTLRInputStream input = new ANTLRInputStream("1+1;");
         // create a lexer that feeds off of input CharStream
         ThoriumLexer lexer = new ThoriumLexer(input);
         // create a buffer of tokens pulled from the lexer
@@ -47,13 +48,16 @@ public class Thorium {
         ParseTreeWalker walker = new ParseTreeWalker();
 
         EvaluationContext evaluationContext = EvaluationContext.createEmpty();
-        Evaluator evaluator = new Evaluator(evaluationContext);
+        VisitorEvaluator visitorEvaluator = new VisitorEvaluator(evaluationContext);
+        //ListenerEvaluator listenerEvaluator = new ListenerEvaluator(evaluationContext);
 
         // Walk the tree created during the parse, trigger callbacks
-        walker.walk(evaluator, tree);
+        //walker.walk(listenerEvaluator, tree);
 
-        System.out.println(evaluationContext.popStack());
-        System.out.println(evaluationContext.popStack());
+        // Visit the tree created during the parse
+        visitorEvaluator.visit(tree);
+
+        System.out.println(evaluationContext.lastStatementValue);
 
         System.out.println(); // print a \n after translation
     }

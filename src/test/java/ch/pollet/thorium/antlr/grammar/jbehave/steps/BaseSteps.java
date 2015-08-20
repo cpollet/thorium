@@ -18,13 +18,13 @@ package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
 import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
 import ch.pollet.thorium.evaluation.EvaluationContext;
-import ch.pollet.thorium.evaluation.Evaluator;
+import ch.pollet.thorium.evaluation.ListenerEvaluator;
+import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.types.FloatType;
 import ch.pollet.thorium.values.types.IntegerType;
 import ch.pollet.thorium.values.types.Type;
-import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.jbehave.core.annotations.*;
@@ -45,10 +45,12 @@ public class BaseSteps {
     public void execute() {
         ParseTreeWalker walker = new ParseTreeWalker();
         storyContext.evaluationContext = EvaluationContext.createEmpty();
-        Evaluator evaluator = new Evaluator(storyContext.evaluationContext);
+        // ListenerEvaluator listenerEvaluator = new ListenerEvaluator(storyContext.evaluationContext);
+        VisitorEvaluator visitorEvaluator = new VisitorEvaluator(storyContext.evaluationContext);
 
         try {
-            walker.walk(evaluator, storyContext.tree);
+            visitorEvaluator.visit(storyContext.tree);
+            // walker.walk(evaluator, storyContext.tree);
         } catch (Exception e) {
             if (e instanceof ParseCancellationException) {
                 throw e;

@@ -12,6 +12,8 @@
         <antlr4.version>4.5.1</antlr4.version>
         <junit.version>4.11</junit.version>
         <fest-assert.version>1.4</fest-assert.version>
+
+        <antlr4.visitor>true</antlr4.visitor>
     </properties>
 
     <dependencies>
@@ -70,6 +72,11 @@
                         <goals>
                             <goal>antlr4</goal>
                         </goals>
+                        <configuration>
+                            <arguments>
+                                <argument>-visitor</argument>
+                            </arguments>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

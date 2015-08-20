@@ -16,7 +16,7 @@
 
 package ch.pollet.thorium.evaluation;
 
-import ch.pollet.thorium.antlr.ThoriumBaseListener;
+import ch.pollet.thorium.antlr.ThoriumBaseVisitor;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException;
@@ -36,7 +36,7 @@ import java.util.Map;
 /**
  * @author Christophe Pollet
  */
-public class Evaluator extends ThoriumBaseListener {
+public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     private EvaluationContext context;
 
     private Map<OperationSignature, Operator<Type, Type, Type>> operators = new HashMap<OperationSignature, Operator<Type, Type, Type>>() {{
@@ -51,18 +51,44 @@ public class Evaluator extends ThoriumBaseListener {
         put(new OperationSignature("*", FloatType.class, IntegerType.class), (left, right) -> ((FloatType) left).operatorMultiply((IntegerType) right));
     }};
 
-    public Evaluator(EvaluationContext context) {
+    public VisitorEvaluator(EvaluationContext context) {
         this.context = context;
     }
 
     @Override
-    public void exitStatement(ThoriumParser.StatementContext ctx) {
+    public Void visitStatement(ThoriumParser.StatementContext ctx) {
+        super.visitStatement(ctx);
         context.lastStatementValue = context.popStack();
+
+        return null;
     }
 
     @Override
-    public void exitAdditionExpression(ThoriumParser.AdditionExpressionContext ctx) {
+    public Void visitBlockExpression(ThoriumParser.BlockExpressionContext ctx) {
+        context = context.createChild();
+
+        super.visitBlockExpression(ctx);
+
+        context = context.destroyAndRestoreParent();
+        context.pushStack(context.lastStatementValue);
+
+        return null;
+    }
+
+    @Override
+    public Void visitMultiplicationExpression(ThoriumParser.MultiplicationExpressionContext ctx) {
+        super.visitMultiplicationExpression(ctx);
+        evalOperator("*");
+
+        return null;
+    }
+
+    @Override
+    public Void visitAdditionExpression(ThoriumParser.AdditionExpressionContext ctx) {
+        super.visitAdditionExpression(ctx);
         evalOperator("+");
+
+        return null;
     }
 
     private void evalOperator(String operator) {
@@ -75,12 +101,9 @@ public class Evaluator extends ThoriumBaseListener {
     }
 
     @Override
-    public void exitMultiplicationExpression(ThoriumParser.MultiplicationExpressionContext ctx) {
-        evalOperator("*");
-    }
+    public Void visitAssignmentExpression(ThoriumParser.AssignmentExpressionContext ctx) {
+        super.visitAssignmentExpression(ctx);
 
-    @Override
-    public void exitAssignmentExpression(ThoriumParser.AssignmentExpressionContext ctx) {
         Value right = context.popStack();
         Value left = context.popStack();
 
@@ -98,6 +121,8 @@ public class Evaluator extends ThoriumBaseListener {
 
         context.insertSymbol(value);
         context.pushStack(value.getValue());
+
+        return null;
     }
 
     private void assertValidAssignment(Value left, Value right) {
@@ -116,17 +141,21 @@ public class Evaluator extends ThoriumBaseListener {
     }
 
     @Override
-    public void exitIntegerLiteral(ThoriumParser.IntegerLiteralContext ctx) {
-        context.pushStack(new IntegerType(Long.valueOf(ctx.getText())));
+    public Void visitIntegerLiteral(ThoriumParser.IntegerLiteralContext ctx) {
+        context.pushStack(new IntegerType(Long.valueOf(ctx.IntegerLiteral().getText())));
+
+        return null;
     }
 
     @Override
-    public void exitFloatLiteral(ThoriumParser.FloatLiteralContext ctx) {
-        context.pushStack(new FloatType(Double.valueOf(ctx.getText())));
+    public Void visitFloatLiteral(ThoriumParser.FloatLiteralContext ctx) {
+        context.pushStack(new FloatType(Double.valueOf(ctx.FloatLiteral().getText())));
+
+        return null;
     }
 
     @Override
-    public void exitVariableName(ThoriumParser.VariableNameContext ctx) {
+    public Void visitVariableName(ThoriumParser.VariableNameContext ctx) {
         Symbol symbol;
 
         try {
@@ -136,10 +165,12 @@ public class Evaluator extends ThoriumBaseListener {
         }
 
         context.pushStack(symbol);
+
+        return null;
     }
 
     @Override
-    public void exitConstantName(ThoriumParser.ConstantNameContext ctx) {
+    public Void visitConstantName(ThoriumParser.ConstantNameContext ctx) {
         Symbol symbol;
 
         try {
@@ -149,16 +180,7 @@ public class Evaluator extends ThoriumBaseListener {
         }
 
         context.pushStack(symbol);
-    }
 
-    @Override
-    public void enterBlockExpression(ThoriumParser.BlockExpressionContext ctx) {
-        context = context.createChild();
-    }
-
-    @Override
-    public void exitBlockExpression(ThoriumParser.BlockExpressionContext ctx) {
-        context = context.destroyAndRestoreParent();
-        context.pushStack(context.lastStatementValue);
+        return null;
     }
 }
