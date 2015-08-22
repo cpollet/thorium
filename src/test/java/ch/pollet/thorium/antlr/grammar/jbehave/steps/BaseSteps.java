@@ -170,7 +170,7 @@ public class BaseSteps {
                     case "false":
                         return BooleanType.FALSE;
                     default:
-                        throw new IllegalArgumentException("[" + value + "] is not a valid Boolean value")
+                        throw new IllegalArgumentException("[" + value + "] is not a valid Boolean value");
                 }
         }
 
