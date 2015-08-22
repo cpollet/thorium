@@ -21,6 +21,7 @@ import ch.pollet.thorium.antlr.grammar.jbehave.steps.StatementsSteps;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -30,11 +31,12 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 /**
  * @author Christophe Pollet
  */
-public class Statements extends JUnitStory {
+public abstract class JBehaveBaseTestClass extends JUnitStory {
     @Override
     public Configuration configuration() {
         return new MostUsefulConfiguration()
                 .useStoryLoader(new LoadFromClasspath(this.getClass()))
+                .useStoryPathResolver(new UnderscoredCamelCaseResolver().removeFromClassName("Test"))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                         .withFailureTrace(true)
                         .withDefaultFormats()
