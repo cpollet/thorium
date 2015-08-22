@@ -37,6 +37,7 @@ statements
 
 statement
     : expression ';'
+    | ';'
     ;
 
 // EXPRESSIONS
@@ -51,9 +52,19 @@ expression
     | '{' statements '}'                                # blockExpression
     ;
 
+ifExpression
+    : IF '(' expression ')' '{' statements? '}'
+    ;
+ifElseExpression
+    : ifExpression
+    | ifExpression ELSE ifElseExpression
+    | ifExpression ELSE '{' statements? '}'
+    ;
+
 literal
     : IntegerLiteral                                    # integerLiteral
     | FloatLiteral                                      # floatLiteral
+    | BooleanLiteral                                    # booleanLiteral
     | identifier                                        # identifierLiteral
     ;
 
@@ -61,18 +72,25 @@ identifier
     : ObjectOrClassName                                 # objectOrClassName
     | VariableName                                      # variableName
     | ConstantName                                      # constantName
+    | MethodName                                        # methodName
     ;
 
-FloatLiteral
-    : IntegerLiteral '.' [0]* IntegerLiteral
-    ;
+IF    : 'if';
+ELSE  : 'else';
 
 IntegerLiteral
     : '0'
     | [1-9][0-9]*
     ;
 
+FloatLiteral
+    : IntegerLiteral '.' [0]* IntegerLiteral
+    ;
 
+BooleanLiteral
+    : 'true'
+    | 'false'
+    ;
 
 ObjectOrClassName
     : [A-Z] IdentifierChars
@@ -101,12 +119,13 @@ SymbolMethodName
     | '||=' | '||' | '|=' | '|'
     | '<<=' | '<<' | '<=' | '<'
     | '>>=' | '>>' | '>=' | '>'
+    | '<=>'
     | '..'
     | '->'
     ;
 
 MethodName
-    : [a-z_] IdentifierChars*
+    : [a-z_] IdentifierChars* [!?]?
     | SymbolMethodName
     ;
 

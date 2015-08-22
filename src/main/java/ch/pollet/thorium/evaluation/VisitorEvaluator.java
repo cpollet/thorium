@@ -21,11 +21,13 @@ import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException;
 import ch.pollet.thorium.semantic.exception.InvalidTypeException;
+import ch.pollet.thorium.semantic.exception.MethodNotFoundException;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.Constant;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
 import ch.pollet.thorium.values.Variable;
+import ch.pollet.thorium.values.types.BooleanType;
 import ch.pollet.thorium.values.types.FloatType;
 import ch.pollet.thorium.values.types.IntegerType;
 import ch.pollet.thorium.values.types.Type;
@@ -44,11 +46,13 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         put(new OperationSignature("+", FloatType.class, FloatType.class), (left, right) -> ((FloatType) left).operatorPlus((FloatType) right));
         put(new OperationSignature("+", IntegerType.class, FloatType.class), (left, right) -> ((IntegerType) left).operatorPlus((FloatType) right));
         put(new OperationSignature("+", FloatType.class, IntegerType.class), (left, right) -> ((FloatType) left).operatorPlus((IntegerType) right));
+        put(new OperationSignature("+", BooleanType.class, BooleanType.class), (left, right) -> ((BooleanType) left).operatorPlus((BooleanType) right));
 
         put(new OperationSignature("*", IntegerType.class, IntegerType.class), (left, right) -> ((IntegerType) left).operatorMultiply((IntegerType) right));
         put(new OperationSignature("*", FloatType.class, FloatType.class), (left, right) -> ((FloatType) left).operatorMultiply((FloatType) right));
         put(new OperationSignature("*", IntegerType.class, FloatType.class), (left, right) -> ((IntegerType) left).operatorMultiply((FloatType) right));
         put(new OperationSignature("*", FloatType.class, IntegerType.class), (left, right) -> ((FloatType) left).operatorMultiply((IntegerType) right));
+        put(new OperationSignature("*", BooleanType.class, BooleanType.class), (left, right) -> ((BooleanType) left).operatorMultiply((BooleanType) right));
     }};
 
     public VisitorEvaluator(EvaluationContext context) {
@@ -96,6 +100,11 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         Value left = context.popStack();
 
         Operator<Type, Type, Type> op = operators.get(new OperationSignature(operator, left.getType(), right.getType()));
+
+        // TODO SEM move this
+        if (op == null) {
+            throw new MethodNotFoundException("Method " + operator + "(" + Value.typeName(right) + ") not implemented on " + Value.typeName(left));
+        }
 
         context.pushStack(op.apply(left.getValue(), right.getValue()));
     }
@@ -150,6 +159,13 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     @Override
     public Void visitFloatLiteral(ThoriumParser.FloatLiteralContext ctx) {
         context.pushStack(new FloatType(Double.valueOf(ctx.FloatLiteral().getText())));
+
+        return null;
+    }
+
+    @Override
+    public Void visitBooleanLiteral(ThoriumParser.BooleanLiteralContext ctx) {
+        context.pushStack(BooleanType.build(Boolean.valueOf(ctx.BooleanLiteral().getText())));
 
         return null;
     }

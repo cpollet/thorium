@@ -18,16 +18,20 @@ package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
 import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
 import ch.pollet.thorium.evaluation.EvaluationContext;
-import ch.pollet.thorium.evaluation.ListenerEvaluator;
 import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.Symbol;
+import ch.pollet.thorium.values.types.BooleanType;
 import ch.pollet.thorium.values.types.FloatType;
 import ch.pollet.thorium.values.types.IntegerType;
 import ch.pollet.thorium.values.types.Type;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.jbehave.core.annotations.*;
+import org.jbehave.core.annotations.Alias;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -146,6 +150,8 @@ public class BaseSteps {
                 return IntegerType.class;
             case "FloatType":
                 return FloatType.class;
+            case "BooleanType":
+                return BooleanType.class;
         }
 
         throw new IllegalArgumentException("[" + type + "] is not a valid type");
@@ -157,6 +163,15 @@ public class BaseSteps {
                 return new IntegerType(Long.parseLong(value));
             case "FloatType":
                 return new FloatType(Double.parseDouble(value));
+            case "BooleanType":
+                switch (value) {
+                    case "true":
+                        return BooleanType.TRUE;
+                    case "false":
+                        return BooleanType.FALSE;
+                    default:
+                        throw new IllegalArgumentException("[" + value + "] is not a valid Boolean value")
+                }
         }
 
         throw new IllegalArgumentException("[" + type + "] is not a valid type");

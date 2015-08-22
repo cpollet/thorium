@@ -22,6 +22,10 @@ Examples:
 | 1 * 1.0               | 1.0               | FloatType     |
 | a = 1.0               | 1.0               | FloatType     |
 | { 1.0; }              | 1.0               | FloatType     |
+| true                  | true              | BooleanType   |
+| false                 | false             | BooleanType   |
+| true + false          | true              | BooleanType   |
+| true * false          | false             | BooleanType   |
 
 Scenario: assignment expressions
 Given an expression <expression>
@@ -47,7 +51,9 @@ When being executed
 Then the exception <exception> is thrown with message <message>
 
 Examples:
-| expression    | exception                                                             | message                               |
-| 1 = 1         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign to IntegerType{value=1} |
-| 1 = a         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign to IntegerType{value=1} |
-| 1 = A         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign to IntegerType{value=1} |
+| expression    | exception                                                             | message                                      |
+| 1 = 1         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign to IntegerType{value=1}        |
+| 1 = a         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign to IntegerType{value=1}        |
+| 1 = A         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign to IntegerType{value=1}        |
+| true + 1      | ch.pollet.thorium.semantic.exception.MethodNotFoundException          | Method +(Integer) not implemented on Boolean |
+| 1 + true      | ch.pollet.thorium.semantic.exception.MethodNotFoundException          | Method +(Boolean) not implemented on Integer |

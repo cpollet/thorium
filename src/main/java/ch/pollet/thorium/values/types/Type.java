@@ -28,6 +28,7 @@ public interface Type extends Value {
     Map<Class<? extends Type>, String> types = new HashMap<Class<? extends Type>, String>(){{
         put(FloatType.class, "Float");
         put(IntegerType.class, "Integer");
+        put(BooleanType.class, "Boolean");
     }};
 
     static String getName(Class<? extends Type> typeClass) {
