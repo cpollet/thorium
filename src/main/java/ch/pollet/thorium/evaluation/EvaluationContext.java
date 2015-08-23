@@ -16,7 +16,6 @@
 
 package ch.pollet.thorium.evaluation;
 
-import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
 

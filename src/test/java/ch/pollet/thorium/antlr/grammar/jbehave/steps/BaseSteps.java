@@ -21,9 +21,11 @@ import ch.pollet.thorium.evaluation.EvaluationContext;
 import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.Symbol;
+import ch.pollet.thorium.values.Value;
 import ch.pollet.thorium.values.types.BooleanType;
 import ch.pollet.thorium.values.types.FloatType;
 import ch.pollet.thorium.values.types.IntegerType;
+import ch.pollet.thorium.values.types.NullType;
 import ch.pollet.thorium.values.types.Type;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -33,7 +35,11 @@ import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 
+import java.util.EmptyStackException;
+import java.util.Stack;
+
 import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.failure;
 
 /**
  * @author Christophe Pollet
@@ -71,9 +77,11 @@ public class BaseSteps {
     @Then("the result is $value of type $type")
     @Alias("the result is <value> of type <type>")
     public void theResultIs(@Named("value") String expectedValue, @Named("type") String expectedType) {
-        Object value = storyContext.evaluationContext.popStack();
+        Value value = storyContext.evaluationContext.popStack();
 
         assertThat(value).isEqualTo(toTypeValue(expectedValue, expectedType));
+
+        storyContext.evaluationContext.pushStack(value);
     }
 
     @Then("the symbol table contains $symbols")
@@ -109,22 +117,19 @@ public class BaseSteps {
         }
     }
 
-    @Then("the symbols <undefinedSymbols> are not defined")
-    @Alias("the symbols $undefinedSymbols are not defined")
-    public void symbolsAreNotDefined(@Named("undefinedSymbols") String expectedNotDefinedSymbols) {
+    @Then("the symbols <undefined-symbols> are not defined")
+    @Alias("the symbols $undefined-symbols are not defined")
+    public void symbolsAreNotDefined(@Named("undefined-symbols") String expectedNotDefinedSymbols) {
         String[] symbols = expectedNotDefinedSymbols.split(",");
-
-        Exception expectedException = null;
 
         for (String symbol : symbols) {
             try {
                 storyContext.evaluationContext.lookupSymbol(symbol);
+                throw failure("Symbol table contains [" + symbol + "]");
             } catch (SymbolNotFoundException e) {
-                expectedException = e;
+                // nothing
             }
         }
-
-        assertThat(expectedException).isNotNull();
     }
 
     @Given("exception expected")
@@ -142,6 +147,24 @@ public class BaseSteps {
 
         storyContext.exception = null;
         storyContext.exceptionExpected = false;
+    }
+
+    @Then("the stack contains $count elements")
+    @Alias("the stack contains <count> elements")
+    public void assertStackHasSize(@Named("count") Integer expectedCount) {
+        Stack<Value> stack = new Stack<>();
+
+        try {
+            //noinspection InfiniteLoopStatement
+            while (true) {
+                stack.push(storyContext.evaluationContext.popStack());
+            }
+        } catch (EmptyStackException e) {
+            assertThat(stack.size()).isEqualTo(expectedCount);
+            while (!stack.empty()) {
+                storyContext.evaluationContext.pushStack(stack.pop());
+            }
+        }
     }
 
     protected Class<? extends Type> toTypeClass(String type) {
@@ -172,6 +195,8 @@ public class BaseSteps {
                     default:
                         throw new IllegalArgumentException("[" + value + "] is not a valid Boolean value");
                 }
+            case "NullType":
+                return NullType.NULL;
         }
 
         throw new IllegalArgumentException("[" + type + "] is not a valid type");

@@ -30,6 +30,7 @@ import ch.pollet.thorium.values.Variable;
 import ch.pollet.thorium.values.types.BooleanType;
 import ch.pollet.thorium.values.types.FloatType;
 import ch.pollet.thorium.values.types.IntegerType;
+import ch.pollet.thorium.values.types.NullType;
 import ch.pollet.thorium.values.types.Type;
 
 import java.util.HashMap;
@@ -63,18 +64,6 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     public Void visitStatement(ThoriumParser.StatementContext ctx) {
         super.visitStatement(ctx);
         context.lastStatementValue = context.popStack();
-
-        return null;
-    }
-
-    @Override
-    public Void visitBlockExpression(ThoriumParser.BlockExpressionContext ctx) {
-        context = context.createChild();
-
-        super.visitBlockExpression(ctx);
-
-        context = context.destroyAndRestoreParent();
-        context.pushStack(context.lastStatementValue);
 
         return null;
     }
@@ -119,17 +108,17 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         assertValidAssignment(left, right);
 
         // TODO refactor without instanceof?
-        Symbol value;
+        Symbol symbol;
         if (left instanceof Constant) {
-            value = new Constant(left.getName(), right);
+            symbol = new Constant(left.getName(), right);
         } else if (left instanceof Variable) {
-            value = new Variable(left.getName(), right);
+            symbol = new Variable(left.getName(), right);
         } else {
             throw new IllegalStateException();
         }
 
-        context.insertSymbol(value);
-        context.pushStack(value.getValue());
+        context.insertSymbol(symbol);
+        context.pushStack(symbol.getValue());
 
         return null;
     }
@@ -137,7 +126,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     private void assertValidAssignment(Value left, Value right) {
         // TODO SEM: move this
         if (!left.isWritable()) {
-            throw new InvalidAssignmentTargetException("Cannot assign to " + left.toString());
+            throw new InvalidAssignmentTargetException("Cannot assign " + right.toString() + " to " + left.toString());
         }
 
         if (right.getType() == null) {
@@ -147,6 +136,47 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         if (!Type.isAssignableFrom(left.getType(), right.getType())) {
             throw new InvalidTypeException(Value.typeName(right) + " is no assignable to " + Value.typeName(left));
         }
+    }
+
+    @Override
+    public Void visitBlock(ThoriumParser.BlockContext ctx) {
+        context = context.createChild();
+
+        super.visitBlock(ctx);
+
+        context = context.destroyAndRestoreParent();
+        context.pushStack(context.lastStatementValue);
+
+        return null;
+    }
+
+    @Override
+    public Void visitIfBlock(ThoriumParser.IfBlockContext ctx) {
+        visit(ctx.expression());
+
+        Value condition = context.popStack();
+
+        // TODO SEM: move this
+        if (condition.getType() != BooleanType.class) {
+            throw new InvalidTypeException("Boolean expected, got " + Value.typeName(condition));
+        }
+
+        if (condition.equals(BooleanType.TRUE)) {
+            // visitStatements(ctx.block().statements());
+            visitBlock(ctx.block());
+        } else if (ctx.elseBlock() != null) {
+            if (ctx.elseBlock().block() != null) {
+                //visitStatements(ctx.elseBlock().block().statements());
+                visitBlock(ctx.elseBlock().block());
+            } else {
+                visitIfBlock(ctx.elseBlock().ifBlock());
+            }
+        } else {
+            context.pushStack(NullType.NULL);
+            context.lastStatementValue = NullType.NULL;
+        }
+
+        return null;
     }
 
     @Override

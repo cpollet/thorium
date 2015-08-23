@@ -49,16 +49,20 @@ expression
     | '(' expression ')'                                # parenthesisExpression
     // | expression ':' expression '?' expression       # inlineConditionExpression
     | <assoc=right> expression '=' expression           # assignmentExpression
-    | '{' statements '}'                                # blockExpression
+    | block                                             # blockExpression
+    | ifBlock                                           # ifExpression
     ;
 
-ifExpression
-    : IF '(' expression ')' '{' statements? '}'
+block
+    : '{' statements '}'
     ;
-ifElseExpression
-    : ifExpression
-    | ifExpression ELSE ifElseExpression
-    | ifExpression ELSE '{' statements? '}'
+
+ifBlock
+    : IF '(' expression ')' block elseBlock?
+    ;
+elseBlock
+    : ELSE block
+    | ELSE ifBlock
     ;
 
 literal
@@ -80,7 +84,7 @@ ELSE  : 'else';
 
 IntegerLiteral
     : '0'
-    | [1-9][0-9]*
+    | [+-]?[1-9][0-9]*
     ;
 
 FloatLiteral
