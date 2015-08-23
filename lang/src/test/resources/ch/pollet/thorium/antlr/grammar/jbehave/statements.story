@@ -42,7 +42,7 @@ Then the exception <exception> is thrown with message <message>
 Examples:
 | statements                    | exception                                                             | message                                                                                           |
 | a = 1; b = 1.0; a = b;        | ch.pollet.thorium.semantic.exception.InvalidTypeException             | Float is no assignable to Integer                                                                 |
-| a; b = a;                     | ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException | Cannot assign from Symbol{name='a', type=null, value=null}                                        |
+| a; b = a;                     | ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException | Cannot assign from Symbol{name='a', type=?, value=NullValue}                                      |
 | A = 1; A = 2;                 | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign IntegerType{value=2} to Symbol{name='A', type=Integer, value=IntegerType{value=1}}  |
 | a = 1; b = 1.0; c = a = b;    | ch.pollet.thorium.semantic.exception.InvalidTypeException             | Float is no assignable to Integer                                                                 |
-| a = 1; { b = a + 1; }; c = b; | ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException | Cannot assign from Symbol{name='b', type=null, value=null}                                        |
+| a = 1; { b = a + 1; }; c = b; | ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException | Cannot assign from Symbol{name='b', type=?, value=NullValue}                                      |

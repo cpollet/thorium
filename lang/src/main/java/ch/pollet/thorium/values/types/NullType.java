@@ -16,25 +16,18 @@
 
 package ch.pollet.thorium.values.types;
 
-import java.util.Objects;
-
 /**
  * @author Christophe Pollet
  */
-public class NullType extends BaseType<NullType> {
-    public final static NullType NULL = new NullType();
+public class NullType implements Type {
+    public static final NullType INSTANCE = new NullType();
 
     private NullType() {
         // nothing
     }
 
     @Override
-    public Class<? extends Type> getType() {
-        return getClass();
-    }
-
-    @Override
     public String toString() {
-        return "NullType{}";
+        return "Void";
     }
 }

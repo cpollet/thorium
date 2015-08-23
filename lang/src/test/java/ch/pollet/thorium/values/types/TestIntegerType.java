@@ -30,52 +30,52 @@ public class TestIntegerType {
     @Test
     public void operatorPlusIntegerType() {
         // GIVEN
-        IntegerType left = new IntegerType(1L);
-        IntegerType right = new IntegerType(2L);
+        IntegerValue left = new IntegerValue(1L);
+        IntegerValue right = new IntegerValue(2L);
 
         // WHEN
-        IntegerType result = left.operatorPlus(right);
+        IntegerValue result = left.operatorPlus(right);
 
         // THEN
-        assertThat(result).isEqualTo(new IntegerType(3L));
+        assertThat(result).isEqualTo(new IntegerValue(3L));
     }
 
     @Test
     public void operatorPlusFloatType() {
         // GIVEN
-        IntegerType left = new IntegerType(1L);
-        FloatType right = new FloatType(2.0);
+        IntegerValue left = new IntegerValue(1L);
+        FloatValue right = new FloatValue(2.0);
 
         // WHEN
-        FloatType result = left.operatorPlus(right);
+        FloatValue result = left.operatorPlus(right);
 
         // THEN
-        assertThat(result).isEqualTo(new FloatType(3.0));
+        assertThat(result).isEqualTo(new FloatValue(3.0));
     }
 
     @Test
     public void operatorMultiplyIntegerType() {
         // GIVEN
-        IntegerType left = new IntegerType(1L);
-        IntegerType right = new IntegerType(2L);
+        IntegerValue left = new IntegerValue(1L);
+        IntegerValue right = new IntegerValue(2L);
 
         // WHEN
-        IntegerType result = left.operatorMultiply(right);
+        IntegerValue result = left.operatorMultiply(right);
 
         // THEN
-        assertThat(result).isEqualTo(new IntegerType(2L));
+        assertThat(result).isEqualTo(new IntegerValue(2L));
     }
 
     @Test
     public void operatorMultiplyFloatType() {
         // GIVEN
-        IntegerType left = new IntegerType(1L);
-        FloatType right = new FloatType(2.0);
+        IntegerValue left = new IntegerValue(1L);
+        FloatValue right = new FloatValue(2.0);
 
         // WHEN
-        FloatType result = left.operatorMultiply(right);
+        FloatValue result = left.operatorMultiply(right);
 
         // THEN
-        assertThat(result).isEqualTo(new FloatType(2.0));
+        assertThat(result).isEqualTo(new FloatValue(2.0));
     }
 }

@@ -16,16 +16,12 @@
 
 package ch.pollet.thorium.evaluation;
 
+import ch.pollet.thorium.values.Value;
+
 /**
  * @author Christophe Pollet
  */
 @FunctionalInterface
-public interface Operator<L, R, T> {
-    /**
-     * Applies this function to the given argument.
-     *
-     * @param t the function argument
-     * @return the function result
-     */
-    T apply(L left, R right);
+public interface Operator {
+    Value apply(Value left, Value right);
 }

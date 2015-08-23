@@ -25,10 +25,10 @@ import java.util.Objects;
  */
 public class OperationSignature {
     private String operation;
-    private Class<? extends Type> leftType;
-    private Class<? extends Type> rightType;
+    private Type leftType;
+    private Type rightType;
 
-    public OperationSignature(String operation, Class<? extends Type> leftType, Class<? extends Type> rightType) {
+    public OperationSignature(String operation, Type leftType, Type rightType) {
         this.operation = operation;
         this.leftType = leftType;
         this.rightType = rightType;

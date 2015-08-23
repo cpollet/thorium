@@ -26,16 +26,26 @@ public class Variable extends Symbol {
         super(name);
     }
 
-    public Variable(String name, Class<? extends Type> type) {
+    public Variable(String name, Type type) {
         super(name, type);
     }
 
     public Variable(String name, Value value) {
-        super(name, value.getValue());
+        super(name, value);
     }
 
     @Override
     public boolean isWritable() {
         return true;
+    }
+
+    @Override
+    public Value operatorPlus(Value other) {
+        return getValue().operatorPlus(other);
+    }
+
+    @Override
+    public Value operatorMultiply(Value other) {
+        return getValue().operatorMultiply(other);
     }
 }

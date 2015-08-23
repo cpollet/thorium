@@ -16,20 +16,36 @@
 
 package ch.pollet.thorium.values.types;
 
-import java.util.Objects;
+import ch.pollet.thorium.values.Value;
 
 /**
  * @author Christophe Pollet
  */
-public class BooleanType implements Type {
-    public static final BooleanType INSTANCE = new BooleanType();
+public class NullValue extends BaseValue<NullValue> {
+    // TODO rename
+    public final static NullValue NULL = new NullValue();
 
-    private BooleanType() {
+    private NullValue() {
         // nothing
     }
 
     @Override
+    public Type getType() {
+        return NullType.INSTANCE;
+    }
+
+    @Override
+    public Value operatorPlus(Value other) {
+        return this;
+    }
+
+    @Override
+    public Value operatorMultiply(Value other) {
+        return this;
+    }
+
+    @Override
     public String toString() {
-        return "Boolean";
+        return "NullValue";
     }
 }

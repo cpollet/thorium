@@ -16,60 +16,18 @@
 
 package ch.pollet.thorium.values.types;
 
-import java.util.Objects;
-
 /**
  * @author Christophe Pollet
  */
-public class FloatType extends BaseType<FloatType> {
-    public Double value;
+public class FloatType implements Type {
+    public static final FloatType INSTANCE = new FloatType();
 
-    public FloatType(Double value) {
-        this.value = value;
-    }
-
-    Double getInternalValue() {
-        return value;
-    }
-
-    public FloatType operatorPlus(FloatType right) {
-        return new FloatType(value + right.getInternalValue());
-    }
-
-    public FloatType operatorPlus(IntegerType right) {
-        return new FloatType(value + right.getInternalValue());
-    }
-
-    public FloatType operatorMultiply(FloatType right) {
-        return new FloatType(value * right.getInternalValue());
-    }
-
-    public FloatType operatorMultiply(IntegerType right) {
-        return new FloatType(value * right.getInternalValue());
-    }
-
-    @Override
-    public Class<? extends Type> getType() {
-        return getClass();
+    private FloatType() {
+        // nothing
     }
 
     @Override
     public String toString() {
-        return "FloatType{" +
-                "value=" + value +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FloatType)) return false;
-        FloatType floatType = (FloatType) o;
-        return Objects.equals(value, floatType.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
+        return "Float";
     }
 }

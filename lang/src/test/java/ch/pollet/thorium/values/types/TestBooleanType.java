@@ -27,26 +27,26 @@ public class TestBooleanType {
     @Test
     public void operatorPlusBooleanType() {
         // GIVEN
-        BooleanType left = BooleanType.TRUE;
-        BooleanType right = BooleanType.FALSE;
+        BooleanValue left = BooleanValue.TRUE;
+        BooleanValue right = BooleanValue.FALSE;
 
         // WHEN
-        BooleanType result = left.operatorPlus(right);
+        BooleanValue result = left.operatorPlus(right);
 
         // THEN
-        assertThat(result).isEqualTo(BooleanType.TRUE);
+        assertThat(result).isEqualTo(BooleanValue.TRUE);
     }
 
     @Test
     public void operatorMultiplyBooleanType() {
         // GIVEN
-        BooleanType left = BooleanType.TRUE;
-        BooleanType right = BooleanType.FALSE;
+        BooleanValue left = BooleanValue.TRUE;
+        BooleanValue right = BooleanValue.FALSE;
 
         // WHEN
-        BooleanType result = left.operatorMultiply(right);
+        BooleanValue result = left.operatorMultiply(right);
 
         // THEN
-        assertThat(result).isEqualTo(BooleanType.FALSE);
+        assertThat(result).isEqualTo(BooleanValue.FALSE);
     }
 }

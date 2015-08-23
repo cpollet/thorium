@@ -16,10 +16,9 @@
 
 package ch.pollet.thorium;
 
-import ch.pollet.thorium.evaluation.EvaluationContext;
-import ch.pollet.thorium.evaluation.ListenerEvaluator;
 import ch.pollet.thorium.antlr.ThoriumLexer;
 import ch.pollet.thorium.antlr.ThoriumParser;
+import ch.pollet.thorium.evaluation.EvaluationContext;
 import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;

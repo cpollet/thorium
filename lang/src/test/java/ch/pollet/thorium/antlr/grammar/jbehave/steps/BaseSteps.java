@@ -23,9 +23,12 @@ import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
 import ch.pollet.thorium.values.types.BooleanType;
+import ch.pollet.thorium.values.types.BooleanValue;
 import ch.pollet.thorium.values.types.FloatType;
+import ch.pollet.thorium.values.types.FloatValue;
 import ch.pollet.thorium.values.types.IntegerType;
-import ch.pollet.thorium.values.types.NullType;
+import ch.pollet.thorium.values.types.IntegerValue;
+import ch.pollet.thorium.values.types.NullValue;
 import ch.pollet.thorium.values.types.Type;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -167,36 +170,36 @@ public class BaseSteps {
         }
     }
 
-    protected Class<? extends Type> toTypeClass(String type) {
+    protected Type toTypeClass(String type) {
         switch (type) {
             case "IntegerType":
-                return IntegerType.class;
+                return IntegerType.INSTANCE;
             case "FloatType":
-                return FloatType.class;
+                return FloatType.INSTANCE;
             case "BooleanType":
-                return BooleanType.class;
+                return BooleanType.INSTANCE;
         }
 
         throw new IllegalArgumentException("[" + type + "] is not a valid type");
     }
 
-    protected Type toTypeValue(String value, String type) {
+    protected Value toTypeValue(String value, String type) {
         switch (type) {
             case "IntegerType":
-                return new IntegerType(Long.parseLong(value));
+                return new IntegerValue(Long.parseLong(value));
             case "FloatType":
-                return new FloatType(Double.parseDouble(value));
+                return new FloatValue(Double.parseDouble(value));
             case "BooleanType":
                 switch (value) {
                     case "true":
-                        return BooleanType.TRUE;
+                        return BooleanValue.TRUE;
                     case "false":
-                        return BooleanType.FALSE;
+                        return BooleanValue.FALSE;
                     default:
                         throw new IllegalArgumentException("[" + value + "] is not a valid Boolean value");
                 }
             case "NullType":
-                return NullType.NULL;
+                return NullValue.NULL;
         }
 
         throw new IllegalArgumentException("[" + type + "] is not a valid type");

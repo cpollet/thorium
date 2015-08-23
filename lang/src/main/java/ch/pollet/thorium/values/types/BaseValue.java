@@ -16,10 +16,12 @@
 
 package ch.pollet.thorium.values.types;
 
+import ch.pollet.thorium.values.Value;
+
 /**
  * @author Christophe Pollet
  */
-public abstract class BaseType<T extends Type> implements Type {
+public abstract class BaseValue<T extends Value> implements Value<T> {
 
 
     @Override
@@ -32,8 +34,8 @@ public abstract class BaseType<T extends Type> implements Type {
         return null;
     }
 
-    @Override
-    public T getValue() {
-        return (T) this;
-    }
+//    @Override
+//    public T getValue() {
+//        return (T) this;
+//    }
 }

@@ -16,60 +16,18 @@
 
 package ch.pollet.thorium.values.types;
 
-import java.util.Objects;
-
 /**
  * @author Christophe Pollet
  */
-public class IntegerType extends BaseType<IntegerType> {
-    private Long value;
+public class IntegerType implements Type {
+    public static final IntegerType INSTANCE = new IntegerType();
 
-    public IntegerType(Long value) {
-        this.value = value;
-    }
-
-    Long getInternalValue() {
-        return value;
-    }
-
-    public IntegerType operatorPlus(IntegerType right) {
-        return new IntegerType(value + right.getInternalValue());
-    }
-
-    public FloatType operatorPlus(FloatType right) {
-        return new FloatType(value + right.getInternalValue());
-    }
-
-    public IntegerType operatorMultiply(IntegerType right) {
-        return new IntegerType(value * right.getInternalValue());
-    }
-
-    public FloatType operatorMultiply(FloatType right) {
-        return new FloatType(value * right.getInternalValue());
-    }
-
-    @Override
-    public Class<? extends Type> getType() {
-        return getClass();
+    private IntegerType() {
+        // nothing
     }
 
     @Override
     public String toString() {
-        return "IntegerType{" +
-                "value=" + value +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof IntegerType)) return false;
-        IntegerType that = (IntegerType) o;
-        return Objects.equals(value, that.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
+        return "Integer";
     }
 }

@@ -24,18 +24,18 @@ import java.util.Map;
 /**
  * @author Christophe Pollet
  */
-public interface Type extends Value {
-    Map<Class<? extends Type>, String> types = new HashMap<Class<? extends Type>, String>(){{
-        put(FloatType.class, "Float");
-        put(IntegerType.class, "Integer");
-        put(BooleanType.class, "Boolean");
+public interface Type {
+    Map<Class<? extends Value>, String> types = new HashMap<Class<? extends Value>, String>() {{
+        put(FloatValue.class, "Float");
+        put(IntegerValue.class, "Integer");
+        put(BooleanValue.class, "Boolean");
     }};
 
     static String getName(Class<? extends Type> typeClass) {
         return types.get(typeClass);
     }
 
-    static boolean isAssignableFrom(Class<? extends Type> target, Class<? extends Type> source) {
+    static boolean isAssignableFrom(Type target, Type source) {
         return target == null || target.equals(source);
     }
 }
