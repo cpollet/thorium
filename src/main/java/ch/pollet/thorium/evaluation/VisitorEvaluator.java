@@ -162,11 +162,9 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         }
 
         if (condition.equals(BooleanType.TRUE)) {
-            // visitStatements(ctx.block().statements());
             visitBlock(ctx.block());
         } else if (ctx.elseBlock() != null) {
             if (ctx.elseBlock().block() != null) {
-                //visitStatements(ctx.elseBlock().block().statements());
                 visitBlock(ctx.elseBlock().block());
             } else {
                 visitIfBlock(ctx.elseBlock().ifBlock());
