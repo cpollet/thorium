@@ -61,6 +61,13 @@ public class BooleanType extends BaseType {
             );
         }
 
+        if (left.hasValue() && (Boolean) (left.value().internalValue())) {
+            return left;
+        }
+        if (right.hasValue() && (Boolean) (right.value().internalValue())) {
+            return right;
+        }
+
         return DirectValue.build();
     }
 
@@ -69,6 +76,13 @@ public class BooleanType extends BaseType {
             return DirectValue.build(
                     (Boolean) (left.value().internalValue()) && (Boolean) (right.value().internalValue())
             );
+        }
+
+        if (left.hasValue() && !(Boolean) (left.value().internalValue())) {
+            return left;
+        }
+        if (right.hasValue() && !(Boolean) (right.value().internalValue())) {
+            return right;
         }
 
         return DirectValue.build();

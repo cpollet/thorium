@@ -16,6 +16,11 @@
 
 package ch.pollet.thorium.types;
 
+import ch.pollet.thorium.evaluation.MethodMatcher;
+import ch.pollet.thorium.values.DirectValue;
+import ch.pollet.thorium.values.Value;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -26,55 +31,55 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 @RunWith(JUnit4.class)
 public class TestFloatType {
-//    @Test
-//    public void operatorPlusFloatType() {
-//        // GIVEN
-//        FloatValue left = new FloatValue(1.0);
-//        FloatValue right = new FloatValue(2.0);
-//
-//        // WHEN
-//        FloatValue result = left.operatorPlus(right);
-//
-//        // THEN
-//        assertThat(result).isEqualTo(new FloatValue(3.0));
-//    }
-//
-//    @Test
-//    public void operatorPlusIntegerType() {
-//        // GIVEN
-//        FloatValue left = new FloatValue(1.0);
-//        IntegerValue right = new IntegerValue(2L);
-//
-//        // WHEN
-//        FloatValue result = left.operatorPlus(right);
-//
-//        // THEN
-//        assertThat(result).isEqualTo(new FloatValue(3.0));
-//    }
-//
-//    @Test
-//    public void operatorMultiplyFloatType() {
-//        // GIVEN
-//        FloatValue left = new FloatValue(1.0);
-//        FloatValue right = new FloatValue(2.0);
-//
-//        // WHEN
-//        FloatValue result = left.operatorMultiply(right);
-//
-//        // THEN
-//        assertThat(result).isEqualTo(new FloatValue(2.0));
-//    }
-//
-//    @Test
-//    public void operatorMultiplyIntegerType() {
-//        // GIVEN
-//        FloatValue left = new FloatValue(1.0);
-//        IntegerValue right = new IntegerValue(2L);
-//
-//        // WHEN
-//        FloatValue result = left.operatorMultiply(right);
-//
-//        // THEN
-//        assertThat(result).isEqualTo(new FloatValue(2.0));
-//    }
+    @Test
+    public void operatorPlusFloat() {
+        // GIVEN
+        DirectValue left = DirectValue.build(1.0);
+        DirectValue right = DirectValue.build(2.0);
+
+        // WHEN
+        Value result = left.type().lookupMethod(new MethodMatcher("+", right.type())).apply(left, right);
+
+        // THEN
+        assertThat(result).isEqualTo(DirectValue.build(3.0));
+    }
+
+    @Test
+    public void operatorPlusInteger() {
+        // GIVEN
+        DirectValue left = DirectValue.build(1.0);
+        DirectValue right = DirectValue.build(2L);
+
+        // WHEN
+        Value result = left.type().lookupMethod(new MethodMatcher("+", right.type())).apply(left, right);
+
+        // THEN
+        assertThat(result).isEqualTo(DirectValue.build(3.0));
+    }
+
+    @Test
+    public void operatorTimesFloat() {
+        // GIVEN
+        DirectValue left = DirectValue.build(1.0);
+        DirectValue right = DirectValue.build(2.0);
+
+        // WHEN
+        Value result = left.type().lookupMethod(new MethodMatcher("*", right.type())).apply(left, right);
+
+        // THEN
+        assertThat(result).isEqualTo(DirectValue.build(2.0));
+    }
+
+    @Test
+    public void operatorTimesInteger() {
+        // GIVEN
+        DirectValue left = DirectValue.build(1.0);
+        DirectValue right = DirectValue.build(2L);
+
+        // WHEN
+        Value result = left.type().lookupMethod(new MethodMatcher("*", right.type())).apply(left, right);
+
+        // THEN
+        assertThat(result).isEqualTo(DirectValue.build(2.0));
+    }
 }

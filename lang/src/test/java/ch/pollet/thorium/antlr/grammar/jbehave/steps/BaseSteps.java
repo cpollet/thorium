@@ -138,6 +138,7 @@ public class BaseSteps {
     @Alias("the exception <exception> is thrown with message <message>")
     public void exceptionIsThrown(@Named("exception") String exception, @Named("message") String message) throws ClassNotFoundException {
         assertThat(storyContext.exception)
+                .overridingErrorMessage("Expected exception not thrown")
                 .isNotNull()
                 .isInstanceOf((Class<? extends Throwable>) Class.forName(exception))
                 .hasMessage(message);

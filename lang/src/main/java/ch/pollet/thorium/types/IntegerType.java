@@ -58,7 +58,6 @@ public class IntegerType extends BaseType {
 
     private static Value plusFloat(Value left, Value right) {
         if (left.hasValue() && right.hasValue()) {
-
             right.value().internalValue().getClass();
             return DirectValue.build(
                     ((Long) (left.value().internalValue())).doubleValue() + (Double) (right.value().internalValue())
