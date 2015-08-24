@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.values.types;
+package ch.pollet.thorium.types;
 
 import ch.pollet.thorium.evaluation.MethodMatcher;
 import ch.pollet.thorium.evaluation.Operator;

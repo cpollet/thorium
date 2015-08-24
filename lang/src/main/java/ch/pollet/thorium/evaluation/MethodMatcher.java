@@ -17,7 +17,7 @@
 package ch.pollet.thorium.evaluation;
 
 import ch.pollet.thorium.utils.ListUtils;
-import ch.pollet.thorium.values.types.Type;
+import ch.pollet.thorium.types.Type;
 
 import java.util.Arrays;
 import java.util.List;

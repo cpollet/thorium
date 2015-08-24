@@ -18,7 +18,6 @@ package ch.pollet.thorium.evaluation;
 
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
-import ch.pollet.thorium.values.types.Type;
 
 import java.util.Stack;
 

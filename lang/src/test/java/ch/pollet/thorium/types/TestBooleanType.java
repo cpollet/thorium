@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.values.types;
+package ch.pollet.thorium.types;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 

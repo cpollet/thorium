@@ -28,7 +28,7 @@ import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
 import ch.pollet.thorium.values.Variable;
-import ch.pollet.thorium.values.types.Type;
+import ch.pollet.thorium.types.Type;
 
 /**
  * @author Christophe Pollet

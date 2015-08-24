@@ -23,7 +23,7 @@ import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
-import ch.pollet.thorium.values.types.Type;
+import ch.pollet.thorium.types.Type;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.jbehave.core.annotations.Alias;

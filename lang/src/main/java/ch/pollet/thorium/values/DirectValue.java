@@ -16,7 +16,7 @@
 
 package ch.pollet.thorium.values;
 
-import ch.pollet.thorium.values.types.Type;
+import ch.pollet.thorium.types.Type;
 
 import java.util.HashMap;
 import java.util.Map;

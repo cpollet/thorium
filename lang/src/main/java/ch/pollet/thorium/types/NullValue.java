@@ -14,26 +14,33 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.values.types;
+package ch.pollet.thorium.types;
 
-import ch.pollet.thorium.evaluation.MethodMatcher;
-import ch.pollet.thorium.evaluation.Operator;
-import ch.pollet.thorium.semantic.exception.MethodNotFoundException;
-
-import java.util.Map;
+import ch.pollet.thorium.values.DirectValue;
 
 /**
  * @author Christophe Pollet
  */
-public abstract class BaseType implements Type {
-    @Override
-    public Operator lookupMethod(MethodMatcher matcher) {
-        if (symbolTable().containsKey(matcher)) {
-            return symbolTable().get(matcher);
-        }
+public class NullValue extends DirectValue {
+    // TODO rename
+    public final static NullValue NULL = new NullValue();
 
-        throw new MethodNotFoundException("Method " + matcher + " not implemented on " + this);
+    private NullValue() {
+        // nothing
     }
 
-    abstract Map<MethodMatcher, Operator> symbolTable();
+    @Override
+    public Type type() {
+        return VoidType.INSTANCE;
+    }
+
+    @Override
+    public boolean hasValue() {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "NullValue";
+    }
 }
