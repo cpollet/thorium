@@ -14,28 +14,39 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.values;
+package ch.pollet.thorium.values.types;
 
-import ch.pollet.thorium.values.types.Type;
+import ch.pollet.thorium.evaluation.MethodMatcher;
+import ch.pollet.thorium.evaluation.Operator;
+import ch.pollet.thorium.values.DirectValue;
+import ch.pollet.thorium.values.Value;
 
 /**
  * @author Christophe Pollet
  */
-public class Variable extends Symbol {
-    public Variable(String name) {
-        super(name);
-    }
+public class VoidType implements Type {
+    static final VoidType INSTANCE = new VoidType();
 
-    public Variable(String name, Type type) {
-        super(name, type);
-    }
-
-    public Variable(String name, DirectValue value) {
-        super(name, value);
+    private VoidType() {
+        // nothing
     }
 
     @Override
-    public boolean isWritable() {
-        return true;
+    public int id() {
+        return ID_VOID;
+    }
+
+    @Override
+    public Operator lookupMethod(MethodMatcher matcher) {
+        return VoidType::noValue;
+    }
+
+    @Override
+    public String toString() {
+        return "Void";
+    }
+
+    private static Value noValue(Value left, Value right) {
+        return DirectValue.build();
     }
 }

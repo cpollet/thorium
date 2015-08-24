@@ -20,15 +20,9 @@ import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
 import ch.pollet.thorium.evaluation.EvaluationContext;
 import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
+import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
-import ch.pollet.thorium.values.types.BooleanType;
-import ch.pollet.thorium.values.types.BooleanValue;
-import ch.pollet.thorium.values.types.FloatType;
-import ch.pollet.thorium.values.types.FloatValue;
-import ch.pollet.thorium.values.types.IntegerType;
-import ch.pollet.thorium.values.types.IntegerValue;
-import ch.pollet.thorium.values.types.NullValue;
 import ch.pollet.thorium.values.types.Type;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -82,7 +76,7 @@ public class BaseSteps {
     public void theResultIs(@Named("value") String expectedValue, @Named("type") String expectedType) {
         Value value = storyContext.evaluationContext.popStack();
 
-        assertThat(value).isEqualTo(toTypeValue(expectedValue, expectedType));
+        assertThat(value).isEqualTo(toValue(expectedValue, expectedType));
 
         storyContext.evaluationContext.pushStack(value);
     }
@@ -101,8 +95,8 @@ public class BaseSteps {
     @Alias("the symbol <symbol> has value <value> of type <type>")
     public void symbolHasValue(@Named("symbol") String expectedSymbol, @Named("value") String expectedValue, @Named("type") String expectedType) throws ClassNotFoundException {
         Symbol symbol = storyContext.evaluationContext.lookupSymbol(expectedSymbol);
-        assertThat(symbol.getType()).isEqualTo(toTypeClass(expectedType));
-        assertThat(symbol.getValue()).isEqualTo(toTypeValue(expectedValue, expectedType));
+        assertThat(symbol.type()).isEqualTo(toType(expectedType));
+        assertThat(symbol.value()).isEqualTo(toValue(expectedValue, expectedType));
     }
 
     @Then("the symbols $symbols have values $values of types $types")
@@ -113,10 +107,10 @@ public class BaseSteps {
         String[] types = expectedTypes.split(",");
 
         for (int i = 0; i < symbols.length; i++) {
-            assertThat(storyContext.evaluationContext.lookupSymbol(symbols[i]).getType())
-                    .isEqualTo(toTypeClass(types[i]));
-            assertThat(storyContext.evaluationContext.lookupSymbol(symbols[i]).getValue())
-                    .isEqualTo(toTypeValue(values[i], types[i]));
+            assertThat(storyContext.evaluationContext.lookupSymbol(symbols[i]).type())
+                    .isEqualTo(toType(types[i]));
+            assertThat(storyContext.evaluationContext.lookupSymbol(symbols[i]).value())
+                    .isEqualTo(toValue(values[i], types[i]));
         }
     }
 
@@ -170,36 +164,36 @@ public class BaseSteps {
         }
     }
 
-    protected Type toTypeClass(String type) {
+    protected Type toType(String type) {
         switch (type) {
             case "IntegerType":
-                return IntegerType.INSTANCE;
+                return Type.INTEGER;
             case "FloatType":
-                return FloatType.INSTANCE;
+                return Type.FLOAT;
             case "BooleanType":
-                return BooleanType.INSTANCE;
+                return Type.BOOLEAN;
         }
 
         throw new IllegalArgumentException("[" + type + "] is not a valid type");
     }
 
-    protected Value toTypeValue(String value, String type) {
+    protected Value toValue(String value, String type) {
         switch (type) {
             case "IntegerType":
-                return new IntegerValue(Long.parseLong(value));
+                return DirectValue.build(Long.parseLong(value));
             case "FloatType":
-                return new FloatValue(Double.parseDouble(value));
+                return DirectValue.build(Double.parseDouble(value));
             case "BooleanType":
                 switch (value) {
                     case "true":
-                        return BooleanValue.TRUE;
+                        return DirectValue.build(true);
                     case "false":
-                        return BooleanValue.FALSE;
+                        return DirectValue.build(false);
                     default:
                         throw new IllegalArgumentException("[" + value + "] is not a valid Boolean value");
                 }
             case "NullType":
-                return NullValue.NULL;
+                return DirectValue.build();
         }
 
         throw new IllegalArgumentException("[" + type + "] is not a valid type");

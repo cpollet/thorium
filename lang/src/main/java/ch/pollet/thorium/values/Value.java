@@ -21,22 +21,14 @@ import ch.pollet.thorium.values.types.Type;
 /**
  * @author Christophe Pollet
  */
-public interface Value<T> {
-    // static String typeName(Value value) {
-    //     return Type.getName(value.getType().getClass());
-    // }
-
+public interface Value {
     boolean isWritable();
 
     String getName();
 
-    Type getType();
+    Type type();
 
-    // TODO move
-    Value operatorPlus(Value other);
+    DirectValue value();
 
-    // TODO move
-    Value operatorMultiply(Value other);
-
-    // T getValue();
+    boolean hasValue();
 }

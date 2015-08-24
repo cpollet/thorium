@@ -16,12 +16,12 @@
 
 package ch.pollet.thorium.values.types;
 
-import ch.pollet.thorium.values.Value;
+import ch.pollet.thorium.values.DirectValue;
 
 /**
  * @author Christophe Pollet
  */
-public class NullValue extends BaseValue<NullValue> {
+public class NullValue extends DirectValue {
     // TODO rename
     public final static NullValue NULL = new NullValue();
 
@@ -30,18 +30,13 @@ public class NullValue extends BaseValue<NullValue> {
     }
 
     @Override
-    public Type getType() {
-        return NullType.INSTANCE;
+    public Type type() {
+        return VoidType.INSTANCE;
     }
 
     @Override
-    public Value operatorPlus(Value other) {
-        return this;
-    }
-
-    @Override
-    public Value operatorMultiply(Value other) {
-        return this;
+    public boolean hasValue() {
+        return false;
     }
 
     @Override

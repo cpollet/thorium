@@ -24,41 +24,17 @@ import ch.pollet.thorium.semantic.exception.InvalidTypeException;
 import ch.pollet.thorium.semantic.exception.MethodNotFoundException;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.Constant;
+import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
 import ch.pollet.thorium.values.Variable;
-import ch.pollet.thorium.values.types.BooleanType;
-import ch.pollet.thorium.values.types.BooleanValue;
-import ch.pollet.thorium.values.types.FloatType;
-import ch.pollet.thorium.values.types.FloatValue;
-import ch.pollet.thorium.values.types.IntegerType;
-import ch.pollet.thorium.values.types.IntegerValue;
-import ch.pollet.thorium.values.types.NullType;
-import ch.pollet.thorium.values.types.NullValue;
 import ch.pollet.thorium.values.types.Type;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Christophe Pollet
  */
 public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     private EvaluationContext context;
-
-    private Map<OperationSignature, Operator> operators = new HashMap<OperationSignature, Operator>() {{
-        put(new OperationSignature("+", IntegerType.INSTANCE, IntegerType.INSTANCE), (left, right) -> left.operatorPlus(right));
-        put(new OperationSignature("+", FloatType.INSTANCE, FloatType.INSTANCE), (left, right) -> left.operatorPlus(right));
-        put(new OperationSignature("+", IntegerType.INSTANCE, FloatType.INSTANCE), (left, right) -> left.operatorPlus(right));
-        put(new OperationSignature("+", FloatType.INSTANCE, IntegerType.INSTANCE), (left, right) -> left.operatorPlus(right));
-        put(new OperationSignature("+", BooleanType.INSTANCE, BooleanType.INSTANCE), (left, right) -> left.operatorPlus(right));
-
-        put(new OperationSignature("*", IntegerType.INSTANCE, IntegerType.INSTANCE), (left, right) -> left.operatorMultiply(right));
-        put(new OperationSignature("*", FloatType.INSTANCE, FloatType.INSTANCE), (left, right) -> left.operatorMultiply(right));
-        put(new OperationSignature("*", IntegerType.INSTANCE, FloatType.INSTANCE), (left, right) -> left.operatorMultiply(right));
-        put(new OperationSignature("*", FloatType.INSTANCE, IntegerType.INSTANCE), (left, right) -> left.operatorMultiply(right));
-        put(new OperationSignature("*", BooleanType.INSTANCE, BooleanType.INSTANCE), (left, right) -> left.operatorMultiply(right));
-    }};
 
     public VisitorEvaluator(EvaluationContext context) {
         this.context = context;
@@ -89,14 +65,14 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     }
 
     private void evalOperator(String operator) {
-        Value<? extends Type> right = context.popStack();
-        Value<? extends Type> left = context.popStack();
+        Value right = context.popStack();
+        Value left = context.popStack();
 
-        Operator op = operators.get(new OperationSignature(operator, left.getType(), right.getType()));
+        Operator op = left.type().lookupMethod(new MethodMatcher(operator, right.type()));
 
         // TODO SEM move this
         if (op == null) {
-            throw new MethodNotFoundException("Method " + operator + "(" + right.getType() + ") not implemented on " + left.getType());
+            throw new MethodNotFoundException("Method " + operator + "(" + right.type() + ") not implemented on " + left.type());
         }
 
         context.pushStack(op.apply(left, right));
@@ -111,22 +87,18 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
         assertValidAssignment(left, right);
 
-        if (right instanceof Symbol) {
-            right = ((Symbol) right).getValue();
-        }
-
         // TODO refactor without instanceof?
         Symbol symbol;
         if (left instanceof Constant) {
-            symbol = new Constant(left.getName(), right);
+            symbol = new Constant(left.getName(), right.value());
         } else if (left instanceof Variable) {
-            symbol = new Variable(left.getName(), right);
+            symbol = new Variable(left.getName(), right.value());
         } else {
             throw new IllegalStateException();
         }
 
         context.insertSymbol(symbol);
-        context.pushStack(symbol.getValue());
+        context.pushStack(symbol.value());
 
         return null;
     }
@@ -137,13 +109,13 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
             throw new InvalidAssignmentTargetException("Cannot assign " + right.toString() + " to " + left.toString());
         }
 
-        if (right.getType() == NullType.INSTANCE || right.getType() == null) {
+        if (right.type() == Type.VOID) {
             throw new InvalidAssignmentSourceException("Cannot assign from " + right.toString());
         }
 
 
-        if (!Type.isAssignableFrom(left.getType(), right.getType())) {
-            throw new InvalidTypeException(right.getType() + " is no assignable to " + left.getType());
+        if (!Type.isAssignableFrom(left.type(), right.type())) {
+            throw new InvalidTypeException(right.type() + " is no assignable to " + left.type());
         }
     }
 
@@ -166,11 +138,11 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         Value condition = context.popStack();
 
         // TODO SEM: move this
-        if (condition.getType() != BooleanType.INSTANCE) {
-            throw new InvalidTypeException("Boolean expected, got " + condition.getType());
+        if (condition.type() != Type.BOOLEAN) {
+            throw new InvalidTypeException("Boolean expected, got " + condition.type());
         }
 
-        if (condition.equals(BooleanValue.TRUE)) {
+        if (condition.value().equals(DirectValue.build(true))) {
             visitBlock(ctx.block());
         } else if (ctx.elseBlock() != null) {
             if (ctx.elseBlock().block() != null) {
@@ -179,8 +151,8 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
                 visitIfBlock(ctx.elseBlock().ifBlock());
             }
         } else {
-            context.pushStack(NullValue.NULL);
-            context.lastStatementValue = NullValue.NULL;
+            context.pushStack(DirectValue.build());
+            context.lastStatementValue = DirectValue.build();
         }
 
         return null;
@@ -188,22 +160,20 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitIntegerLiteral(ThoriumParser.IntegerLiteralContext ctx) {
-        context.pushStack(new IntegerValue(Long.valueOf(ctx.IntegerLiteral().getText())));
+        context.pushStack(DirectValue.build(Long.valueOf(ctx.IntegerLiteral().getText())));
 
         return null;
     }
 
     @Override
     public Void visitFloatLiteral(ThoriumParser.FloatLiteralContext ctx) {
-        context.pushStack(new FloatValue(Double.valueOf(ctx.FloatLiteral().getText())));
-
+        context.pushStack(DirectValue.build(Double.valueOf(ctx.FloatLiteral().getText())));
         return null;
     }
 
     @Override
     public Void visitBooleanLiteral(ThoriumParser.BooleanLiteralContext ctx) {
-        context.pushStack(BooleanValue.build(Boolean.valueOf(ctx.BooleanLiteral().getText())));
-
+        context.pushStack(DirectValue.build(Boolean.valueOf(ctx.BooleanLiteral().getText())));
         return null;
     }
 

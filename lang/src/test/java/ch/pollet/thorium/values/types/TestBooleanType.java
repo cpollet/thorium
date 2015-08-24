@@ -17,36 +17,39 @@
 package ch.pollet.thorium.values.types;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Christophe Pollet
  */
+@RunWith(JUnit4.class)
 public class TestBooleanType {
-    @Test
-    public void operatorPlusBooleanType() {
-        // GIVEN
-        BooleanValue left = BooleanValue.TRUE;
-        BooleanValue right = BooleanValue.FALSE;
-
-        // WHEN
-        BooleanValue result = left.operatorPlus(right);
-
-        // THEN
-        assertThat(result).isEqualTo(BooleanValue.TRUE);
-    }
-
-    @Test
-    public void operatorMultiplyBooleanType() {
-        // GIVEN
-        BooleanValue left = BooleanValue.TRUE;
-        BooleanValue right = BooleanValue.FALSE;
-
-        // WHEN
-        BooleanValue result = left.operatorMultiply(right);
-
-        // THEN
-        assertThat(result).isEqualTo(BooleanValue.FALSE);
-    }
+//    @Test
+//    public void operatorPlusBooleanType() {
+//        // GIVEN
+//        BooleanValue left = BooleanValue.TRUE;
+//        BooleanValue right = BooleanValue.FALSE;
+//
+//        // WHEN
+//        BooleanValue result = left.operatorPlus(right);
+//
+//        // THEN
+//        assertThat(result).isEqualTo(BooleanValue.TRUE);
+//    }
+//
+//    @Test
+//    public void operatorMultiplyBooleanType() {
+//        // GIVEN
+//        BooleanValue left = BooleanValue.TRUE;
+//        BooleanValue right = BooleanValue.FALSE;
+//
+//        // WHEN
+//        BooleanValue result = left.operatorMultiply(right);
+//
+//        // THEN
+//        assertThat(result).isEqualTo(BooleanValue.FALSE);
+//    }
 }

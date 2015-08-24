@@ -16,26 +16,28 @@
 
 package ch.pollet.thorium.values.types;
 
-import ch.pollet.thorium.values.Value;
-
-import java.util.HashMap;
-import java.util.Map;
+import ch.pollet.thorium.evaluation.MethodMatcher;
+import ch.pollet.thorium.evaluation.Operator;
 
 /**
  * @author Christophe Pollet
  */
 public interface Type {
-    Map<Class<? extends Value>, String> types = new HashMap<Class<? extends Value>, String>() {{
-        put(FloatValue.class, "Float");
-        put(IntegerValue.class, "Integer");
-        put(BooleanValue.class, "Boolean");
-    }};
+    int ID_VOID = 0;
+    int ID_BOOLEAN = 1;
+    int ID_INTEGER = 2;
+    int ID_FLOAT = 3;
 
-    static String getName(Class<? extends Type> typeClass) {
-        return types.get(typeClass);
-    }
+    Type BOOLEAN = BooleanType.INSTANCE;
+    Type INTEGER = IntegerType.INSTANCE;
+    Type FLOAT = FloatType.INSTANCE;
+    Type VOID = VoidType.INSTANCE;
+
+    int id();
 
     static boolean isAssignableFrom(Type target, Type source) {
-        return target == null || target.equals(source);
+        return target == null || target == VOID || target.equals(source);
     }
+
+    Operator lookupMethod(MethodMatcher matcher);
 }

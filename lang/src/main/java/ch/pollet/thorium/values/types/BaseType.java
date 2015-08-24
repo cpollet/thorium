@@ -16,18 +16,24 @@
 
 package ch.pollet.thorium.values.types;
 
+import ch.pollet.thorium.evaluation.MethodMatcher;
+import ch.pollet.thorium.evaluation.Operator;
+import ch.pollet.thorium.semantic.exception.MethodNotFoundException;
+
+import java.util.Map;
+
 /**
  * @author Christophe Pollet
  */
-public class NullType implements Type {
-    public static final NullType INSTANCE = new NullType();
-
-    private NullType() {
-        // nothing
-    }
-
+public abstract class BaseType implements Type {
     @Override
-    public String toString() {
-        return "Void";
+    public Operator lookupMethod(MethodMatcher matcher) {
+        if (symbolTable().containsKey(matcher)) {
+            return symbolTable().get(matcher);
+        }
+
+        throw new MethodNotFoundException("Method " + matcher + " not implemented on " + this);
     }
+
+    abstract Map<MethodMatcher, Operator> symbolTable();
 }

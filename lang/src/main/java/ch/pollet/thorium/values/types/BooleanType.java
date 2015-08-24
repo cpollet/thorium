@@ -16,20 +16,61 @@
 
 package ch.pollet.thorium.values.types;
 
-import java.util.Objects;
+import ch.pollet.thorium.evaluation.MethodMatcher;
+import ch.pollet.thorium.evaluation.Operator;
+import ch.pollet.thorium.values.DirectValue;
+import ch.pollet.thorium.values.Value;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Christophe Pollet
  */
-public class BooleanType implements Type {
-    public static final BooleanType INSTANCE = new BooleanType();
+public class BooleanType extends BaseType {
+    static final BooleanType INSTANCE = new BooleanType();
+
+    private static final Map<MethodMatcher, Operator> symbolTable = new HashMap<MethodMatcher, Operator>() {{
+        put(new MethodMatcher("+", BooleanType.INSTANCE), BooleanType::or);
+        put(new MethodMatcher("*", BooleanType.INSTANCE), BooleanType::and);
+    }};
 
     private BooleanType() {
         // nothing
     }
 
     @Override
+    Map<MethodMatcher, Operator> symbolTable() {
+        return symbolTable;
+    }
+
+    @Override
+    public int id() {
+        return ID_BOOLEAN;
+    }
+
+    @Override
     public String toString() {
         return "Boolean";
+    }
+
+    private static Value or(Value left, Value right) {
+        if (left.hasValue() && right.hasValue()) {
+            return DirectValue.build(
+                    (Boolean) (left.value().internalValue()) || (Boolean) (right.value().internalValue())
+            );
+        }
+
+        return DirectValue.build();
+    }
+
+    private static Value and(Value left, Value right) {
+        if (left.hasValue() && right.hasValue()) {
+            return DirectValue.build(
+                    (Boolean) (left.value().internalValue()) && (Boolean) (right.value().internalValue())
+            );
+        }
+
+        return DirectValue.build();
     }
 }

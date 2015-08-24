@@ -57,8 +57,7 @@ public class EvaluationContext {
         return parentContext;
     }
 
-
-    public Value<? extends Type> popStack() {
+    public Value popStack() {
         return stack.pop();
     }
 

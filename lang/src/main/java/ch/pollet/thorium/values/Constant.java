@@ -34,7 +34,7 @@ public class Constant extends Variable {
         valueDefined = false;
     }
 
-    public Constant(String name, Value value) {
+    public Constant(String name, DirectValue value) {
         super(name, value);
         valueDefined = true;
     }

@@ -14,28 +14,15 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.values.types;
+package ch.pollet.thorium.utils;
 
-import ch.pollet.thorium.values.Value;
+import java.util.List;
 
 /**
  * @author Christophe Pollet
  */
-public abstract class BaseValue<T extends Value> implements Value<T> {
-
-
-    @Override
-    public boolean isWritable() {
-        return false;
+public class ListUtils {
+    public static String concat(List<?> list, String separator) {
+        return list.stream().map(Object::toString).reduce("", (l, r) -> l + (l.isEmpty() ? "" : separator) + r);
     }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-//    @Override
-//    public T getValue() {
-//        return (T) this;
-//    }
 }

@@ -16,7 +16,6 @@
 
 package ch.pollet.thorium.values;
 
-import ch.pollet.thorium.values.types.NullValue;
 import ch.pollet.thorium.values.types.Type;
 
 /**
@@ -25,24 +24,24 @@ import ch.pollet.thorium.values.types.Type;
 public abstract class Symbol implements Value {
     private String name;
     private Type type;
-    private Value value;
+    private DirectValue value;
 
     protected Symbol(String name) {
         this.name = name;
-        // this.type = NullType.INSTANCE;
-        this.value = NullValue.NULL;
+        this.type = Type.VOID;
+        this.value = DirectValue.build();
     }
 
-    public Symbol(String name, Value<? extends Type> value) {
+    public Symbol(String name, DirectValue value) {
         this.name = name;
-        this.type = value.getType();
+        this.type = value.type();
         this.value = value;
     }
 
     public Symbol(String name, Type type) {
         this.name = name;
         this.type = type;
-        this.value = NullValue.NULL;
+        this.value = DirectValue.build();
     }
 
     @Override
@@ -51,21 +50,26 @@ public abstract class Symbol implements Value {
     }
 
     @Override
-    public Type getType() {
+    public Type type() {
         return type;
     }
 
-    // @Override
-    public Value getValue() {
+    @Override
+    public boolean hasValue() {
+        return value.hasValue();
+    }
+
+    @Override
+    public DirectValue value() {
         return value;
     }
 
     @Override
     public String toString() {
-        return "Symbol{" +
-                "name='" + name + '\'' +
-                ", type=" + (type == null ? "?" : type.toString()) +
-                ", value=" + value +
-                '}';
+        if (value.hasValue()) {
+            return "Symbol(" + name + ": " + value + ")";
+        }
+
+        return "Symbol(" + name + ": " + type + ")";
     }
 }
