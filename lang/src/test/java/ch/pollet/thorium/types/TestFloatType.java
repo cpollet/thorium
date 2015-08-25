@@ -19,7 +19,6 @@ package ch.pollet.thorium.types;
 import ch.pollet.thorium.evaluation.MethodMatcher;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

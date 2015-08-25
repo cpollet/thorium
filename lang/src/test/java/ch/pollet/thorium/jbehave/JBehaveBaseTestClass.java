@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.antlr.grammar.jbehave;
+package ch.pollet.thorium.jbehave;
 
+import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
 import ch.pollet.thorium.antlr.grammar.jbehave.steps.ExpressionsSteps;
 import ch.pollet.thorium.antlr.grammar.jbehave.steps.StatementsSteps;
 import org.jbehave.core.configuration.Configuration;
@@ -27,6 +28,8 @@ import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
+
+import java.util.List;
 
 /**
  * @author Christophe Pollet
@@ -45,9 +48,8 @@ public abstract class JBehaveBaseTestClass extends JUnitStory {
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-        StoryContext storyContext = new StoryContext();
-        return new InstanceStepsFactory(configuration(),
-                new ExpressionsSteps(storyContext),
-                new StatementsSteps(storyContext));
+        return new InstanceStepsFactory(configuration(), stepsDefinitions());
     }
+
+    public abstract List<Object> stepsDefinitions();
 }

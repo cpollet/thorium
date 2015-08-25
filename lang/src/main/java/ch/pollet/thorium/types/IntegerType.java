@@ -64,7 +64,7 @@ public class IntegerType extends BaseType {
             );
         }
 
-        return DirectValue.build();
+        return DirectValue.build(Type.FLOAT);
     }
 
     private static Value plusInteger(Value left, Value right) {
@@ -75,26 +75,43 @@ public class IntegerType extends BaseType {
             );
         }
 
-        return DirectValue.build();
+        return DirectValue.build(Type.INTEGER);
     }
 
     private static Value timesFloat(Value left, Value right) {
+        if (multiplyByIntegerZero(left)) {
+            return DirectValue.build(0L);
+        }
+
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
                     ((Long) (left.value().internalValue())).doubleValue() * (Double) (right.value().internalValue())
             );
         }
 
-        return DirectValue.build();
+        return DirectValue.build(Type.FLOAT);
+    }
+
+    private static boolean multiplyByIntegerZero(Value left) {
+        return left.hasValue() && left.value().internalValue().equals(0L);
     }
 
     private static Value timesInteger(Value left, Value right) {
+        if (multiplyByIntegerZero(left, right)) {
+            return DirectValue.build(0L);
+        }
+
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
                     (Long) (left.value().internalValue()) * (Long) (right.value().internalValue())
             );
         }
 
-        return DirectValue.build();
+        return DirectValue.build(Type.INTEGER);
+    }
+
+    private static boolean multiplyByIntegerZero(Value left, Value right) {
+        return left.hasValue() && left.value().internalValue().equals(0L) ||
+                right.hasValue() && right.value().internalValue().equals(0L);
     }
 }

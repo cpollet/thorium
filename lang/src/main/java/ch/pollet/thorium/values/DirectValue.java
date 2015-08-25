@@ -43,6 +43,10 @@ public class DirectValue implements Value {
         this.type = Type.VOID;
     }
 
+    private DirectValue(Type type) {
+        this.type = type;
+    }
+
     private DirectValue(Boolean booleanValue) {
         this.type = Type.BOOLEAN;
         this.booleanValue = booleanValue;
@@ -56,6 +60,14 @@ public class DirectValue implements Value {
     private DirectValue(Double floatValue) {
         this.type = Type.FLOAT;
         this.floatValue = floatValue;
+    }
+
+    public static DirectValue build(Type type) {
+        if (!valuesCache.containsKey(type)) {
+            valuesCache.put(type, new DirectValue(type));
+        }
+
+        return valuesCache.get(type);
     }
 
     public static DirectValue build() {
@@ -99,7 +111,11 @@ public class DirectValue implements Value {
 
     @Override
     public boolean hasValue() {
-        return this != VOID;
+        return this != VOID && (
+                (type == Type.BOOLEAN && booleanValue != null) ||
+                (type == Type.INTEGER && integerValue != null) ||
+                (type == Type.FLOAT && floatValue != null)
+        );
     }
 
     @Override

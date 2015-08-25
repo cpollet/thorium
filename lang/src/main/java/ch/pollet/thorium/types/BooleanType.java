@@ -68,7 +68,7 @@ public class BooleanType extends BaseType {
             return right;
         }
 
-        return DirectValue.build();
+        return DirectValue.build(Type.BOOLEAN);
     }
 
     private static Value and(Value left, Value right) {
@@ -85,6 +85,6 @@ public class BooleanType extends BaseType {
             return right;
         }
 
-        return DirectValue.build();
+        return DirectValue.build(Type.BOOLEAN);
     }
 }

@@ -16,8 +16,23 @@
 
 package ch.pollet.thorium.antlr.grammar.jbehave;
 
+import ch.pollet.thorium.antlr.grammar.jbehave.steps.ExpressionsSteps;
+import ch.pollet.thorium.antlr.grammar.jbehave.steps.StatementsSteps;
+import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
+
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Christophe Pollet
  */
 public class TestExpressions extends JBehaveBaseTestClass {
+    @Override
+    public List<Object> stepsDefinitions() {
+        StoryContext storyContext = new StoryContext();
+        return Arrays.asList(
+                new ExpressionsSteps(storyContext),
+                new StatementsSteps(storyContext)
+        );
+    }
 }

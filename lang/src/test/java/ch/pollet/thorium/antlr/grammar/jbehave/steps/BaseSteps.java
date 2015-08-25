@@ -41,7 +41,7 @@ import static org.fest.assertions.Fail.failure;
 /**
  * @author Christophe Pollet
  */
-public class BaseSteps {
+public abstract class BaseSteps {
     protected final StoryContext storyContext;
 
     public BaseSteps(StoryContext storyContext) {

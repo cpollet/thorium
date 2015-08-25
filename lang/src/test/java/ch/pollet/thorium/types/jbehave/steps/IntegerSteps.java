@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.antlr.grammar.jbehave;
+package ch.pollet.thorium.types.jbehave.steps;
 
-import ch.pollet.thorium.antlr.grammar.jbehave.steps.ExpressionsSteps;
-import ch.pollet.thorium.antlr.grammar.jbehave.steps.StatementsSteps;
-import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
-
-import java.util.Arrays;
-import java.util.List;
+import ch.pollet.thorium.values.DirectValue;
+import ch.pollet.thorium.values.Value;
 
 /**
  * @author Christophe Pollet
  */
-public class TestConditionals extends JBehaveBaseTestClass {
+public class IntegerSteps extends BaseSteps {
     @Override
-    public List<Object> stepsDefinitions() {
-        StoryContext storyContext = new StoryContext();
-        return Arrays.asList(
-                new ExpressionsSteps(storyContext),
-                new StatementsSteps(storyContext)
-        );
+    Value specificDecodeValue(String value) {
+        try {
+            return DirectValue.build(Long.parseLong(value));
+        } catch (NumberFormatException e) {
+            return DirectValue.build(Double.parseDouble(value));
+        }
     }
 }
