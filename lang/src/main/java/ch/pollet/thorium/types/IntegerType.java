@@ -79,8 +79,8 @@ public class IntegerType extends BaseType {
     }
 
     private static Value timesFloat(Value left, Value right) {
-        if (multiplyByIntegerZero(left)) {
-            return DirectValue.build(0L);
+        if (multiplyByIntegerZero(left) || multiplyByFloatZero(right)) {
+            return DirectValue.build(0.0);
         }
 
         if (left.hasValue() && right.hasValue()) {
@@ -92,8 +92,12 @@ public class IntegerType extends BaseType {
         return DirectValue.build(Type.FLOAT);
     }
 
-    private static boolean multiplyByIntegerZero(Value left) {
-        return left.hasValue() && left.value().internalValue().equals(0L);
+    private static boolean multiplyByIntegerZero(Value value) {
+        return value.hasValue() && value.value().internalValue().equals(0L);
+    }
+
+    private static boolean multiplyByFloatZero(Value value) {
+        return value.hasValue() && value.value().internalValue().equals(0.0);
     }
 
     private static Value timesInteger(Value left, Value right) {
