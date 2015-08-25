@@ -1,9 +1,12 @@
 # Method call
 ## non-nullable expression
-expression . method()  -> do something, return something
+expression . method()  -> do something, return something; invalid if expression can be null
 
 ## nullable expression
-expression ?. method() -> do nothing, return null
+expression ?. method() -> do nothing, return null if expression is null; otherwise, same as . 
+
+## nullable arguments
+Integer(1) + Integer   -> ?
 
 # Getters / Setters
     get:public set:protected String a;

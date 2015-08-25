@@ -39,8 +39,7 @@ public class DirectValue implements Value {
 
     private Type type;
 
-    // TODO change this to private
-    public DirectValue() {
+    private DirectValue() {
         this.type = Type.VOID;
     }
 

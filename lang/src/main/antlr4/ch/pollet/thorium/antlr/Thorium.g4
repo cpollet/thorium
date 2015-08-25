@@ -108,6 +108,10 @@ ConstantName
     : [A-Z0-9_$]+
     ;
 
+OptionalMethodName
+    : '?' SymbolMethodName
+    ;
+
 fragment
 SymbolMethodName
     : '+=' | '++' | '+'
@@ -124,8 +128,14 @@ SymbolMethodName
     | '<<=' | '<<' | '<=' | '<'
     | '>>=' | '>>' | '>=' | '>'
     | '<=>'
-    | '..'
-    | '->'
+    | '..'                          // builds a sequence when applied on Integer
+    | '->' | '=>'
+    | '??'                          // return left unless it's null, then return right
+    ;
+
+MethodCall
+    : '.'
+    | '?.'
     ;
 
 MethodName
