@@ -24,3 +24,14 @@ Examples:
 | Boolean   | *         | false     | false     |
 
 Scenario: boolean operator with unsupported operand
+Given operation is <left> <operator> <right>
+Given an exception <exception> is expected
+When decode operator
+Then the exception was thrown with message <message>
+
+Examples:
+| left      | operator  | right     | exception                                                     | message                                       |
+| Boolean   | +         | Integer   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method +(Integer) not implemented on Boolean  |
+| Boolean   | +         | Float     | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method +(Float) not implemented on Boolean    |
+| Boolean   | *         | Integer   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method *(Integer) not implemented on Boolean  |
+| Boolean   | *         | Float     | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method *(Float) not implemented on Boolean    |

@@ -24,3 +24,12 @@ Examples:
 | Integer   | *         | 0.0       | 0.0       |
 
 Scenario: integer operator with unsupported operand
+Given operation is <left> <operator> <right>
+Given an exception <exception> is expected
+When decode operator
+Then the exception was thrown with message <message>
+
+Examples:
+| left      | operator  | right     | exception                                                     | message                                       |
+| Integer   | +         | Boolean   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method +(Boolean) not implemented on Integer  |
+| Integer   | *         | Boolean   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method *(Boolean) not implemented on Integer  |

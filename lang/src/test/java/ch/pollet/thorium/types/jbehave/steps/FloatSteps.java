@@ -16,19 +16,8 @@
 
 package ch.pollet.thorium.types.jbehave.steps;
 
-import ch.pollet.thorium.values.DirectValue;
-import ch.pollet.thorium.values.Value;
-
 /**
  * @author Christophe Pollet
  */
 public class FloatSteps extends BaseSteps {
-    @Override
-    Value specificDecodeValue(String value) {
-        try {
-            return DirectValue.build(Long.parseLong(value));
-        } catch (NumberFormatException e) {
-            return DirectValue.build(Double.parseDouble(value));
-        }
-    }
 }

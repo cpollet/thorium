@@ -37,6 +37,8 @@ public abstract class BaseSteps {
     private String operatorName;
     private Operator operator;
     private Value result;
+    private Class<? extends Exception> expectedExceptionType;
+    private Exception exception;
 
     @Given("operation is <left> <operator> <right>")
     public void operationDefinition(@Named("left") String left, @Named("operator") String operator, @Named("right") String right) {
@@ -45,9 +47,22 @@ public abstract class BaseSteps {
         this.operatorName = operator;
     }
 
+    @Given("an exception <exception> is expected")
+    public void exceptionExpected(@Named("exception") String exception) throws ClassNotFoundException {
+        this.expectedExceptionType = (Class<? extends Exception>) Class.forName(exception);
+    }
+
     @When("decode operator")
     public void decodeOperator() {
-        operator = left.type().lookupMethod(new MethodMatcher(operatorName, right.type()));
+        try {
+            operator = left.type().lookupMethod(new MethodMatcher(operatorName, right.type()));
+        } catch (Exception e) {
+            if (expectedExceptionType != null && e.getClass().equals(expectedExceptionType)) {
+                this.exception = e;
+            } else {
+                throw e;
+            }
+        }
     }
 
     @When("evaluate")
@@ -60,8 +75,24 @@ public abstract class BaseSteps {
         assertThat(result).isEqualTo(decodeValue(expectedResult));
     }
 
+    @Then("the exception was thrown with message <message>")
+    public void assertExceptionMessage(@Named("message") String message) {
+        assertThat(exception)
+                .overridingErrorMessage("Exception was not thrown")
+                .isNotNull();
+        assertThat(exception)
+                .hasMessage(message);
+
+        this.expectedExceptionType = null;
+        this.exception = null;
+    }
+
     private Value decodeValue(String value) {
         switch (value) {
+            case "true":
+                return DirectValue.build(true);
+            case "false":
+                return DirectValue.build(false);
             case "Boolean":
                 return DirectValue.build(Type.BOOLEAN);
             case "Integer":
@@ -70,8 +101,10 @@ public abstract class BaseSteps {
                 return DirectValue.build(Type.FLOAT);
         }
 
-        return specificDecodeValue(value);
+        try {
+            return DirectValue.build(Long.parseLong(value));
+        } catch (NumberFormatException e) {
+            return DirectValue.build(Double.parseDouble(value));
+        }
     }
-
-    abstract Value specificDecodeValue(String value);
 }

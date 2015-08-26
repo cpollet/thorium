@@ -16,14 +16,8 @@
 
 package ch.pollet.thorium.types.jbehave.steps;
 
-import ch.pollet.thorium.values.DirectValue;
-import ch.pollet.thorium.values.Value;
-
 /**
  * @author Christophe Pollet
  */
 public class BooleanSteps extends BaseSteps {
-    Value specificDecodeValue(String value) {
-        return DirectValue.build(Boolean.parseBoolean(value));
-    }
 }
