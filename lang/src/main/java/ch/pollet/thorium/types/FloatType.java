@@ -63,7 +63,7 @@ public class FloatType extends BaseType {
             );
         }
 
-        return DirectValue.build();
+        return DirectValue.build(Type.FLOAT);
     }
 
     private static Value plusInteger(Value left, Value right) {
@@ -73,26 +73,42 @@ public class FloatType extends BaseType {
             );
         }
 
-        return DirectValue.build();
+        return DirectValue.build(Type.FLOAT);
     }
 
     private static Value timesFloat(Value left, Value right) {
+        if (isFloatZero(left) || isFloatZero(right)) {
+            return DirectValue.build(0.0);
+        }
+
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
                     (Double) (left.value().internalValue()) * (Double) (right.value().internalValue())
             );
         }
 
-        return DirectValue.build();
+        return DirectValue.build(Type.FLOAT);
+    }
+
+    private static boolean isFloatZero(Value value) {
+        return value.hasValue() && value.value().internalValue().equals(0.0);
     }
 
     private static Value timesInteger(Value left, Value right) {
+        if (isFloatZero(left) || isIntegerZero(right)) {
+            return DirectValue.build(0.0);
+        }
+
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
                     (Double) (left.value().internalValue()) * ((Long) (right.value().internalValue())).doubleValue()
             );
         }
 
-        return DirectValue.build();
+        return DirectValue.build(Type.FLOAT);
+    }
+
+    private static boolean isIntegerZero(Value value) {
+        return value.hasValue() && value.value().internalValue().equals(0L);
     }
 }
