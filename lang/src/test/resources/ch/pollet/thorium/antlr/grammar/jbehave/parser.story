@@ -8,6 +8,6 @@ Examples:
 | 1             | org.antlr.v4.runtime.misc.ParseCancellationException  | line 1:1 missing ';' at '<EOF>'                                                                                                                                               |
 | (1)           | org.antlr.v4.runtime.misc.ParseCancellationException  | line 1:3 missing ';' at '<EOF>'                                                                                                                                               |
 | { 1 }         | org.antlr.v4.runtime.misc.ParseCancellationException  | line 1:4 mismatched input '}' expecting {';', '*', '+', '='}                                                                                                                  |
-| a = { 1 };    | org.antlr.v4.runtime.misc.ParseCancellationException  | line 1:4 no viable alternative at input '{'                                                                                                                                   |
-| { 1; } + 1    | org.antlr.v4.runtime.misc.ParseCancellationException  | line 1:7 extraneous input '+' expecting {<EOF>, ';', '(', '{', 'if', IntegerLiteral, FloatLiteral, BooleanLiteral, ObjectOrClassName, VariableName, ConstantName, MethodName} |
+| a = { 1; };   | org.antlr.v4.runtime.misc.ParseCancellationException  | line 1:4 no viable alternative at input '{'                                                                                                                                   |
+| { 1; } + 1;   | org.antlr.v4.runtime.misc.ParseCancellationException  | line 1:7 extraneous input '+' expecting {<EOF>, ';', '(', '{', 'if', IntegerLiteral, FloatLiteral, BooleanLiteral, ObjectOrClassName, VariableName, ConstantName, MethodName} |
 
