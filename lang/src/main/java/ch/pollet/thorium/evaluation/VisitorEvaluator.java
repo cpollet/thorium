@@ -23,12 +23,12 @@ import ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException;
 import ch.pollet.thorium.semantic.exception.InvalidTypeException;
 import ch.pollet.thorium.semantic.exception.MethodNotFoundException;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
+import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.values.Constant;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
 import ch.pollet.thorium.values.Variable;
-import ch.pollet.thorium.types.Type;
 
 /**
  * @author Christophe Pollet
@@ -41,8 +41,15 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     }
 
     @Override
-    public Void visitStatement(ThoriumParser.StatementContext ctx) {
-        super.visitStatement(ctx);
+    public Void visitBlockStatement(ThoriumParser.BlockStatementContext ctx) {
+        super.visitBlockStatement(ctx);
+
+        return null;
+    }
+
+    @Override
+    public Void visitExpressionStatement(ThoriumParser.ExpressionStatementContext ctx) {
+        super.visitExpressionStatement(ctx);
         context.lastStatementValue = context.popStack();
 
         return null;
@@ -120,19 +127,30 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     }
 
     @Override
-    public Void visitBlock(ThoriumParser.BlockContext ctx) {
+    public Void visitStatementsBlock(ThoriumParser.StatementsBlockContext ctx) {
+        visitStatementsInNestedContext(ctx.statements());
+
+        return null;
+    }
+
+    private void visitStatementsInNestedContext(ThoriumParser.StatementsContext ctx) {
         context = context.createChild();
 
-        super.visitBlock(ctx);
+        visitStatements(ctx);
 
         context = context.destroyAndRestoreParent();
+    }
+
+    @Override
+    public Void visitBlockExpression(ThoriumParser.BlockExpressionContext ctx) {
+        visitBlock(ctx.block());
         context.pushStack(context.lastStatementValue);
 
         return null;
     }
 
     @Override
-    public Void visitIfBlock(ThoriumParser.IfBlockContext ctx) {
+    public Void visitIfStatement(ThoriumParser.IfStatementContext ctx) {
         visit(ctx.expression());
 
         Value condition = context.popStack();
@@ -143,15 +161,14 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         }
 
         if (condition.value().equals(DirectValue.build(true))) {
-            visitBlock(ctx.block());
-        } else if (ctx.elseBlock() != null) {
-            if (ctx.elseBlock().block() != null) {
-                visitBlock(ctx.elseBlock().block());
+            visitStatementsInNestedContext(ctx.statements());
+        } else if (ctx.elseStatement() != null) {
+            if (ctx.elseStatement().statements() != null) {
+                visitStatementsInNestedContext(ctx.elseStatement().statements());
             } else {
-                visitIfBlock(ctx.elseBlock().ifBlock());
+                visitIfStatement(ctx.elseStatement().ifStatement());
             }
         } else {
-            context.pushStack(DirectValue.build());
             context.lastStatementValue = DirectValue.build();
         }
 

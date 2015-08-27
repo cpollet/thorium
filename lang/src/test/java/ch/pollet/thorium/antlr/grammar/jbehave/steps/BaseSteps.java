@@ -20,12 +20,11 @@ import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
 import ch.pollet.thorium.evaluation.EvaluationContext;
 import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
+import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
-import ch.pollet.thorium.types.Type;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -50,14 +49,11 @@ public abstract class BaseSteps {
 
     @When("being executed")
     public void execute() {
-        ParseTreeWalker walker = new ParseTreeWalker();
         storyContext.evaluationContext = EvaluationContext.createEmpty();
-        // ListenerEvaluator listenerEvaluator = new ListenerEvaluator(storyContext.evaluationContext);
         VisitorEvaluator visitorEvaluator = new VisitorEvaluator(storyContext.evaluationContext);
 
         try {
             visitorEvaluator.visit(storyContext.tree);
-            // walker.walk(evaluator, storyContext.tree);
         } catch (Exception e) {
             if (e instanceof ParseCancellationException) {
                 throw e;
@@ -139,7 +135,8 @@ public abstract class BaseSteps {
     public void exceptionIsThrown(@Named("exception") String exception, @Named("message") String message) throws ClassNotFoundException {
         assertThat(storyContext.exception)
                 .overridingErrorMessage("Expected exception not thrown")
-                .isNotNull()
+                .isNotNull();
+        assertThat(storyContext.exception)
                 .isInstanceOf((Class<? extends Throwable>) Class.forName(exception))
                 .hasMessage(message);
 

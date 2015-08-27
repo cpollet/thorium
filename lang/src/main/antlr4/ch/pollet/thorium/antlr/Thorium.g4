@@ -36,8 +36,9 @@ statements
     ;
 
 statement
-    : expression ';'
-    | ';'
+    : block                                             # blockStatement
+    | expression ';'                                    # expressionStatement
+    | ';'                                               # emptyStatement
     ;
 
 // EXPRESSIONS
@@ -49,20 +50,22 @@ expression
     | '(' expression ')'                                # parenthesisExpression
     // | expression ':' expression '?' expression       # inlineConditionExpression
     | <assoc=right> expression '=' expression           # assignmentExpression
-    | block                                             # blockExpression
-    | ifBlock                                           # ifExpression
+    | '(' block ')'                                     # blockExpression
     ;
 
 block
+    : statementsBlock
+    | ifStatement
+    ;
+statementsBlock
     : '{' statements '}'
     ;
-
-ifBlock
-    : IF '(' expression ')' block elseBlock?
+ifStatement
+    : IF '(' expression ')' '{' statements '}' elseStatement?
     ;
-elseBlock
-    : ELSE block
-    | ELSE ifBlock
+elseStatement
+    : ELSE '{' statements '}'
+    | ELSE ifStatement
     ;
 
 literal

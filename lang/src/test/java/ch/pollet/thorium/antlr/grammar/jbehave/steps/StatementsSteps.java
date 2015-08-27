@@ -20,6 +20,7 @@ import ch.pollet.thorium.ThrowingErrorListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.antlr.grammar.ParserBuilder;
 import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
@@ -41,7 +42,15 @@ public class StatementsSteps extends BaseSteps {
     @Given("a list of statements $statements")
     @Alias("a list of statements <statements>")
     public void aListOfStatements(@Named("statements") String statements) {
-        storyContext.tree = parseTreeForStatements(statements);
+        try {
+            storyContext.tree = parseTreeForStatements(statements);
+        } catch (Exception e) {
+            if (storyContext.exceptionExpected && storyContext.exception == null) {
+                storyContext.exception = e;
+            } else {
+                throw e;
+            }
+        }
     }
 
     @Then("the statement result is <result> of type <type>")
