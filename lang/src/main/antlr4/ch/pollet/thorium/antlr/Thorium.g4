@@ -29,18 +29,45 @@ compilationUnit
     : statement* EOF
     ;
 
-// STATEMENTS / BLOCKS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// STATEMENTS
 
 statements
     : statement+
     ;
 
 statement
-    : block                                             # blockStatement
-    | expression ';'                                    # expressionStatement
-    | ';'                                               # emptyStatement
+    : block
+    | expressionStatement
+    | ';'
     ;
 
+expressionStatement
+    : expression ';'
+    ;
+
+block
+    : statementsBlock
+    | ifStatement
+    ;
+
+statementsBlock
+    : '{' statements '}'
+    ;
+
+ifStatement
+    : IF '(' expression ')' '{' statements '}' elseStatement?
+    ;
+elseStatement
+    : ELSE '{' statements '}'
+    | ELSE ifStatement
+    ;
+
+loopStatement
+    : (WHILE | FOR) '(' expression  (';' expression)* ')' '{' statements '}'
+    ;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // EXPRESSIONS
 
 expression
@@ -51,24 +78,8 @@ expression
     // | expression ':' expression '?' expression       # inlineConditionExpression
     | <assoc=right> expression '=' expression           # assignmentExpression
     | '(' block ')'                                     # blockExpression
-    ;
-
-block
-    : statementsBlock
-    | ifStatement
-    ;
-statementsBlock
-    : '{' statements '}'
-    ;
-ifStatement
-    : IF '(' expression ')' '{' statements '}' elseStatement?
-    ;
-elseStatement
-    : ELSE '{' statements '}'
-    | ELSE ifStatement
-    ;
-loopStatement
-    : (WHILE | FOR) '(' expression  (';' expression)* ')' '{' statements '}'
+    | expression IF expression                          # conditionalIfExpression
+    | expression UNLESS expression                      # conditionalUnlessExpression
     ;
 
 literal
@@ -85,6 +96,10 @@ identifier
     | MethodName                                        # methodName
     ;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TOKENS
+
+UNLESS  : 'unless';
 IF      : 'if';
 ELSE    : 'else';
 WHILE   : 'while';
@@ -156,9 +171,9 @@ IdentifierChars
     : [a-zA-Z0-9_$]+
     ;
 
-//
-// Whitespace and comments
-//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// WHITESPACES
+
 WS
     : [ \t\r\n\u000C]+ -> skip
     ;

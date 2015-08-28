@@ -130,6 +130,21 @@ public abstract class BaseSteps {
         storyContext.exceptionExpected = true;
     }
 
+    @Then(value = "the exception $exception is thrown with message starting with $message", priority = 1)
+    @Alias("the exception <exception> is thrown with message starting with <message>")
+    public void exceptionIsThrownWithMessageStartingWith(@Named("exception") String exception, @Named("message") String message) throws ClassNotFoundException {
+        assertThat(storyContext.exception)
+                .overridingErrorMessage("Expected exception not thrown")
+                .isNotNull();
+        assertThat(storyContext.exception)
+                .isInstanceOf((Class<? extends Throwable>) Class.forName(exception));
+        assertThat(storyContext.exception.getMessage())
+                .startsWith(message);
+
+        storyContext.exception = null;
+        storyContext.exceptionExpected = false;
+    }
+
     @Then("the exception $exception is thrown with message $message")
     @Alias("the exception <exception> is thrown with message <message>")
     public void exceptionIsThrown(@Named("exception") String exception, @Named("message") String message) throws ClassNotFoundException {

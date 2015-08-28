@@ -40,13 +40,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         this.context = context;
     }
 
-    @Override
-    public Void visitBlockStatement(ThoriumParser.BlockStatementContext ctx) {
-        super.visitBlockStatement(ctx);
-
-        return null;
-    }
-
+    //region Statements
     @Override
     public Void visitExpressionStatement(ThoriumParser.ExpressionStatementContext ctx) {
         super.visitExpressionStatement(ctx);
@@ -55,6 +49,23 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visitStatementsBlock(ThoriumParser.StatementsBlockContext ctx) {
+        visitStatementsInNestedContext(ctx.statements());
+
+        return null;
+    }
+
+    private void visitStatementsInNestedContext(ThoriumParser.StatementsContext ctx) {
+        context = context.createChild();
+
+        visitStatements(ctx);
+
+        context = context.destroyAndRestoreParent();
+    }
+    //endregion
+
+    //region Expressions
     @Override
     public Void visitMultiplicationExpression(ThoriumParser.MultiplicationExpressionContext ctx) {
         super.visitMultiplicationExpression(ctx);
@@ -127,28 +138,15 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     }
 
     @Override
-    public Void visitStatementsBlock(ThoriumParser.StatementsBlockContext ctx) {
-        visitStatementsInNestedContext(ctx.statements());
-
-        return null;
-    }
-
-    private void visitStatementsInNestedContext(ThoriumParser.StatementsContext ctx) {
-        context = context.createChild();
-
-        visitStatements(ctx);
-
-        context = context.destroyAndRestoreParent();
-    }
-
-    @Override
     public Void visitBlockExpression(ThoriumParser.BlockExpressionContext ctx) {
         visitBlock(ctx.block());
         context.pushStack(context.lastStatementValue);
 
         return null;
     }
+    //endregion
 
+    //region If Statement
     @Override
     public Void visitIfStatement(ThoriumParser.IfStatementContext ctx) {
         context = context.createChild();
@@ -191,7 +189,9 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
         return null;
     }
+    //endregion
 
+    //region Values
     @Override
     public Void visitIntegerLiteral(ThoriumParser.IntegerLiteralContext ctx) {
         context.pushStack(DirectValue.build(Long.valueOf(ctx.IntegerLiteral().getText())));
@@ -242,4 +242,5 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
         return null;
     }
+    //endregion
 }

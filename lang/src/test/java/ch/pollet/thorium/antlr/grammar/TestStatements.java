@@ -44,6 +44,6 @@ public class TestStatements {
 
         // WHEN + THEN
         assertThat(parseTreeToString(parser))
-                .isEqualTo("(statements (statement (expression (literal 1)) ;) (statement (expression (literal 2)) ;) (statement (expression (literal 3)) ;))");
+                .isEqualTo("(statements (statement (expressionStatement (expression (literal 1)) ;)) (statement (expressionStatement (expression (literal 2)) ;)) (statement (expressionStatement (expression (literal 3)) ;)))");
     }
 }
