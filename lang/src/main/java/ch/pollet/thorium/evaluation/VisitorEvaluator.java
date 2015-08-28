@@ -151,6 +151,16 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitIfStatement(ThoriumParser.IfStatementContext ctx) {
+        context = context.createChild();
+
+        visitNestedIfStatement(ctx);
+
+        context = context.destroyAndRestoreParent();
+
+        return null;
+    }
+
+    private void visitNestedIfStatement(ThoriumParser.IfStatementContext ctx) {
         visit(ctx.expression());
 
         Value condition = context.popStack();
@@ -161,15 +171,22 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         }
 
         if (condition.value().equals(DirectValue.build(true))) {
-            visitStatementsInNestedContext(ctx.statements());
+            visitStatements(ctx.statements());
         } else if (ctx.elseStatement() != null) {
-            if (ctx.elseStatement().statements() != null) {
-                visitStatementsInNestedContext(ctx.elseStatement().statements());
-            } else {
-                visitIfStatement(ctx.elseStatement().ifStatement());
-            }
+            visitElseStatement(ctx.elseStatement());
         } else {
             context.lastStatementValue = DirectValue.build();
+        }
+    }
+
+    @Override
+    public Void visitElseStatement(ThoriumParser.ElseStatementContext ctx) {
+        if (ctx.statements() != null) {
+            visitStatements(ctx.statements());
+        } else if (ctx.ifStatement() != null) {
+            visitNestedIfStatement(ctx.ifStatement());
+        } else {
+            throw new IllegalStateException();
         }
 
         return null;
@@ -185,12 +202,14 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     @Override
     public Void visitFloatLiteral(ThoriumParser.FloatLiteralContext ctx) {
         context.pushStack(DirectValue.build(Double.valueOf(ctx.FloatLiteral().getText())));
+
         return null;
     }
 
     @Override
     public Void visitBooleanLiteral(ThoriumParser.BooleanLiteralContext ctx) {
         context.pushStack(DirectValue.build(Boolean.valueOf(ctx.BooleanLiteral().getText())));
+
         return null;
     }
 
