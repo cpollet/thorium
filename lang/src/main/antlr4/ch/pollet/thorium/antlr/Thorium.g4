@@ -67,6 +67,9 @@ elseStatement
     : ELSE '{' statements '}'
     | ELSE ifStatement
     ;
+loopStatement
+    : (WHILE | FOR) '(' expression  (';' expression)* ')' '{' statements '}'
+    ;
 
 literal
     : IntegerLiteral                                    # integerLiteral
@@ -82,8 +85,10 @@ identifier
     | MethodName                                        # methodName
     ;
 
-IF    : 'if';
-ELSE  : 'else';
+IF      : 'if';
+ELSE    : 'else';
+WHILE   : 'while';
+FOR     : 'for';
 
 IntegerLiteral
     : '0'
