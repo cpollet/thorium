@@ -18,6 +18,10 @@ Examples:
 | a = 1; b = ({ a + 1; });      | a,b       | 1,2       | IntegerType,IntegerType               |                   |
 | a = 1; { b = 1; }             | a         | 1         | IntegerType                           | b                 |
 | a = 1; ;;                     | a         | 1         | IntegerType                           |                   |
+| a = 1 if true;                | a         | 1         | IntegerType                           |                   |
+| a = 0; a = 1 if false;        | a         | 0         | IntegerType                           |                   |
+| a = 1 unless false;           | a         | 1         | IntegerType                           |                   |
+| a = 0; a = 1 unless true;     | a         | 0         | IntegerType                           |                   |
 
 Scenario: statements with result
 Given a list of statements <statements>
@@ -35,6 +39,8 @@ Examples:
 | { 2; }                        | 2         | IntegerType   |
 | a = 1; { a * 2; }             | 2         | IntegerType   |
 | a = 1; b = 2;                 | 2         | IntegerType   |
+| 1 + 1 if true;                | 2         | IntegerType   |
+| 1 + 1 if false;               | N/A       | NullType      |
 
 Scenario: statements with exceptions
 Given a list of statements <statements>

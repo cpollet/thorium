@@ -43,7 +43,10 @@ statement
     ;
 
 expressionStatement
-    : expression ';'
+    : expression ';'                                    # unconditionalStatement
+    | expression IF expression ';'                      # conditionalIfStatement
+    | expression UNLESS expression ';'                  # conditionalUnlessStatement
+    // | expression WHILE expression ';'                   # repeatedStatement
     ;
 
 block
@@ -63,9 +66,9 @@ elseStatement
     | ELSE ifStatement
     ;
 
-loopStatement
-    : (WHILE | FOR) '(' expression  (';' expression)* ')' '{' statements '}'
-    ;
+// loopStatement
+//     : (WHILE | FOR) '(' expression  (';' expression)* ')' '{' statements '}'
+//     ;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // EXPRESSIONS
@@ -78,8 +81,6 @@ expression
     // | expression ':' expression '?' expression       # inlineConditionExpression
     | <assoc=right> expression '=' expression           # assignmentExpression
     | '(' block ')'                                     # blockExpression
-    | expression IF expression                          # conditionalIfExpression
-    | expression UNLESS expression                      # conditionalUnlessExpression
     ;
 
 literal

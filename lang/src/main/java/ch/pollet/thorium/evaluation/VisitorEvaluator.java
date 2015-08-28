@@ -42,8 +42,8 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
     //region Statements
     @Override
-    public Void visitExpressionStatement(ThoriumParser.ExpressionStatementContext ctx) {
-        super.visitExpressionStatement(ctx);
+    public Void visitUnconditionalStatement(ThoriumParser.UnconditionalStatementContext ctx) {
+        super.visitUnconditionalStatement(ctx);
         context.lastStatementValue = context.popStack();
 
         return null;
@@ -62,6 +62,45 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         visitStatements(ctx);
 
         context = context.destroyAndRestoreParent();
+    }
+
+    @Override
+    public Void visitConditionalIfStatement(ThoriumParser.ConditionalIfStatementContext ctx) {
+        // FIXME SEM add check that potential assigned variable is already defined in symbol table
+        if (isExpressionTrue(ctx.expression(1))) {
+            visit(ctx.expression(0));
+            context.lastStatementValue = context.popStack();
+        } else {
+            context.lastStatementValue = DirectValue.build();
+        }
+
+        return null;
+    }
+
+    private boolean isExpressionTrue(ThoriumParser.ExpressionContext expression) {
+        visit(expression);
+
+        Value condition = context.popStack();
+
+        // TODO SEM: move this
+        if (condition.type() != Type.BOOLEAN) {
+            throw new InvalidTypeException("Boolean expected, got " + condition.type());
+        }
+
+        return condition.value().equals(DirectValue.build(true));
+    }
+
+    @Override
+    public Void visitConditionalUnlessStatement(ThoriumParser.ConditionalUnlessStatementContext ctx) {
+        // FIXME SEM add check that potential assigned variable is already defined in symbol table
+        if (!isExpressionTrue(ctx.expression(1))) {
+            visit(ctx.expression(0));
+            context.lastStatementValue = context.popStack();
+        } else {
+            context.lastStatementValue = DirectValue.build();
+        }
+
+        return null;
     }
     //endregion
 
@@ -159,16 +198,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     }
 
     private void visitNestedIfStatement(ThoriumParser.IfStatementContext ctx) {
-        visit(ctx.expression());
-
-        Value condition = context.popStack();
-
-        // TODO SEM: move this
-        if (condition.type() != Type.BOOLEAN) {
-            throw new InvalidTypeException("Boolean expected, got " + condition.type());
-        }
-
-        if (condition.value().equals(DirectValue.build(true))) {
+        if (isExpressionTrue(ctx.expression())) {
             visitStatements(ctx.statements());
         } else if (ctx.elseStatement() != null) {
             visitElseStatement(ctx.elseStatement());
