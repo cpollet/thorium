@@ -16,9 +16,6 @@
 
 package ch.pollet.thorium.jbehave;
 
-import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
-import ch.pollet.thorium.antlr.grammar.jbehave.steps.ExpressionsSteps;
-import ch.pollet.thorium.antlr.grammar.jbehave.steps.StatementsSteps;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;

@@ -17,7 +17,6 @@
 package ch.pollet.thorium.types.jbehave;
 
 import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
-import ch.pollet.thorium.types.jbehave.steps.BooleanSteps;
 import ch.pollet.thorium.types.jbehave.steps.IntegerSteps;
 
 import java.util.Collections;

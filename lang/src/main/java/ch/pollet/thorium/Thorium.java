@@ -23,41 +23,27 @@ import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
  * @author Christophe Pollet
  */
 public class Thorium {
     public static void main(String argv[]) throws Exception {
-        // create a CharStream that reads from standard input
         ANTLRInputStream input = new ANTLRInputStream("1+1;");
-        // create a lexer that feeds off of input CharStream
         ThoriumLexer lexer = new ThoriumLexer(input);
-        // create a buffer of tokens pulled from the lexer
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        // create a parser that feeds off the tokens buffer
         ThoriumParser parser = new ThoriumParser(tokens);
 
-        ParseTree tree = parser.compilationUnit(); // begin parsing at compilationUnit rule
+        ParseTree tree = parser.compilationUnit();
 
-        System.out.println(tree.toStringTree(parser)); // print LISP-style tree
-
-        // Create a generic parse tree walker that can trigger callbacks
-        ParseTreeWalker walker = new ParseTreeWalker();
+        System.out.println(tree.toStringTree(parser));
 
         EvaluationContext evaluationContext = EvaluationContext.createEmpty();
         VisitorEvaluator visitorEvaluator = new VisitorEvaluator(evaluationContext);
-        //ListenerEvaluator listenerEvaluator = new ListenerEvaluator(evaluationContext);
 
-        // Walk the tree created during the parse, trigger callbacks
-        //walker.walk(listenerEvaluator, tree);
-
-        // Visit the tree created during the parse
         visitorEvaluator.visit(tree);
 
         System.out.println(evaluationContext.lastStatementValue);
-
-        System.out.println(); // print a \n after translation
+        System.out.println();
     }
 }

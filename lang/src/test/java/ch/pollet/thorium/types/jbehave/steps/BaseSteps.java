@@ -47,6 +47,7 @@ public abstract class BaseSteps {
         this.operatorName = operator;
     }
 
+    @SuppressWarnings("unchecked")
     @Given("an exception <exception> is expected")
     public void exceptionExpected(@Named("exception") String exception) throws ClassNotFoundException {
         this.expectedExceptionType = (Class<? extends Exception>) Class.forName(exception);

@@ -89,7 +89,7 @@ public abstract class BaseSteps {
 
     @Then("the symbol $symbol has value $value of type $type")
     @Alias("the symbol <symbol> has value <value> of type <type>")
-    public void symbolHasValue(@Named("symbol") String expectedSymbol, @Named("value") String expectedValue, @Named("type") String expectedType) throws ClassNotFoundException {
+    public void symbolHasValue(@Named("symbol") String expectedSymbol, @Named("value") String expectedValue, @Named("type") String expectedType) {
         Symbol symbol = storyContext.evaluationContext.lookupSymbol(expectedSymbol);
         assertThat(symbol.type()).isEqualTo(toType(expectedType));
         assertThat(symbol.value()).isEqualTo(toValue(expectedValue, expectedType));
@@ -130,6 +130,7 @@ public abstract class BaseSteps {
         storyContext.exceptionExpected = true;
     }
 
+    @SuppressWarnings("unchecked")
     @Then(value = "the exception $exception is thrown")
     @Alias("the exception <exception> is thrown")
     public void exceptionIsThrownWithMessageStartingWith(@Named("exception") String exception) throws ClassNotFoundException {
@@ -143,6 +144,7 @@ public abstract class BaseSteps {
         storyContext.exceptionExpected = false;
     }
 
+    @SuppressWarnings("unchecked")
     @Then(value = "the exception $exception is thrown with message $message", priority = 1)
     @Alias("the exception <exception> is thrown with message <message>")
     public void exceptionIsThrown(@Named("exception") String exception, @Named("message") String message) throws ClassNotFoundException {

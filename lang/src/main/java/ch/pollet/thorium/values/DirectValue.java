@@ -70,6 +70,7 @@ public class DirectValue implements Value {
         return valuesCache.get(type);
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static DirectValue build() {
         return VOID;
     }
