@@ -41,6 +41,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     }
 
     //region Statements
+
     @Override
     public Void visitUnconditionalStatement(ThoriumParser.UnconditionalStatementContext ctx) {
         super.visitUnconditionalStatement(ctx);
@@ -82,11 +83,6 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
         Value condition = context.popStack();
 
-        // TODO SEM: move this
-        if (condition.type() != Type.BOOLEAN) {
-            throw new InvalidTypeException("Boolean expected, got " + condition.type());
-        }
-
         return condition.value().equals(DirectValue.build(true));
     }
 
@@ -102,9 +98,11 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
         return null;
     }
+
     //endregion
 
     //region Expressions
+
     @Override
     public Void visitMultiplicationExpression(ThoriumParser.MultiplicationExpressionContext ctx) {
         super.visitMultiplicationExpression(ctx);
@@ -183,9 +181,11 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
         return null;
     }
+
     //endregion
 
     //region If Statement
+
     @Override
     public Void visitIfStatement(ThoriumParser.IfStatementContext ctx) {
         context = context.createChild();
@@ -219,9 +219,11 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
         return null;
     }
+
     //endregion
 
     //region Values
+
     @Override
     public Void visitIntegerLiteral(ThoriumParser.IntegerLiteralContext ctx) {
         context.pushStack(DirectValue.build(Long.valueOf(ctx.IntegerLiteral().getText())));
@@ -272,5 +274,6 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
         return null;
     }
+
     //endregion
 }

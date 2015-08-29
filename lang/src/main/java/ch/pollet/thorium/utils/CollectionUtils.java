@@ -23,7 +23,7 @@ import java.util.Collection;
  */
 public class CollectionUtils {
     public static String concat(Collection<?> collection) {
-        return concat(collection, ",");
+        return concat(collection, ", ");
     }
 
     public static String concat(Collection<?> collection, String separator) {
