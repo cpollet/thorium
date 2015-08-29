@@ -19,9 +19,9 @@ package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 import ch.pollet.thorium.ThrowingErrorListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.antlr.grammar.ParserBuilder;
-import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import ch.pollet.thorium.evaluation.EvaluationContext;
 import ch.pollet.thorium.evaluation.VisitorEvaluator;
+import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.values.DirectValue;
@@ -136,12 +136,28 @@ public abstract class BaseSteps {
     @SuppressWarnings("unchecked")
     @Then(value = "the exception $exception is thrown")
     @Alias("the exception <exception> is thrown")
-    public void exceptionIsThrownWithMessageStartingWith(@Named("exception") String exception) throws ClassNotFoundException {
+    public void exceptionIsThrown(@Named("exception") String exception) throws ClassNotFoundException {
         assertThat(storyContext.exception)
                 .overridingErrorMessage("Expected exception not thrown")
                 .isNotNull();
         assertThat(storyContext.exception)
                 .isInstanceOf((Class<? extends Throwable>) Class.forName(exception));
+
+        storyContext.exception = null;
+        storyContext.exceptionExpected = false;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Then(value = "the exception $exception is thrown with message matching $message", priority = 2)
+    @Alias("the exception <exception> is thrown with message matching <message>")
+    public void exceptionIsThrownWithMessageMathcing(@Named("exception") String exception, @Named("message") String message) throws ClassNotFoundException {
+        assertThat(storyContext.exception)
+                .overridingErrorMessage("Expected exception not thrown")
+                .isNotNull();
+        assertThat(storyContext.exception)
+                .isInstanceOf((Class<? extends Throwable>) Class.forName(exception));
+        assertThat(storyContext.exception.getMessage())
+                .matches(message);
 
         storyContext.exception = null;
         storyContext.exceptionExpected = false;
@@ -160,6 +176,12 @@ public abstract class BaseSteps {
 
         storyContext.exception = null;
         storyContext.exceptionExpected = false;
+    }
+
+    @Then("no exceptions were thrown")
+    public void assertNoExceptionsWereThrown() {
+        assertThat(storyContext.exception)
+                .isNull();
     }
 
     @Then("the stack contains $count elements")

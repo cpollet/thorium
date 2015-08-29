@@ -16,11 +16,7 @@
 
 package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
-import ch.pollet.thorium.ThrowingErrorListener;
-import ch.pollet.thorium.antlr.ThoriumParser;
-import ch.pollet.thorium.antlr.grammar.ParserBuilder;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -42,7 +38,8 @@ public class StatementsSteps extends BaseSteps {
     @Alias("a list of statements <statements>")
     public void aListOfStatements(@Named("statements") String statements) {
         try {
-            storyContext.tree = parseTreeForStatements(statements);
+            storyContext.parser = createParser(statements);
+            storyContext.tree = storyContext.parser.statements();
         } catch (Exception e) {
             if (storyContext.exceptionExpected && storyContext.exception == null) {
                 storyContext.exception = e;
@@ -71,9 +68,5 @@ public class StatementsSteps extends BaseSteps {
         }
 
         assertThat(expectedException).isNotNull();
-    }
-
-    private ParseTree parseTreeForStatements(String expression) {
-        return createParser(expression).statements();
     }
 }

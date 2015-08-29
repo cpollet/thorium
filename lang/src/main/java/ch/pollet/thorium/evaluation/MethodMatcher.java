@@ -16,7 +16,7 @@
 
 package ch.pollet.thorium.evaluation;
 
-import ch.pollet.thorium.utils.ListUtils;
+import ch.pollet.thorium.utils.CollectionUtils;
 import ch.pollet.thorium.types.Type;
 
 import java.util.Arrays;
@@ -37,7 +37,7 @@ public class MethodMatcher {
 
     @Override
     public String toString() {
-        return name + "(" + ListUtils.concat(parameterTypes, ", ") + ")";
+        return name + "(" + CollectionUtils.concat(parameterTypes, ", ") + ")";
     }
 
     @Override

@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.semantic.exception;
+package ch.pollet.thorium.utils;
+
+import java.util.Collection;
 
 /**
  * @author Christophe Pollet
  */
-public class InvalidTypeException extends RuntimeException {
-    public InvalidTypeException(String message) {
-        super(message);
+public class CollectionUtils {
+    public static String concat(Collection<?> collection) {
+        return concat(collection, ",");
+    }
+
+    public static String concat(Collection<?> collection, String separator) {
+        return collection.stream().map(Object::toString).reduce("", (l, r) -> l + (l.isEmpty() ? "" : separator) + r);
     }
 }

@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.analysis;
 
+import ch.pollet.thorium.analysis.exceptions.InvalidTypeException;
 import ch.pollet.thorium.antlr.ThoriumBaseListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.evaluation.MethodMatcher;
@@ -29,7 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Christophe Pollet
@@ -39,14 +42,14 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     private final List<String> ruleNames;
     private ParseTreeProperty<SymbolTable> symbolTables = new ParseTreeProperty<>();
-    private ParseTreeProperty<Type> types = new ParseTreeProperty<>();
+    private ParseTreeProperty<Set<Type>> types = new ParseTreeProperty<>();
     private SymbolTable currentScope;
 
     public TypeAnalysisListener(Parser parser) {
         this.ruleNames = Arrays.asList(parser.getRuleNames());
     }
 
-    public Type getNodeType(ParseTree ctx) {
+    public Set<Type> getNodeTypes(ParseTree ctx) {
         return types.get(ctx);
     }
 
@@ -105,8 +108,32 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitIfStatement(ThoriumParser.IfStatementContext ctx) {
-        types.put(ctx, types.get(ctx.statements()));
+        Type conditionType = types.get(ctx.expression()).iterator().next();
+        if (conditionType != Type.BOOLEAN) {
+            throw InvalidTypeException.invalidType(ctx.expression().getStart(), Type.BOOLEAN, conditionType);
+        }
 
+        Set<Type> possibleTypes = new HashSet<>();
+
+        possibleTypes.addAll(types.get(ctx.statements()));
+        if (ctx.elseStatement() != null) {
+            possibleTypes.addAll(types.get(ctx.elseStatement()));
+        }
+
+        types.put(ctx, possibleTypes);
+
+        logContextInformation(ctx);
+    }
+
+    @Override
+    public void exitElseStatement(ThoriumParser.ElseStatementContext ctx) {
+        if (ctx.statements() != null) {
+            types.put(ctx, types.get(ctx.statements()));
+        } else if (ctx.ifStatement() != null) {
+            types.put(ctx, types.get(ctx.ifStatement()));
+        } else {
+            throw new IllegalArgumentException();
+        }
         logContextInformation(ctx);
     }
 
@@ -122,19 +149,19 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitMultiplicationExpression(ThoriumParser.MultiplicationExpressionContext ctx) {
-        Type leftType = types.get(ctx.expression(0));
-        Type rightType = types.get(ctx.expression(1));
+        Type leftType = types.get(ctx.expression(0)).iterator().next();
+        Type rightType = types.get(ctx.expression(1)).iterator().next();
         Type resultType = leftType.lookupMethod(new MethodMatcher("*", rightType)).getType();
-        types.put(ctx, resultType);
+        types.put(ctx, asSet(resultType));
         logContextInformation(ctx);
     }
 
     @Override
     public void exitAdditionExpression(ThoriumParser.AdditionExpressionContext ctx) {
-        Type leftType = types.get(ctx.expression(0));
-        Type rightType = types.get(ctx.expression(1));
+        Type leftType = types.get(ctx.expression(0)).iterator().next();
+        Type rightType = types.get(ctx.expression(1)).iterator().next();
         Type resultType = leftType.lookupMethod(new MethodMatcher("+", rightType)).getType();
-        types.put(ctx, resultType);
+        types.put(ctx, asSet(resultType));
         logContextInformation(ctx);
     }
 
@@ -146,14 +173,20 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitAssignmentExpression(ThoriumParser.AssignmentExpressionContext ctx) {
-        // TODO check type on the left
+        // TODO SEM check type on the left
         types.put(ctx, types.get(ctx.expression(1)));
         logContextInformation(ctx);
     }
 
     @Override
     public void exitBlockExpression(ThoriumParser.BlockExpressionContext ctx) {
-        types.put(ctx, types.get(ctx.block()));
+        Set<Type> possibleTypes = types.get(ctx.block());
+
+        if (possibleTypes.size() > 1) {
+            throw InvalidTypeException.ambiguousType(ctx.getStart(), possibleTypes);
+        }
+
+        types.put(ctx, possibleTypes);
         logContextInformation(ctx);
     }
 
@@ -163,19 +196,19 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitBooleanLiteral(ThoriumParser.BooleanLiteralContext ctx) {
-        types.put(ctx, Type.BOOLEAN);
+        types.put(ctx, asSet(Type.BOOLEAN));
         logContextInformation(ctx);
     }
 
     @Override
     public void exitIntegerLiteral(ThoriumParser.IntegerLiteralContext ctx) {
-        types.put(ctx, Type.INTEGER);
+        types.put(ctx, asSet(Type.INTEGER));
         logContextInformation(ctx);
     }
 
     @Override
     public void exitFloatLiteral(ThoriumParser.FloatLiteralContext ctx) {
-        types.put(ctx, Type.FLOAT);
+        types.put(ctx, asSet(Type.FLOAT));
         logContextInformation(ctx);
     }
 
@@ -185,6 +218,10 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
     }
 
     //endregion
+
+    private Set<Type> asSet(Type... types) {
+        return new HashSet<>(Arrays.asList(types));
+    }
 
     private void logContextInformation(ParserRuleContext ctx) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();

@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.utils;
+package ch.pollet.thorium.analysis.jbehave;
 
+import ch.pollet.thorium.analysis.jbehave.steps.TypesAnalysisSteps;
+import ch.pollet.thorium.antlr.grammar.jbehave.steps.StatementsSteps;
+import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
+import ch.pollet.thorium.jbehave.JBehaveStoryContext;
+
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author Christophe Pollet
  */
-public class ListUtils {
-    public static String concat(List<?> list, String separator) {
-        return list.stream().map(Object::toString).reduce("", (l, r) -> l + (l.isEmpty() ? "" : separator) + r);
+public class TestControlStatementsAnalysis extends JBehaveBaseTestClass {
+    @Override
+    public List<Object> stepsDefinitions() {
+        JBehaveStoryContext storyContext = new JBehaveStoryContext();
+        return Arrays.asList(
+                new TypesAnalysisSteps(storyContext),
+                new StatementsSteps(storyContext)
+        );
     }
 }

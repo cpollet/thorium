@@ -20,7 +20,7 @@ import ch.pollet.thorium.antlr.ThoriumBaseVisitor;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException;
-import ch.pollet.thorium.semantic.exception.InvalidTypeException;
+import ch.pollet.thorium.analysis.exceptions.InvalidTypeException;
 import ch.pollet.thorium.semantic.exception.MethodNotFoundException;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.types.Type;

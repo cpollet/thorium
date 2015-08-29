@@ -20,6 +20,7 @@ import ch.pollet.thorium.analysis.TypeAnalysisListener;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.jbehave.core.annotations.Alias;
+import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
@@ -42,13 +43,21 @@ public class TypesAnalysisSteps {
 
         storyContext.listener = new TypeAnalysisListener(storyContext.parser);
 
-        walker.walk(storyContext.listener, storyContext.tree);
+        try {
+            walker.walk(storyContext.listener, storyContext.tree);
+        } catch (Exception e) {
+            if (storyContext.exceptionExpected && storyContext.exception == null) {
+                storyContext.exception = e;
+            } else {
+                throw e;
+            }
+        }
     }
 
-    @Then("root node is of types <types>")
-    @Alias("root node is of types $types")
-    public void assertRootNodeIsOfTypes(@Named("types") String types) {
-        assertThat(storyContext.listener.getNodeType(storyContext.tree).toString())
-                .isEqualTo(types);
+    @Then("root node is of type <type>")
+    @Alias("root node is of type $type")
+    public void assertRootNodeIsOfTypes(@Named("type") String type) {
+        assertThat(storyContext.listener.getNodeTypes(storyContext.tree).iterator().next().toString())
+                .isEqualTo(type);
     }
 }
