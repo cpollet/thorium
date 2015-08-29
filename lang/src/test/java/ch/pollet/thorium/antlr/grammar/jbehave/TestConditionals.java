@@ -19,6 +19,7 @@ package ch.pollet.thorium.antlr.grammar.jbehave;
 import ch.pollet.thorium.antlr.grammar.jbehave.steps.ExpressionsSteps;
 import ch.pollet.thorium.antlr.grammar.jbehave.steps.StatementsSteps;
 import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
+import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.List;
 public class TestConditionals extends JBehaveBaseTestClass {
     @Override
     public List<Object> stepsDefinitions() {
-        StoryContext storyContext = new StoryContext();
+        JBehaveStoryContext storyContext = new JBehaveStoryContext();
         return Arrays.asList(
                 new ExpressionsSteps(storyContext),
                 new StatementsSteps(storyContext)

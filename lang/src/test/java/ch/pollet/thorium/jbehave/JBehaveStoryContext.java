@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.antlr.grammar.jbehave;
+package ch.pollet.thorium.jbehave;
 
+import ch.pollet.thorium.analysis.TypeAnalysisListener;
+import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.evaluation.EvaluationContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 /**
  * @author Christophe Pollet
  */
-public class StoryContext {
+public class JBehaveStoryContext {
     public ParseTree tree;
     public EvaluationContext evaluationContext;
     public Exception exception;
     public boolean exceptionExpected;
+    public ThoriumParser parser;
+    public TypeAnalysisListener listener;
 }

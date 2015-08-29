@@ -16,7 +16,10 @@
 
 package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
-import ch.pollet.thorium.antlr.grammar.jbehave.StoryContext;
+import ch.pollet.thorium.ThrowingErrorListener;
+import ch.pollet.thorium.antlr.ThoriumParser;
+import ch.pollet.thorium.antlr.grammar.ParserBuilder;
+import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import ch.pollet.thorium.evaluation.EvaluationContext;
 import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
@@ -41,9 +44,9 @@ import static org.fest.assertions.Fail.failure;
  * @author Christophe Pollet
  */
 public abstract class BaseSteps {
-    protected final StoryContext storyContext;
+    protected final JBehaveStoryContext storyContext;
 
-    public BaseSteps(StoryContext storyContext) {
+    public BaseSteps(JBehaveStoryContext storyContext) {
         this.storyContext = storyContext;
     }
 
@@ -175,6 +178,18 @@ public abstract class BaseSteps {
                 storyContext.evaluationContext.pushStack(stack.pop());
             }
         }
+    }
+
+    protected ThoriumParser createParser(String code) {
+        ThoriumParser parser = ParserBuilder
+                .create()
+                .withCode(code)
+                .build();
+
+        parser.removeErrorListeners();
+        parser.addErrorListener(ThrowingErrorListener.INSTANCE);
+
+        return parser;
     }
 
     protected Type toType(String type) {
