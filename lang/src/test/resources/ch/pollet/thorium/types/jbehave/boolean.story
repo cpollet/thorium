@@ -1,11 +1,11 @@
-Scenario: boolean operators
-Given operation is <left> <operator> <right>
-When decode operator
+Scenario: boolean method
+Given method is <left> <method> <right>
+When decode method
 And evaluate
 Then the result is <result>
 
 Examples:
-| left      | operator  | right     | result    |
+| left      | method    | right     | result    |
 | true      | +         | true      | true      |
 | true      | +         | false     | true      |
 | true      | +         | Boolean   | true      |
@@ -23,14 +23,24 @@ Examples:
 | Boolean   | *         | true      | Boolean   |
 | Boolean   | *         | false     | false     |
 
-Scenario: boolean operator with unsupported operand
-Given operation is <left> <operator> <right>
+Scenario: boolean method types
+Given method is <left> <method> <right>
+When decode method
+Then the result type is <type>
+
+Examples:
+| left      | method    | right     | type      |
+| Boolean   | +         | Boolean   | Boolean   |
+| Boolean   | *         | Boolean   | Boolean   |
+
+Scenario: boolean method with unsupported parameter
+Given method is <left> <method> <right>
 Given an exception <exception> is expected
-When decode operator
+When decode method
 Then the exception was thrown with message <message>
 
 Examples:
-| left      | operator  | right     | exception                                                     | message                                       |
+| left      | method    | right     | exception                                                     | message                                       |
 | Boolean   | +         | Integer   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method +(Integer) not implemented on Boolean  |
 | Boolean   | +         | Float     | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method +(Float) not implemented on Boolean    |
 | Boolean   | *         | Integer   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method *(Integer) not implemented on Boolean  |

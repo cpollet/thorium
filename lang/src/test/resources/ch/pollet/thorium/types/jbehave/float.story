@@ -1,11 +1,11 @@
-Scenario: integer operators
-Given operation is <left> <operator> <right>
-When decode operator
+Scenario: float methods
+Given method is <left> <method> <right>
+When decode method
 And evaluate
 Then the result is <result>
 
 Examples:
-| left      | operator  | right     | result    |
+| left      | method    | right     | result    |
 | 1.0       | +         | -1.0      | 0.0       |
 | 1.0       | +         | 0.0       | 1.0       |
 | 1.0       | +         | 0         | 1.0       |
@@ -23,13 +23,25 @@ Examples:
 | Float     | *         | 0         | 0.0       |
 | Float     | *         | 0.0       | 0.0       |
 
-Scenario: float operator with unsupported operand
-Given operation is <left> <operator> <right>
+Scenario: float method types
+Given method is <left> <method> <right>
+When decode method
+Then the result type is <type>
+
+Examples:
+| left      | method    | right     | type      |
+| Float     | +         | Integer   | Float     |
+| Float     | +         | Float     | Float     |
+| Float     | *         | Integer   | Float     |
+| Float     | *         | Float     | Float     |
+
+Scenario: float method with unsupported parameter
+Given method is <left> <method> <right>
 Given an exception <exception> is expected
-When decode operator
+When decode method
 Then the exception was thrown with message <message>
 
 Examples:
-| left      | operator  | right     | exception                                                     | message                                       |
+| left      | method    | right     | exception                                                     | message                                       |
 | Float     | +         | Boolean   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method +(Boolean) not implemented on Float    |
 | Float     | *         | Boolean   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method *(Boolean) not implemented on Float    |

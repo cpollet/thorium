@@ -16,8 +16,8 @@
 
 package ch.pollet.thorium.types;
 
+import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
-import ch.pollet.thorium.evaluation.Operator;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
 
@@ -30,9 +30,9 @@ import java.util.Map;
 public class BooleanType extends BaseType {
     static final BooleanType INSTANCE = new BooleanType();
 
-    private static final Map<MethodMatcher, Operator> symbolTable = new HashMap<MethodMatcher, Operator>() {{
-        put(new MethodMatcher("+", BooleanType.INSTANCE), BooleanType::or);
-        put(new MethodMatcher("*", BooleanType.INSTANCE), BooleanType::and);
+    private static final Map<MethodMatcher, Method> symbolTable = new HashMap<MethodMatcher, Method>() {{
+        put(new MethodMatcher("+", BooleanType.INSTANCE), new Method(BooleanType.INSTANCE, BooleanType::or));
+        put(new MethodMatcher("*", BooleanType.INSTANCE), new Method(BooleanType.INSTANCE, BooleanType::and));
     }};
 
     private BooleanType() {
@@ -40,7 +40,7 @@ public class BooleanType extends BaseType {
     }
 
     @Override
-    Map<MethodMatcher, Operator> symbolTable() {
+    Map<MethodMatcher, Method> symbolTable() {
         return symbolTable;
     }
 

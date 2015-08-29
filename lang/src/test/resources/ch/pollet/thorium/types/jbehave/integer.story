@@ -1,11 +1,11 @@
-Scenario: integer operators
-Given operation is <left> <operator> <right>
-When decode operator
+Scenario: integer methods
+Given method is <left> <method> <right>
+When decode method
 And evaluate
 Then the result is <result>
 
 Examples:
-| left      | operator  | right     | result    |
+| left      | method    | right     | result    |
 | 1         | +         | -1        | 0         |
 | 1         | +         | 0         | 1         |
 | 1         | +         | 0.0       | 1.0       |
@@ -23,13 +23,25 @@ Examples:
 | Integer   | *         | 0         | 0         |
 | Integer   | *         | 0.0       | 0.0       |
 
-Scenario: integer operator with unsupported operand
-Given operation is <left> <operator> <right>
+Scenario: integer method types
+Given method is <left> <method> <right>
+When decode method
+Then the result type is <type>
+
+Examples:
+| left      | method    | right     | type      |
+| Integer   | +         | Integer   | Integer   |
+| Integer   | +         | Float     | Float     |
+| Integer   | *         | Integer   | Integer   |
+| Integer   | *         | Float     | Float     |
+
+Scenario: integer method with unsupported parameter
+Given method is <left> <method> <right>
 Given an exception <exception> is expected
-When decode operator
+When decode method
 Then the exception was thrown with message <message>
 
 Examples:
-| left      | operator  | right     | exception                                                     | message                                       |
+| left      | method    | right     | exception                                                     | message                                       |
 | Integer   | +         | Boolean   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method +(Boolean) not implemented on Integer  |
 | Integer   | *         | Boolean   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method *(Boolean) not implemented on Integer  |

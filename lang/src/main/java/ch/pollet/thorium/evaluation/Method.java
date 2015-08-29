@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.types;
+package ch.pollet.thorium.evaluation;
 
-import ch.pollet.thorium.evaluation.Method;
-import ch.pollet.thorium.evaluation.MethodMatcher;
+import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.values.Value;
 
 /**
  * @author Christophe Pollet
  */
-public interface Type {
-    int ID_VOID = 0;
-    int ID_BOOLEAN = 1;
-    int ID_INTEGER = 2;
-    int ID_FLOAT = 3;
+public class Method {
+    private Type type;
+    private Operator op;
 
-    Type BOOLEAN = BooleanType.INSTANCE;
-    Type INTEGER = IntegerType.INSTANCE;
-    Type FLOAT = FloatType.INSTANCE;
-    Type VOID = VoidType.INSTANCE;
-
-    int id();
-
-    static boolean isAssignableFrom(Type target, Type source) {
-        return target == null || target == VOID || target.equals(source);
+    public Method(Type type, Operator op) {
+        this.type = type;
+        this.op = op;
     }
 
-    Method lookupMethod(MethodMatcher matcher);
+    public Type getType() {
+        return type;
+    }
+
+    public Value apply(Value left, Value right) {
+        return op.apply(left, right);
+    }
 }

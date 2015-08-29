@@ -125,14 +125,14 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         Value right = context.popStack();
         Value left = context.popStack();
 
-        Operator op = left.type().lookupMethod(new MethodMatcher(operator, right.type()));
+        Method method = left.type().lookupMethod(new MethodMatcher(operator, right.type()));
 
         // TODO SEM move this
-        if (op == null) {
+        if (method == null) {
             throw new MethodNotFoundException("Method " + operator + "(" + right.type() + ") not implemented on " + left.type());
         }
 
-        context.pushStack(op.apply(left, right));
+        context.pushStack(method.apply(left, right));
     }
 
     @Override

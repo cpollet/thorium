@@ -16,8 +16,8 @@
 
 package ch.pollet.thorium.types;
 
+import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
-import ch.pollet.thorium.evaluation.Operator;
 import ch.pollet.thorium.semantic.exception.MethodNotFoundException;
 
 import java.util.Map;
@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public abstract class BaseType implements Type {
     @Override
-    public Operator lookupMethod(MethodMatcher matcher) {
+    public Method lookupMethod(MethodMatcher matcher) {
         if (symbolTable().containsKey(matcher)) {
             return symbolTable().get(matcher);
         }
@@ -35,5 +35,5 @@ public abstract class BaseType implements Type {
         throw new MethodNotFoundException("Method " + matcher + " not implemented on " + this);
     }
 
-    abstract Map<MethodMatcher, Operator> symbolTable();
+    abstract Map<MethodMatcher, Method> symbolTable();
 }

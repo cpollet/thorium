@@ -16,8 +16,8 @@
 
 package ch.pollet.thorium.types;
 
+import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
-import ch.pollet.thorium.evaluation.Operator;
 import ch.pollet.thorium.semantic.exception.MethodNotFoundException;
 
 /**
@@ -36,7 +36,7 @@ public class VoidType implements Type {
     }
 
     @Override
-    public Operator lookupMethod(MethodMatcher matcher) {
+    public Method lookupMethod(MethodMatcher matcher) {
         //return VoidType::noValue;
         throw new MethodNotFoundException("Method " + matcher + " not implemented on " + this);
     }
@@ -45,8 +45,4 @@ public class VoidType implements Type {
     public String toString() {
         return "Void";
     }
-
-//    private static Value noValue(Value left, Value right) {
-//        return DirectValue.build();
-//    }
 }

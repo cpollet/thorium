@@ -16,8 +16,8 @@
 
 package ch.pollet.thorium.types;
 
+import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
-import ch.pollet.thorium.evaluation.Operator;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
 
@@ -30,11 +30,11 @@ import java.util.Map;
 public class IntegerType extends BaseType {
     static final IntegerType INSTANCE = new IntegerType();
 
-    private static final Map<MethodMatcher, Operator> symbolTable = new HashMap<MethodMatcher, Operator>() {{
-        put(new MethodMatcher("+", FloatType.INSTANCE), IntegerType::plusFloat);
-        put(new MethodMatcher("+", IntegerType.INSTANCE), IntegerType::plusInteger);
-        put(new MethodMatcher("*", FloatType.INSTANCE), IntegerType::timesFloat);
-        put(new MethodMatcher("*", IntegerType.INSTANCE), IntegerType::timesInteger);
+    private static final Map<MethodMatcher, Method> symbolTable = new HashMap<MethodMatcher, Method>() {{
+        put(new MethodMatcher("+", FloatType.INSTANCE), new Method(FloatType.INSTANCE, IntegerType::plusFloat));
+        put(new MethodMatcher("+", IntegerType.INSTANCE), new Method(IntegerType.INSTANCE, IntegerType::plusInteger));
+        put(new MethodMatcher("*", FloatType.INSTANCE), new Method(FloatType.INSTANCE, IntegerType::timesFloat));
+        put(new MethodMatcher("*", IntegerType.INSTANCE), new Method(IntegerType.INSTANCE, IntegerType::timesInteger));
     }};
 
     private IntegerType() {
@@ -42,7 +42,7 @@ public class IntegerType extends BaseType {
     }
 
     @Override
-    Map<MethodMatcher, Operator> symbolTable() {
+    Map<MethodMatcher, Method> symbolTable() {
         return symbolTable;
     }
 

@@ -16,8 +16,8 @@
 
 package ch.pollet.thorium.types.jbehave.steps;
 
+import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
-import ch.pollet.thorium.evaluation.Operator;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
@@ -34,17 +34,17 @@ import static org.fest.assertions.Assertions.assertThat;
 public abstract class BaseSteps {
     private Value left;
     private Value right;
-    private String operatorName;
-    private Operator operator;
+    private String methodName;
+    private Method method;
     private Value result;
     private Class<? extends Exception> expectedExceptionType;
     private Exception exception;
 
-    @Given("operation is <left> <operator> <right>")
-    public void operationDefinition(@Named("left") String left, @Named("operator") String operator, @Named("right") String right) {
+    @Given("method is <left> <method> <right>")
+    public void methodDefinition(@Named("left") String left, @Named("method") String method, @Named("right") String right) {
         this.left = decodeValue(left);
         this.right = decodeValue(right);
-        this.operatorName = operator;
+        this.methodName = method;
     }
 
     @SuppressWarnings("unchecked")
@@ -53,10 +53,10 @@ public abstract class BaseSteps {
         this.expectedExceptionType = (Class<? extends Exception>) Class.forName(exception);
     }
 
-    @When("decode operator")
-    public void decodeOperator() {
+    @When("decode method")
+    public void decodeMethod() {
         try {
-            operator = left.type().lookupMethod(new MethodMatcher(operatorName, right.type()));
+            method = left.type().lookupMethod(new MethodMatcher(methodName, right.type()));
         } catch (Exception e) {
             if (expectedExceptionType != null && e.getClass().equals(expectedExceptionType)) {
                 this.exception = e;
@@ -68,7 +68,7 @@ public abstract class BaseSteps {
 
     @When("evaluate")
     public void evaluate() {
-        result = operator.apply(left, right);
+        result = method.apply(left, right);
     }
 
     @Then("the result is <result>")
@@ -87,6 +87,13 @@ public abstract class BaseSteps {
         this.expectedExceptionType = null;
         this.exception = null;
     }
+
+    @Then("the result type is <type>")
+    public void assertResultType(@Named("type") String type) {
+        assertThat(method.getType().toString())
+                .isEqualTo(type);
+    }
+
 
     private Value decodeValue(String value) {
         switch (value) {

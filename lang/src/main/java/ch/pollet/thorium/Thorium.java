@@ -28,7 +28,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
  * @author Christophe Pollet
  */
 public class Thorium {
-    public static void main(String argv[]) throws Exception {
+    public static void main(String args[]) throws Exception {
         ANTLRInputStream input = new ANTLRInputStream("1+1;");
         ThoriumLexer lexer = new ThoriumLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);

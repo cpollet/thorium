@@ -16,8 +16,8 @@
 
 package ch.pollet.thorium.types;
 
+import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
-import ch.pollet.thorium.evaluation.Operator;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
 
@@ -30,11 +30,11 @@ import java.util.Map;
 public class FloatType extends BaseType {
     static final FloatType INSTANCE = new FloatType();
 
-    private static final Map<MethodMatcher, Operator> symbolTable = new HashMap<MethodMatcher, Operator>() {{
-        put(new MethodMatcher("+", FloatType.INSTANCE), FloatType::plusFloat);
-        put(new MethodMatcher("+", IntegerType.INSTANCE), FloatType::plusInteger);
-        put(new MethodMatcher("*", FloatType.INSTANCE), FloatType::timesFloat);
-        put(new MethodMatcher("*", IntegerType.INSTANCE), FloatType::timesInteger);
+    private static final Map<MethodMatcher, Method> symbolTable = new HashMap<MethodMatcher, Method>() {{
+        put(new MethodMatcher("+", FloatType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::plusFloat));
+        put(new MethodMatcher("+", IntegerType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::plusInteger));
+        put(new MethodMatcher("*", FloatType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::timesFloat));
+        put(new MethodMatcher("*", IntegerType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::timesInteger));
     }};
 
     private FloatType() {
@@ -42,7 +42,7 @@ public class FloatType extends BaseType {
     }
 
     @Override
-    Map<MethodMatcher, Operator> symbolTable() {
+    Map<MethodMatcher, Method> symbolTable() {
         return symbolTable;
     }
 
