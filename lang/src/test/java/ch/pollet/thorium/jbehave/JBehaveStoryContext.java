@@ -19,6 +19,7 @@ package ch.pollet.thorium.jbehave;
 import ch.pollet.thorium.analysis.TypeAnalysisListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.evaluation.EvaluationContext;
+import ch.pollet.thorium.evaluation.SymbolTable;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 /**
@@ -30,5 +31,6 @@ public class JBehaveStoryContext {
     public Exception exception;
     public boolean exceptionExpected;
     public ThoriumParser parser;
-    public TypeAnalysisListener listener;
+    public TypeAnalysisListener typeAnalysisListener;
+    public SymbolTable baseScope;
 }

@@ -1,3 +1,21 @@
+Scenario: types attached to all symbols
+Given a compilation unit <unit>
+When types are attached to nodes
+Then the symbol <symbol> is of type <type>
+
+Examples:
+| unit                          | symbol    | type      |
+| A = 1;                        | A         | Integer   |
+| a = 1;                        | a         | Integer   |
+| a = b; b = 1;                 | a         | Integer   |
+| a = b; b = c; c = 1;          | a         | Integer   |
+| a = (b); b = 1;               | a         | Integer   |
+| b; a = ({ b; }); b = 1;       | a         | Integer   |
+| b; a = b; b = 1 if true;      | a         | Integer   |
+| b; a = b; b = 1 unless true;  | a         | Integer   |
+|-- a = ({ b; }); b = 1; | c         | Void   |
+
+
 Scenario: types are attached to expression nodes
 Given an expression <expression>
 When types are attached to nodes
@@ -5,6 +23,8 @@ Then root node is of type <type>
 
 Examples:
 | expression                                            | type          |
+| a                                                     | Void          |
+| A                                                     | Void          |
 | true                                                  | Boolean       |
 | 1                                                     | Integer       |
 | 1.0                                                   | Float         |
@@ -21,16 +41,7 @@ Examples:
 | (if (true) { 1; } else { 1; })                        | Integer       |
 | (if (true) { 1; } else if (false) { 1; } else { 1; }) | Integer       |
 
-Scenario: semantically invalid from the symbol checking point of view, but valid from the pure expression type checking point of view
-Given an expression <expression>
-When types are attached to nodes
-Then root node is of type <type>
-
-Examples:
-| expression                                            | type          |
-| ({a = 1; a = 1.0;})                                   | Float         |
-
-Scenario: expressions can have only one type
+Scenario: expressions can only have one type
 Given an expression <expression>
 And exception expected
 When types are attached to nodes
@@ -41,3 +52,5 @@ Examples:
 | (if (true) { 1; } else { 1.0; })                              | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
 | (if (true) { 1; } else if (false) { 1.0; } else { true; })    | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
 | (if (true) { 1; } else if (false) { 1; } else { true; })      | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
+| ({a = 1; a = 1.0;})                                           | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
+

@@ -16,7 +16,6 @@
 
 package ch.pollet.thorium.jbehave;
 
-import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;

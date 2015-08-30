@@ -22,6 +22,10 @@ import ch.pollet.thorium.types.Type;
  * @author Christophe Pollet
  */
 public abstract class Symbol implements Value {
+    public enum SymbolType {
+        VARIABLE, CONSTANT
+    }
+
     private String name;
     private Type type;
     private DirectValue value;
@@ -42,6 +46,24 @@ public abstract class Symbol implements Value {
         this.name = name;
         this.type = type;
         this.value = DirectValue.build();
+    }
+
+    public void setType(Type type) {
+        if (this.type != Type.VOID) {
+            throw new IllegalStateException();
+        }
+        this.type = type;
+    }
+
+    public static Symbol create(SymbolType symbolType, String name) {
+        switch (symbolType) {
+            case VARIABLE:
+                return new Variable(name);
+            case CONSTANT:
+                return new Constant(name);
+        }
+
+        throw new IllegalArgumentException();
     }
 
     @Override

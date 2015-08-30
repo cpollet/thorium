@@ -37,6 +37,7 @@ public class StatementsSteps extends BaseSteps {
     @Given("a list of statements $statements")
     @Alias("a list of statements <statements>")
     public void aListOfStatements(@Named("statements") String statements) {
+        init();
         try {
             storyContext.parser = createParser(statements);
             storyContext.tree = storyContext.parser.statements();

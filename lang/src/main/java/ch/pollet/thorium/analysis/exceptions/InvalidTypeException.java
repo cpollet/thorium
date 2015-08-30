@@ -29,6 +29,8 @@ import java.util.Collection;
 public class InvalidTypeException extends RuntimeException {
     private static final String INVALID_TYPE = "Invalid type found on line {0}: expected {1} but got {2}.";
     private static final String AMBIGUOUS_TYPE = "Ambiguous type found on line {0}: possible types are {1} but only one expected.";
+    private static final String TYPE_EXPECTED = "Type expected, but got Void.";
+    private static final String NOT_COMPATIBLE = "Uncompatible types fond on line {0}: {1} is no assignable to {2}";
 
     public InvalidTypeException(String message) {
         super(message);
@@ -42,6 +44,14 @@ public class InvalidTypeException extends RuntimeException {
         return new InvalidTypeException(formatMessage(AMBIGUOUS_TYPE, location(token), CollectionUtils.concat(types)));
     }
 
+    public static InvalidTypeException typeExpected(Token token) {
+        return new InvalidTypeException(formatMessage(TYPE_EXPECTED, location(token)));
+    }
+
+    public static InvalidTypeException notCompatible(Token token, Type right, Type left) {
+        return new InvalidTypeException(formatMessage(NOT_COMPATIBLE, location(token), right.toString(), left.toString()));
+    }
+
     private static String location(Token token) {
         return token.getLine() + ":" + token.getCharPositionInLine();
     }
@@ -49,4 +59,6 @@ public class InvalidTypeException extends RuntimeException {
     private static String formatMessage(String message, String... parameters) {
         return MessageFormat.format(message, parameters);
     }
+
+
 }

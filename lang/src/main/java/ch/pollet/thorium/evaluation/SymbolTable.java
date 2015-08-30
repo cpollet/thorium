@@ -61,6 +61,16 @@ public class SymbolTable {
         return parent.findTableContaining(name);
     }
 
+    public boolean isDefined(String name) {
+        try {
+            get(name);
+        } catch (SymbolNotFoundException e) {
+            return false;
+        }
+
+        return true;
+    }
+
     public Symbol get(String name) {
         SymbolTable symbolTable = findTableContaining(name);
 

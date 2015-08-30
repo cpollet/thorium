@@ -22,6 +22,7 @@ import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.evaluation.MethodMatcher;
 import ch.pollet.thorium.evaluation.SymbolTable;
 import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.values.Symbol;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -41,65 +42,62 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
     private final static Logger LOG = LoggerFactory.getLogger(TypeAnalysisListener.class);
 
     private final List<String> ruleNames;
-    private ParseTreeProperty<SymbolTable> symbolTables = new ParseTreeProperty<>();
+
     private ParseTreeProperty<Set<Type>> types = new ParseTreeProperty<>();
+
     private SymbolTable currentScope;
 
-    public TypeAnalysisListener(Parser parser) {
+    private ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
+    private ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
+
+    public TypeAnalysisListener(Parser parser, SymbolTable baseScope) {
         this.ruleNames = Arrays.asList(parser.getRuleNames());
+        this.currentScope = baseScope;
+    }
+
+    public Type getNodeType(ParseTree ctx) {
+        Set<Type> possibleTypes = types.get(ctx);
+        if (possibleTypes.size() != 1) {
+            throw new IllegalStateException();
+        }
+
+        return possibleTypes.iterator().next();
     }
 
     public Set<Type> getNodeTypes(ParseTree ctx) {
         return types.get(ctx);
     }
 
-    @Override
-    public void enterCompilationUnit(ThoriumParser.CompilationUnitContext ctx) {
-        currentScope = new SymbolTable();
-    }
-
     //region Statements
 
     @Override
     public void exitBlock(ThoriumParser.BlockContext ctx) {
-        types.put(ctx, types.get(ctx.getChild(0)));
-        logContextInformation(ctx);
+        if (ctx.ifStatement() != null) {
+            findNodeTypes(ctx, ctx.ifStatement());
+        } else if (ctx.statementsBlock() != null) {
+            findNodeTypes(ctx, ctx.statementsBlock());
+        }
     }
 
     @Override
     public void exitStatementsBlock(ThoriumParser.StatementsBlockContext ctx) {
-        types.put(ctx, types.get(ctx.statements()));
-        logContextInformation(ctx);
+        findNodeTypes(ctx, ctx.statements());
     }
 
     @Override
     public void exitStatements(ThoriumParser.StatementsContext ctx) {
-        types.put(ctx, types.get(ctx.getChild(ctx.getChildCount() - 1)));
-        logContextInformation(ctx);
+        findNodeTypes(ctx, ctx.statement(ctx.statement().size() - 1));
     }
 
     @Override
     public void exitStatement(ThoriumParser.StatementContext ctx) {
-        types.put(ctx, types.get(ctx.getChild(0)));
-        logContextInformation(ctx);
-    }
-
-    @Override
-    public void exitUnconditionalStatement(ThoriumParser.UnconditionalStatementContext ctx) {
-        types.put(ctx, types.get(ctx.expression()));
-        logContextInformation(ctx);
-    }
-
-    @Override
-    public void exitConditionalIfStatement(ThoriumParser.ConditionalIfStatementContext ctx) {
-        types.put(ctx, types.get(ctx.expression(0)));
-        logContextInformation(ctx);
-    }
-
-    @Override
-    public void exitConditionalUnlessStatement(ThoriumParser.ConditionalUnlessStatementContext ctx) {
-        types.put(ctx, types.get(ctx.expression(0)));
-        logContextInformation(ctx);
+        if (ctx.block() != null) {
+            findNodeTypes(ctx, ctx.block());
+        } else if (ctx.expressionStatement() != null) {
+            findNodeTypes(ctx, ctx.expressionStatement());
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     //endregion
@@ -108,16 +106,27 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitIfStatement(ThoriumParser.IfStatementContext ctx) {
-        Type conditionType = types.get(ctx.expression()).iterator().next();
+        Type conditionType = getNodeType(ctx.expression());
         if (conditionType != Type.BOOLEAN) {
             throw InvalidTypeException.invalidType(ctx.expression().getStart(), Type.BOOLEAN, conditionType);
         }
 
-        Set<Type> possibleTypes = new HashSet<>();
+        Set<Type> possibleTypes = getNodeTypes(ctx.statements());
+        if (possibleTypes.contains(Type.VOID)) {
+            nodeObserverRegistry.registerObserver(ctx, ctx.statements());
+        } else {
+            nodeObserverRegistry.notifyObservers(ctx, this);
+        }
 
-        possibleTypes.addAll(types.get(ctx.statements()));
         if (ctx.elseStatement() != null) {
-            possibleTypes.addAll(types.get(ctx.elseStatement()));
+            Set<Type> possibleTypesFromFalseBranch = getNodeTypes(ctx.elseStatement());
+            if (possibleTypes.contains(Type.VOID)) {
+                nodeObserverRegistry.registerObserver(ctx, ctx.elseStatement());
+            } else {
+                nodeObserverRegistry.notifyObservers(ctx, this);
+            }
+
+            possibleTypes.addAll(possibleTypesFromFalseBranch);
         }
 
         types.put(ctx, possibleTypes);
@@ -128,13 +137,31 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
     @Override
     public void exitElseStatement(ThoriumParser.ElseStatementContext ctx) {
         if (ctx.statements() != null) {
-            types.put(ctx, types.get(ctx.statements()));
+            findNodeTypes(ctx, ctx.statements());
         } else if (ctx.ifStatement() != null) {
-            types.put(ctx, types.get(ctx.ifStatement()));
+            findNodeTypes(ctx, ctx.ifStatement());
         } else {
             throw new IllegalArgumentException();
         }
-        logContextInformation(ctx);
+    }
+
+    //endregion
+
+    //region Mono-values statements
+
+    @Override
+    public void exitUnconditionalStatement(ThoriumParser.UnconditionalStatementContext ctx) {
+        findNodeType(ctx, ctx.expression());
+    }
+
+    @Override
+    public void exitConditionalIfStatement(ThoriumParser.ConditionalIfStatementContext ctx) {
+        findNodeType(ctx, ctx.expression(0));
+    }
+
+    @Override
+    public void exitConditionalUnlessStatement(ThoriumParser.ConditionalUnlessStatementContext ctx) {
+        findNodeType(ctx, ctx.expression(0));
     }
 
     //endregion
@@ -143,11 +170,10 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitLiteralExpression(ThoriumParser.LiteralExpressionContext ctx) {
-        types.put(ctx, types.get(ctx.literal()));
-        logContextInformation(ctx);
+        findNodeType(ctx, ctx.literal());
     }
 
-    @Override
+    @Override // FIXME
     public void exitMultiplicationExpression(ThoriumParser.MultiplicationExpressionContext ctx) {
         Type leftType = types.get(ctx.expression(0)).iterator().next();
         Type rightType = types.get(ctx.expression(1)).iterator().next();
@@ -156,7 +182,7 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
         logContextInformation(ctx);
     }
 
-    @Override
+    @Override // FIXME
     public void exitAdditionExpression(ThoriumParser.AdditionExpressionContext ctx) {
         Type leftType = types.get(ctx.expression(0)).iterator().next();
         Type rightType = types.get(ctx.expression(1)).iterator().next();
@@ -167,14 +193,30 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitParenthesisExpression(ThoriumParser.ParenthesisExpressionContext ctx) {
-        types.put(ctx, types.get(ctx.expression()));
-        logContextInformation(ctx);
+        findNodeType(ctx, ctx.expression());
     }
 
     @Override
     public void exitAssignmentExpression(ThoriumParser.AssignmentExpressionContext ctx) {
-        // TODO SEM check type on the left
-        types.put(ctx, types.get(ctx.expression()));
+        Type leftType = getNodeType(ctx.identifier());
+        Type rightType = getNodeType(ctx.expression());
+
+        if (rightType != Type.VOID) {
+            if (leftType == Type.VOID) {
+                Symbol symbol = currentScope.get(ctx.identifier().getText());
+                symbol.setType(rightType);
+                symbolObserverRegistry.notifyObservers(symbol, this);
+            } else if (!Type.isAssignableFrom(leftType, rightType)) {
+                throw InvalidTypeException.notCompatible(ctx.start, rightType, leftType);
+            }
+
+            types.put(ctx, asSet(rightType));
+            nodeObserverRegistry.notifyObservers(ctx, this);
+        } else {
+            types.put(ctx, asSet(Type.VOID));
+            nodeObserverRegistry.registerObserver(ctx, ctx.expression());
+        }
+
         logContextInformation(ctx);
     }
 
@@ -186,8 +228,7 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
             throw InvalidTypeException.ambiguousType(ctx.getStart(), possibleTypes);
         }
 
-        types.put(ctx, possibleTypes);
-        logContextInformation(ctx);
+        findNodeType(ctx, ctx.block());
     }
 
     //endregion
@@ -214,10 +255,75 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitIdentifierLiteral(ThoriumParser.IdentifierLiteralContext ctx) {
-        // TODO
+        findNodeType(ctx, ctx.identifier());
+    }
+
+    @Override
+    public void exitVariableName(ThoriumParser.VariableNameContext ctx) {
+        registerSymbol(Symbol.SymbolType.VARIABLE, ctx);
+    }
+
+    @Override
+    public void exitConstantName(ThoriumParser.ConstantNameContext ctx) {
+        registerSymbol(Symbol.SymbolType.VARIABLE, ctx);
+    }
+
+    private void registerSymbol(Symbol.SymbolType type, ParserRuleContext ctx) {
+        String name = ctx.getText();
+
+        if (!currentScope.isDefined(name)) {
+            currentScope.put(Symbol.create(type, name));
+        }
+
+        Symbol symbol = currentScope.get(name);
+        types.put(ctx, asSet(symbol.type()));
+
+        if (symbol.type() == Type.VOID) {
+            symbolObserverRegistry.registerObserver(ctx, symbol);
+        } else {
+            nodeObserverRegistry.notifyObservers(ctx, this);
+        }
+
+        logContextInformation(ctx);
     }
 
     //endregion
+
+    /**
+     * Finds the type of the parent node from the child node. Assigns the child node's type to the parent node. If the
+     * child node has a Type.VOID type, then the parent registers itself as an observer of the child node's type
+     * changes.
+     *
+     * @param parent the node for which we want to determine the type
+     * @param child  the node from which we try to find the type
+     */
+    private void findNodeType(ParserRuleContext parent, ParserRuleContext child) {
+        Type childType = getNodeType(child);
+
+        types.put(parent, asSet(childType));
+
+        if (childType == Type.VOID) {
+            nodeObserverRegistry.registerObserver(parent, child);
+        } else {
+            nodeObserverRegistry.notifyObservers(parent, this);
+        }
+
+        logContextInformation(parent);
+    }
+
+    private void findNodeTypes(ParserRuleContext parent, ParserRuleContext child) {
+        Set<Type> childTypes = getNodeTypes(child);
+
+        types.put(parent, childTypes);
+
+        if (childTypes.contains(Type.VOID)) {
+            nodeObserverRegistry.registerObserver(parent, child);
+        } else {
+            nodeObserverRegistry.notifyObservers(parent, this);
+        }
+
+        logContextInformation(parent);
+    }
 
     private Set<Type> asSet(Type... types) {
         return new HashSet<>(Arrays.asList(types));
@@ -225,7 +331,14 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     private void logContextInformation(ParserRuleContext ctx) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        String methodName = stackTraceElements[2].getMethodName();
-        LOG.info("-> [" + methodName + "] " + ctx.toString(ruleNames) + " " + ctx.toStringTree(ruleNames) + ": " + types.get(ctx));
+
+        int i = 2;
+        String methodName = stackTraceElements[i].getMethodName();
+
+        while (!methodName.startsWith("exit") && !methodName.startsWith("enter")) {
+            methodName = stackTraceElements[i++].getMethodName();
+        }
+
+        // LOG.info("-> [" + methodName + "] " + ctx.toString(ruleNames) + " " + ctx.toStringTree(ruleNames) + ": " + types.get(ctx));
     }
 }

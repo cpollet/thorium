@@ -16,11 +16,8 @@
 
 package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
-import ch.pollet.thorium.ThrowingErrorListener;
-import ch.pollet.thorium.antlr.ThoriumParser;
-import ch.pollet.thorium.antlr.grammar.ParserBuilder;
+import ch.pollet.thorium.evaluation.SymbolTable;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -36,6 +33,7 @@ public class ExpressionsSteps extends BaseSteps {
     @Given("an expression $expression")
     @Alias("an expression <expression>")
     public void anExpression(@Named("expression") String expression) {
+        init();
         storyContext.parser = createParser(expression);
         storyContext.tree = storyContext.parser.expression();
     }

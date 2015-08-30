@@ -20,6 +20,7 @@ import ch.pollet.thorium.ThrowingErrorListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.antlr.grammar.ParserBuilder;
 import ch.pollet.thorium.evaluation.EvaluationContext;
+import ch.pollet.thorium.evaluation.SymbolTable;
 import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
@@ -48,6 +49,10 @@ public abstract class BaseSteps {
 
     public BaseSteps(JBehaveStoryContext storyContext) {
         this.storyContext = storyContext;
+    }
+
+    protected void init() {
+        storyContext.baseScope = new SymbolTable();
     }
 
     @When("being executed")
@@ -214,6 +219,7 @@ public abstract class BaseSteps {
         return parser;
     }
 
+    // TODO remove
     protected Type toType(String type) {
         switch (type) {
             case "IntegerType":
@@ -227,6 +233,7 @@ public abstract class BaseSteps {
         throw new IllegalArgumentException("[" + type + "] is not a valid type");
     }
 
+    // TODO remove
     protected Value toValue(String value, String type) {
         switch (type) {
             case "IntegerType":

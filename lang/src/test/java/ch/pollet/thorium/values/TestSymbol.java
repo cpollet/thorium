@@ -81,15 +81,5 @@ public class TestSymbol {
         public boolean isWritable() {
             return false;
         }
-
-//        @Override
-//        public Value operatorPlus(Value other) {
-//            return null;
-//        }
-//
-//        @Override
-//        public Value operatorMultiply(Value other) {
-//            return null;
-//        }
     }
 }
