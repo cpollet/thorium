@@ -22,6 +22,15 @@ Examples:
 | (if (true) { 1; } else { 1; })                        | Integer       |
 | (if (true) { 1; } else if (false) { 1; } else { 1; }) | Integer       |
 
+Scenario: semantically invalid from the symbol checking point of view, but valid from the pure expression type checking point of view
+Given an expression <expression>
+When types are attached to nodes
+Then root node is of type <type>
+
+Examples:
+| expression                                            | type          |
+| ({a = 1; a = 1.0;})                                   | Float         |
+
 Scenario: expressions can have only one type
 Given an expression <expression>
 And exception expected
