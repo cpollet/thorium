@@ -10,6 +10,7 @@ Examples:
 | 1.0                                                   | Float         |
 | 1 * 1                                                 | Integer       |
 | 1 + 1                                                 | Integer       |
+| 1 + 1.0                                               | Float         |
 | (1)                                                   | Integer       |
 | 1 = 1                                                 | Integer       |
 | ({ 1; })                                              | Integer       |
