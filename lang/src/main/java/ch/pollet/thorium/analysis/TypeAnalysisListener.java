@@ -174,7 +174,7 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
     @Override
     public void exitAssignmentExpression(ThoriumParser.AssignmentExpressionContext ctx) {
         // TODO SEM check type on the left
-        types.put(ctx, types.get(ctx.expression(1)));
+        types.put(ctx, types.get(ctx.expression()));
         logContextInformation(ctx);
     }
 

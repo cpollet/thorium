@@ -79,7 +79,7 @@ expression
     | literal                                           # literalExpression
     | '(' expression ')'                                # parenthesisExpression
     // | expression ':' expression '?' expression       # inlineConditionExpression
-    | <assoc=right> expression '=' expression           # assignmentExpression
+    | <assoc=right> identifier '=' expression           # assignmentExpression
     | '(' block ')'                                     # blockExpression
     ;
 

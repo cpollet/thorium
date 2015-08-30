@@ -60,8 +60,5 @@ Then the exception <exception> is thrown with message <message>
 
 Examples:
 | expression    | exception                                                             | message                                           |
-| 1 = 1         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign Integer(1) to Integer(1)            |
-| 1 = a         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign Symbol(a: Void) to Integer(1) |
-| 1 = A         | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign Symbol(A: Void) to Integer(1) |
 | true + 1      | ch.pollet.thorium.semantic.exception.MethodNotFoundException          | Method +(Integer) not implemented on Boolean      |
 | 1 + true      | ch.pollet.thorium.semantic.exception.MethodNotFoundException          | Method +(Boolean) not implemented on Integer      |

@@ -162,7 +162,7 @@ public class TestExpression {
 
         // WHEN + THEN
         assertThat(parseTreeToString(parser))
-                .isEqualTo("(expression (expression (literal (identifier a))) = (expression (literal 1)))");
+                .isEqualTo("(expression (identifier a) = (expression (literal 1)))");
     }
 
     @Test
@@ -175,7 +175,7 @@ public class TestExpression {
 
         // WHEN + THEN
         assertThat(parseTreeToString(parser))
-                .isEqualTo("(expression (expression (literal (identifier a))) = (expression (expression (literal 1)) + (expression (literal 1))))");
+                .isEqualTo("(expression (identifier a) = (expression (expression (literal 1)) + (expression (literal 1))))");
     }
 
     @Test
@@ -188,7 +188,7 @@ public class TestExpression {
 
         // WHEN + THEN
         assertThat(parseTreeToString(parser))
-                .isEqualTo("(expression (expression ( (expression (expression (literal (identifier a))) = (expression (literal 1))) )) + (expression (literal 1)))");
+                .isEqualTo("(expression (expression ( (expression (identifier a) = (expression (literal 1))) )) + (expression (literal 1)))");
     }
 
     @Test
@@ -201,7 +201,7 @@ public class TestExpression {
 
         // WHEN + THEN
         assertThat(parseTreeToString(parser))
-                .isEqualTo("(expression (expression (literal (identifier b))) = (expression (expression ( (expression (expression (literal (identifier a))) = (expression (literal 1))) )) + (expression (literal 1))))");
+                .isEqualTo("(expression (identifier b) = (expression (expression ( (expression (identifier a) = (expression (literal 1))) )) + (expression (literal 1))))");
     }
 
     @Test
@@ -214,6 +214,6 @@ public class TestExpression {
 
         // WHEN + THEN
         assertThat(parseTreeToString(parser))
-                .isEqualTo("(expression (expression (literal (identifier a))) = (expression (expression (literal (identifier b))) = (expression (literal (identifier c)))))");
+                .isEqualTo("(expression (identifier a) = (expression (identifier b) = (expression (literal (identifier c)))))");
     }
 }
