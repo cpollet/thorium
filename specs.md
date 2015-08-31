@@ -1,3 +1,10 @@
+# Variables
+Should be declared as:
+    var name (:type)? (=value)? ;
+
+# Object creation
+instance = (new)? Class(parameters);
+
 # Method call
 ## non-nullable expression
 expression . method()  -> do something, return something; invalid if expression can be null
