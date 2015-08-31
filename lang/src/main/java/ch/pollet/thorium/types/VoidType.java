@@ -37,7 +37,6 @@ public class VoidType implements Type {
 
     @Override
     public Method lookupMethod(MethodMatcher matcher) {
-        //return VoidType::noValue;
         throw new MethodNotFoundException("Method " + matcher + " not implemented on " + this);
     }
 

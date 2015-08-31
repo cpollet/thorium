@@ -13,6 +13,8 @@ Examples:
 | b; a = ({ b; }); b = 1;       | a         | Integer   |
 | b; a = b; b = 1 if true;      | a         | Integer   |
 | b; a = b; b = 1 unless true;  | a         | Integer   |
+| b = a + 1; a = 1;             | b         | Integer   |
+| b = a * 1; a = 1.0;           | b         | Float     |
 |-- a = ({ b; }); b = 1; | c         | Void   |
 
 

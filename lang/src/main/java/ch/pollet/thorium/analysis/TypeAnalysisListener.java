@@ -173,21 +173,49 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
         findNodeType(ctx, ctx.literal());
     }
 
-    @Override // FIXME
+    @Override
     public void exitMultiplicationExpression(ThoriumParser.MultiplicationExpressionContext ctx) {
-        Type leftType = types.get(ctx.expression(0)).iterator().next();
-        Type rightType = types.get(ctx.expression(1)).iterator().next();
-        Type resultType = leftType.lookupMethod(new MethodMatcher("*", rightType)).getType();
-        types.put(ctx, asSet(resultType));
+        Type leftType = getNodeType(ctx.expression(0));
+        Type rightType = getNodeType(ctx.expression(1));
+
+        if (leftType == Type.VOID) {
+            nodeObserverRegistry.registerObserver(ctx, ctx.expression(0));
+        }
+        if (rightType == Type.VOID) {
+            nodeObserverRegistry.registerObserver(ctx, ctx.expression(1));
+        }
+
+        if (leftType == Type.VOID || rightType == Type.VOID) {
+            types.put(ctx, asSet(Type.VOID));
+        } else {
+            Type resultType = leftType.lookupMethod(new MethodMatcher("*", rightType)).getType();
+            types.put(ctx, asSet(resultType));
+            nodeObserverRegistry.notifyObservers(ctx, this);
+        }
+
         logContextInformation(ctx);
     }
 
-    @Override // FIXME
+    @Override
     public void exitAdditionExpression(ThoriumParser.AdditionExpressionContext ctx) {
-        Type leftType = types.get(ctx.expression(0)).iterator().next();
-        Type rightType = types.get(ctx.expression(1)).iterator().next();
-        Type resultType = leftType.lookupMethod(new MethodMatcher("+", rightType)).getType();
-        types.put(ctx, asSet(resultType));
+        Type leftType = getNodeType(ctx.expression(0));
+        Type rightType = getNodeType(ctx.expression(1));
+
+        if (leftType == Type.VOID) {
+            nodeObserverRegistry.registerObserver(ctx, ctx.expression(0));
+        }
+        if (rightType == Type.VOID) {
+            nodeObserverRegistry.registerObserver(ctx, ctx.expression(1));
+        }
+
+        if (leftType == Type.VOID || rightType == Type.VOID) {
+            types.put(ctx, asSet(Type.VOID));
+        } else {
+            Type resultType = leftType.lookupMethod(new MethodMatcher("+", rightType)).getType();
+            types.put(ctx, asSet(resultType));
+            nodeObserverRegistry.notifyObservers(ctx, this);
+        }
+
         logContextInformation(ctx);
     }
 
