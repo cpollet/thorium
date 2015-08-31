@@ -22,7 +22,7 @@ import ch.pollet.thorium.types.Type;
  * @author Christophe Pollet
  */
 public class Constant extends Variable {
-    private boolean valueDefined;
+    private final boolean valueDefined;
 
     public Constant(String name) {
         super(name);

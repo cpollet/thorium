@@ -16,7 +16,6 @@
 
 package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
-import ch.pollet.thorium.evaluation.SymbolTable;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;

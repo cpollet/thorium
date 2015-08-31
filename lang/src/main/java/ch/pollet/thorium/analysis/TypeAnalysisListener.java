@@ -43,12 +43,12 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     private final List<String> ruleNames;
 
-    private ParseTreeProperty<Set<Type>> types = new ParseTreeProperty<>();
+    private final ParseTreeProperty<Set<Type>> types = new ParseTreeProperty<>();
 
     private SymbolTable currentScope;
 
-    private ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
-    private ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
+    private final ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
+    private final ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
 
     public TypeAnalysisListener(Parser parser, SymbolTable baseScope) {
         this.ruleNames = Arrays.asList(parser.getRuleNames());
@@ -367,6 +367,6 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
             methodName = stackTraceElements[i++].getMethodName();
         }
 
-        // LOG.info("-> [" + methodName + "] " + ctx.toString(ruleNames) + " " + ctx.toStringTree(ruleNames) + ": " + types.get(ctx));
+        LOG.info("-> [" + methodName + "] " + ctx.toString(ruleNames) + " " + ctx.toStringTree(ruleNames) + ": " + types.get(ctx));
     }
 }

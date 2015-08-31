@@ -24,9 +24,9 @@ import java.util.Objects;
  * @author Christophe Pollet
  */
 public class OperationSignature {
-    private String operation;
-    private Type leftType;
-    private Type rightType;
+    private final String operation;
+    private final Type leftType;
+    private final Type rightType;
 
     public OperationSignature(String operation, Type leftType, Type rightType) {
         this.operation = operation;

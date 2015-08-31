@@ -18,7 +18,6 @@ package ch.pollet.thorium.analysis.jbehave.steps;
 
 import ch.pollet.thorium.analysis.TypeAnalysisListener;
 import ch.pollet.thorium.antlr.grammar.jbehave.steps.BaseSteps;
-import ch.pollet.thorium.evaluation.SymbolTable;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import ch.pollet.thorium.values.Symbol;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;

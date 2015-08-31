@@ -155,7 +155,7 @@ public abstract class BaseSteps {
     @SuppressWarnings("unchecked")
     @Then(value = "the exception $exception is thrown with message matching $message", priority = 2)
     @Alias("the exception <exception> is thrown with message matching <message>")
-    public void exceptionIsThrownWithMessageMathcing(@Named("exception") String exception, @Named("message") String message) throws ClassNotFoundException {
+    public void exceptionIsThrownWithMessageMatching(@Named("exception") String exception, @Named("message") String message) throws ClassNotFoundException {
         assertThat(storyContext.exception)
                 .overridingErrorMessage("Expected exception not thrown")
                 .isNotNull();

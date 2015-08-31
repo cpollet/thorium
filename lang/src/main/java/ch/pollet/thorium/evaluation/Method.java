@@ -23,8 +23,8 @@ import ch.pollet.thorium.values.Value;
  * @author Christophe Pollet
  */
 public class Method {
-    private Type type;
-    private Operator op;
+    private final Type type;
+    private final Operator op;
 
     public Method(Type type, Operator op) {
         this.type = type;

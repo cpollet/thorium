@@ -30,7 +30,7 @@ import java.util.Map;
  * @author Christophe Pollet
  */
 public class ObserverRegistry<T> {
-    private Map<T, List<ParserRuleContext>> observers = new IdentityHashMap<>();
+    private final Map<T, List<ParserRuleContext>> observers = new IdentityHashMap<>();
 
     public void registerObserver(ParserRuleContext observer, T observable) {
         if (observers.get(observable) == null) {

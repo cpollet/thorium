@@ -27,8 +27,8 @@ import java.util.Objects;
  * @author Christophe Pollet
  */
 public class MethodMatcher {
-    private String name;
-    private List<Type> parameterTypes;
+    private final String name;
+    private final List<Type> parameterTypes;
 
     public MethodMatcher(String name, Type... parameterTypes) {
         this.name = name;

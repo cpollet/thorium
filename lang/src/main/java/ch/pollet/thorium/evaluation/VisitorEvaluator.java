@@ -20,7 +20,6 @@ import ch.pollet.thorium.antlr.ThoriumBaseVisitor;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException;
-import ch.pollet.thorium.analysis.exceptions.InvalidTypeException;
 import ch.pollet.thorium.semantic.exception.MethodNotFoundException;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.types.Type;
@@ -164,13 +163,9 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
             throw new InvalidAssignmentTargetException("Cannot assign " + right.toString() + " to " + left.toString());
         }
 
+        // TODO SEM move this
         if (right.type() == Type.VOID) {
             throw new InvalidAssignmentSourceException("Cannot assign from " + right.toString());
-        }
-
-
-        if (!Type.isAssignableFrom(left.type(), right.type())) {
-            throw new InvalidTypeException(right.type() + " is no assignable to " + left.type());
         }
     }
 

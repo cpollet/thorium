@@ -30,7 +30,7 @@ public class InvalidTypeException extends RuntimeException {
     private static final String INVALID_TYPE = "Invalid type found on line {0}: expected {1} but got {2}.";
     private static final String AMBIGUOUS_TYPE = "Ambiguous type found on line {0}: possible types are {1} but only one expected.";
     private static final String TYPE_EXPECTED = "Type expected, but got Void.";
-    private static final String NOT_COMPATIBLE = "Uncompatible types fond on line {0}: {1} is no assignable to {2}";
+    private static final String NOT_COMPATIBLE = "Incompatible types fond on line {0}: {1} is no assignable to {2}";
 
     public InvalidTypeException(String message) {
         super(message);

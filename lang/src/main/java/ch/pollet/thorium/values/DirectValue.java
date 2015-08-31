@@ -37,7 +37,7 @@ public class DirectValue implements Value {
     private Double floatValue;
     private Long integerValue;
 
-    private Type type;
+    private final Type type;
 
     private DirectValue() {
         this.type = Type.VOID;
