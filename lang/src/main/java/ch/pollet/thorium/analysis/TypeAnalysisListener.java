@@ -17,14 +17,17 @@
 package ch.pollet.thorium.analysis;
 
 import ch.pollet.thorium.analysis.exceptions.InvalidTypeException;
+import ch.pollet.thorium.analysis.exceptions.MethodNotFoundException;
 import ch.pollet.thorium.antlr.ThoriumBaseListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
+import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
 import ch.pollet.thorium.evaluation.SymbolTable;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.values.Symbol;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.slf4j.Logger;
@@ -70,6 +73,8 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     //region Statements
 
+    // FIXME SEM implement scope
+
     @Override
     public void exitBlock(ThoriumParser.BlockContext ctx) {
         if (ctx.ifStatement() != null) {
@@ -95,9 +100,12 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
             findNodeTypes(ctx, ctx.block());
         } else if (ctx.expressionStatement() != null) {
             findNodeTypes(ctx, ctx.expressionStatement());
+        } else if (ctx.getText().equals(";")) {
+            // ignore
         } else {
             throw new IllegalStateException();
         }
+
     }
 
     //endregion
@@ -188,12 +196,22 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
         if (leftType == Type.VOID || rightType == Type.VOID) {
             types.put(ctx, asSet(Type.VOID));
         } else {
-            Type resultType = leftType.lookupMethod(new MethodMatcher("*", rightType)).getType();
+            Type resultType = inferMethodType(ctx.start, "*", leftType, rightType);
             types.put(ctx, asSet(resultType));
             nodeObserverRegistry.notifyObservers(ctx, this);
         }
 
         logContextInformation(ctx);
+    }
+
+    private Type inferMethodType(Token token, String methodName, Type leftType, Type... parametersTypes) {
+        Method method = leftType.lookupMethod(new MethodMatcher("*", parametersTypes));
+
+        if (method == null) {
+            throw MethodNotFoundException.build(token, methodName, leftType, parametersTypes);
+        }
+
+        return method.getType();
     }
 
     @Override
@@ -211,7 +229,7 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
         if (leftType == Type.VOID || rightType == Type.VOID) {
             types.put(ctx, asSet(Type.VOID));
         } else {
-            Type resultType = leftType.lookupMethod(new MethodMatcher("+", rightType)).getType();
+            Type resultType = inferMethodType(ctx.start, "+", leftType, rightType);
             types.put(ctx, asSet(resultType));
             nodeObserverRegistry.notifyObservers(ctx, this);
         }
@@ -367,6 +385,6 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
             methodName = stackTraceElements[i++].getMethodName();
         }
 
-        LOG.info("-> [" + methodName + "] " + ctx.toString(ruleNames) + " " + ctx.toStringTree(ruleNames) + ": " + types.get(ctx));
+        // LOG.info("-> [" + methodName + "] " + ctx.toString(ruleNames) + " " + ctx.toStringTree(ruleNames) + ": " + types.get(ctx));
     }
 }

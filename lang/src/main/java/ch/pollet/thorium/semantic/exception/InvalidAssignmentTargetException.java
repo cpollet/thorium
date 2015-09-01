@@ -16,10 +16,12 @@
 
 package ch.pollet.thorium.semantic.exception;
 
+import ch.pollet.thorium.ThoriumException;
+
 /**
  * @author Christophe Pollet
  */
-public class InvalidAssignmentTargetException extends RuntimeException {
+public class InvalidAssignmentTargetException extends ThoriumException {
     public InvalidAssignmentTargetException(String message) {
         super(message);
     }

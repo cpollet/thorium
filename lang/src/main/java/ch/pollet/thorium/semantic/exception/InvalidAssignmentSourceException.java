@@ -16,10 +16,12 @@
 
 package ch.pollet.thorium.semantic.exception;
 
+import ch.pollet.thorium.ThoriumException;
+
 /**
  * @author Christophe Pollet
  */
-public class InvalidAssignmentSourceException extends RuntimeException {
+public class InvalidAssignmentSourceException extends ThoriumException {
     public InvalidAssignmentSourceException(String message) {
         super(message);
     }

@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
+import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.ThrowingErrorListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.antlr.grammar.ParserBuilder;
@@ -63,7 +64,7 @@ public abstract class BaseSteps {
         try {
             visitorEvaluator.visit(storyContext.tree);
         } catch (Exception e) {
-            if (e instanceof ParseCancellationException) {
+            if (!(e instanceof ThoriumException)) {
                 throw e;
             }
 

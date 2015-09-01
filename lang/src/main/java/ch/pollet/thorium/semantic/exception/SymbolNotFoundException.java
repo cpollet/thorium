@@ -16,10 +16,12 @@
 
 package ch.pollet.thorium.semantic.exception;
 
+import ch.pollet.thorium.ThoriumException;
+
 /**
  * @author Christophe Pollet
  */
-public class SymbolNotFoundException extends RuntimeException {
+public class SymbolNotFoundException extends ThoriumException {
     public SymbolNotFoundException(String name) {
         super(name);
     }

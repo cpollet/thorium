@@ -16,7 +16,9 @@
 
 package ch.pollet.thorium.antlr.grammar.jbehave.steps;
 
+import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -42,6 +44,10 @@ public class StatementsSteps extends BaseSteps {
             storyContext.parser = createParser(statements);
             storyContext.tree = storyContext.parser.statements();
         } catch (Exception e) {
+            if (!(e instanceof ThoriumException) && !(e instanceof ParseCancellationException)) {
+                throw e;
+            }
+
             if (storyContext.exceptionExpected && storyContext.exception == null) {
                 storyContext.exception = e;
             } else {

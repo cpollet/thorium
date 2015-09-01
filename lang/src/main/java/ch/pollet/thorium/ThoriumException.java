@@ -14,34 +14,25 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.types;
+package ch.pollet.thorium;
 
-import ch.pollet.thorium.evaluation.Method;
-import ch.pollet.thorium.evaluation.MethodMatcher;
-import ch.pollet.thorium.analysis.exceptions.MethodNotFoundException;
+import org.antlr.v4.runtime.Token;
+
+import java.text.MessageFormat;
 
 /**
  * @author Christophe Pollet
  */
-public class VoidType implements Type {
-    static final VoidType INSTANCE = new VoidType();
-
-    private VoidType() {
-        // nothing
+public abstract class ThoriumException extends RuntimeException {
+    public ThoriumException(String message) {
+        super(message);
     }
 
-    @Override
-    public int id() {
-        return ID_VOID;
+    protected static String location(Token token) {
+        return token.getLine() + ":" + token.getCharPositionInLine();
     }
 
-    @Override
-    public Method lookupMethod(MethodMatcher matcher) {
-        throw new MethodNotFoundException("Method " + matcher + " not implemented on " + this);
-    }
-
-    @Override
-    public String toString() {
-        return "Void";
+    protected static String formatMessage(String message, String... parameters) {
+        return MessageFormat.format(message, parameters);
     }
 }

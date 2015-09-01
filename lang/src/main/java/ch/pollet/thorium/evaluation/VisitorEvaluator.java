@@ -20,7 +20,6 @@ import ch.pollet.thorium.antlr.ThoriumBaseVisitor;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException;
 import ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException;
-import ch.pollet.thorium.semantic.exception.MethodNotFoundException;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.values.Constant;
@@ -123,11 +122,6 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         Value left = context.popStack();
 
         Method method = left.type().lookupMethod(new MethodMatcher(operator, right.type()));
-
-        // TODO SEM move this
-        if (method == null) {
-            throw new MethodNotFoundException("Method " + operator + "(" + right.type() + ") not implemented on " + left.type());
-        }
 
         context.pushStack(method.apply(left, right));
     }

@@ -60,5 +60,5 @@ Then the exception <exception> is thrown with message <message>
 
 Examples:
 | expression    | exception                                                             | message                                           |
-| true + 1      | ch.pollet.thorium.semantic.exception.MethodNotFoundException          | Method +(Integer) not implemented on Boolean      |
-| 1 + true      | ch.pollet.thorium.semantic.exception.MethodNotFoundException          | Method +(Boolean) not implemented on Integer      |
+| true + 1      | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException          | Method +(Integer) not implemented on Boolean      |
+| 1 + true      | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException          | Method +(Boolean) not implemented on Integer      |

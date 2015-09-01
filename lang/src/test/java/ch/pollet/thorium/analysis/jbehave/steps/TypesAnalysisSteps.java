@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.analysis.jbehave.steps;
 
+import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.analysis.TypeAnalysisListener;
 import ch.pollet.thorium.antlr.grammar.jbehave.steps.BaseSteps;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
@@ -45,6 +46,10 @@ public class TypesAnalysisSteps extends BaseSteps {
             storyContext.parser = createParser(unit);
             storyContext.tree = storyContext.parser.compilationUnit();
         } catch (Exception e) {
+            if (!(e instanceof ThoriumException)) {
+                throw e;
+            }
+
             if (storyContext.exceptionExpected && storyContext.exception == null) {
                 storyContext.exception = e;
             } else {
@@ -62,6 +67,10 @@ public class TypesAnalysisSteps extends BaseSteps {
         try {
             walker.walk(storyContext.typeAnalysisListener, storyContext.tree);
         } catch (Exception e) {
+            if (!(e instanceof ThoriumException)) {
+                throw e;
+            }
+
             if (storyContext.exceptionExpected && storyContext.exception == null) {
                 storyContext.exception = e;
             } else {

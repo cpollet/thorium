@@ -16,12 +16,17 @@
 
 package ch.pollet.thorium.utils;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
  * @author Christophe Pollet
  */
 public class CollectionUtils {
+    public static String concat(Object... objects) {
+        return concat(Arrays.asList(objects));
+    }
+
     public static String concat(Collection<?> collection) {
         return concat(collection, ", ");
     }

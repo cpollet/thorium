@@ -16,10 +16,12 @@
 
 package ch.pollet.thorium.semantic.exception;
 
+import ch.pollet.thorium.ThoriumException;
+
 /**
  * @author Christophe Pollet
  */
-public class SymbolAlreadyDefinedException extends RuntimeException {
+public class SymbolAlreadyDefinedException extends ThoriumException {
     public SymbolAlreadyDefinedException(String name) {
         super(name);
     }

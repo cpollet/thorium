@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.semantic.exception;
+package ch.pollet.thorium.analysis.exceptions;
+
+import ch.pollet.thorium.ThoriumException;
+import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.utils.CollectionUtils;
+import org.antlr.v4.runtime.Token;
 
 /**
  * @author Christophe Pollet
  */
-public class MethodNotFoundException extends RuntimeException {
+public class MethodNotFoundException extends ThoriumException {
+    private static final String METHOD_NOT_FOUND = "Method {0}({1}) not implemented on {2}.";
+
+
     public MethodNotFoundException(String message) {
         super(message);
+    }
+
+    public static MethodNotFoundException build(Token token, String methodName, Type leftType, Type... parametersTypes) {
+        return new MethodNotFoundException(formatMessage(METHOD_NOT_FOUND, location(token), methodName, CollectionUtils.concat(parametersTypes), leftType.toString()));
     }
 }

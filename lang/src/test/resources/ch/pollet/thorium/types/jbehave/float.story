@@ -43,5 +43,5 @@ Then the exception was thrown with message <message>
 
 Examples:
 | left      | method    | right     | exception                                                     | message                                       |
-| Float     | +         | Boolean   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method +(Boolean) not implemented on Float    |
-| Float     | *         | Boolean   | ch.pollet.thorium.semantic.exception.MethodNotFoundException  | Method *(Boolean) not implemented on Float    |
+| Float     | +         | Boolean   | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException  | Method +(Boolean) not implemented on Float    |
+| Float     | *         | Boolean   | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException  | Method *(Boolean) not implemented on Float    |

@@ -18,7 +18,7 @@ package ch.pollet.thorium.types;
 
 import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
-import ch.pollet.thorium.semantic.exception.MethodNotFoundException;
+import ch.pollet.thorium.analysis.exceptions.MethodNotFoundException;
 
 import java.util.Map;
 

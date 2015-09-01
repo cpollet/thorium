@@ -18,6 +18,7 @@ package ch.pollet.thorium.analysis.jbehave;
 
 import ch.pollet.thorium.analysis.jbehave.steps.TypesAnalysisSteps;
 import ch.pollet.thorium.antlr.grammar.jbehave.steps.ExpressionsSteps;
+import ch.pollet.thorium.antlr.grammar.jbehave.steps.StatementsSteps;
 import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 
@@ -33,7 +34,8 @@ public class TestTypesAnalysis extends JBehaveBaseTestClass {
         JBehaveStoryContext storyContext = new JBehaveStoryContext();
         return Arrays.asList(
                 new TypesAnalysisSteps(storyContext),
-                new ExpressionsSteps(storyContext)
+                new ExpressionsSteps(storyContext),
+                new StatementsSteps(storyContext)
         );
     }
 }

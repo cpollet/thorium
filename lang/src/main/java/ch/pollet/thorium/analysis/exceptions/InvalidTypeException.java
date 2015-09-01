@@ -16,21 +16,21 @@
 
 package ch.pollet.thorium.analysis.exceptions;
 
+import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.utils.CollectionUtils;
 import org.antlr.v4.runtime.Token;
 
-import java.text.MessageFormat;
 import java.util.Collection;
 
 /**
  * @author Christophe Pollet
  */
-public class InvalidTypeException extends RuntimeException {
+public class InvalidTypeException extends ThoriumException {
     private static final String INVALID_TYPE = "Invalid type found on line {0}: expected {1} but got {2}.";
     private static final String AMBIGUOUS_TYPE = "Ambiguous type found on line {0}: possible types are {1} but only one expected.";
     private static final String TYPE_EXPECTED = "Type expected, but got Void.";
-    private static final String NOT_COMPATIBLE = "Incompatible types fond on line {0}: {1} is no assignable to {2}";
+    private static final String NOT_COMPATIBLE = "Incompatible types found on line {0}: {1} is no assignable to {2}";
 
     public InvalidTypeException(String message) {
         super(message);
@@ -51,14 +51,4 @@ public class InvalidTypeException extends RuntimeException {
     public static InvalidTypeException notCompatible(Token token, Type right, Type left) {
         return new InvalidTypeException(formatMessage(NOT_COMPATIBLE, location(token), right.toString(), left.toString()));
     }
-
-    private static String location(Token token) {
-        return token.getLine() + ":" + token.getCharPositionInLine();
-    }
-
-    private static String formatMessage(String message, String... parameters) {
-        return MessageFormat.format(message, parameters);
-    }
-
-
 }
