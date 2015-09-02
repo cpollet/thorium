@@ -65,7 +65,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitConditionalIfStatement(ThoriumParser.ConditionalIfStatementContext ctx) {
-        // FIXME SEM add check that potential assigned variable is already defined in symbol table
+        // TODO SEM add check that potential assigned variable is already defined in symbol table
         if (isExpressionTrue(ctx.expression(1))) {
             visit(ctx.expression(0));
             context.lastStatementValue = context.popStack();
@@ -86,7 +86,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitConditionalUnlessStatement(ThoriumParser.ConditionalUnlessStatementContext ctx) {
-        // FIXME SEM add check that potential assigned variable is already defined in symbol table
+        // TDOD SEM add check that potential assigned variable is already defined in symbol table
         if (!isExpressionTrue(ctx.expression(1))) {
             visit(ctx.expression(0));
             context.lastStatementValue = context.popStack();
