@@ -156,11 +156,6 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         if (!left.isWritable()) {
             throw new InvalidAssignmentTargetException("Cannot assign " + right.toString() + " to " + left.toString());
         }
-
-        // TODO SEM move this
-        if (right.type() == Type.VOID) {
-            throw new InvalidAssignmentSourceException("Cannot assign from " + right.toString());
-        }
     }
 
     @Override

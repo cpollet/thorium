@@ -50,5 +50,4 @@ Then the exception <exception> is thrown with message <message>
 
 Examples:
 | statements                    | exception                                                             | message                                           |
-| a; b = a;                     | ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException | Cannot assign from Symbol(a: Void)                |
 | A = 1; A = 2;                 | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign Integer(2) to Symbol(A: Integer(1)) |
