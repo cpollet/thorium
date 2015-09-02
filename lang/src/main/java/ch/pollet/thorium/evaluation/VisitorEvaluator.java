@@ -133,7 +133,10 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         Value right = context.popStack();
         Value left = context.popStack();
 
-        assertValidAssignment(left, right);
+        // TODO SEM: move this
+        if (!left.isWritable()) {
+            throw new InvalidAssignmentTargetException("Cannot assign " + right.toString() + " to " + left.toString());
+        }
 
         // TODO refactor without instanceof?
         Symbol symbol;
@@ -149,13 +152,6 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         context.pushStack(symbol.value());
 
         return null;
-    }
-
-    private void assertValidAssignment(Value left, Value right) {
-        // TODO SEM: move this
-        if (!left.isWritable()) {
-            throw new InvalidAssignmentTargetException("Cannot assign " + right.toString() + " to " + left.toString());
-        }
     }
 
     @Override
