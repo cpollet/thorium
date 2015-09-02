@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Christophe Pollet
@@ -64,4 +65,9 @@ public class ObserverRegistry<T> {
         }
         return observers.get(observable);
     }
+
+    public List<ParserRuleContext> getUnresolvedObservers() {
+        return observers.values().stream().flatMap(List::stream).collect(Collectors.toList());
+    }
+
 }

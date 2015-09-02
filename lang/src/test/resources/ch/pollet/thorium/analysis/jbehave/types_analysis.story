@@ -25,8 +25,6 @@ Then root node is of type <type>
 
 Examples:
 | expression                                            | type          |
-| a                                                     | Void          |
-| A                                                     | Void          |
 | true                                                  | Boolean       |
 | 1                                                     | Integer       |
 | 1.0                                                   | Float         |
@@ -43,7 +41,7 @@ Examples:
 | (if (true) { 1; } else { 1; })                        | Integer       |
 | (if (true) { 1; } else if (false) { 1; } else { 1; }) | Integer       |
 
-Scenario: expressions can only have one type
+Scenario: expressions must have exactly one type
 Given an expression <expression>
 And exception expected
 When types are attached to nodes
@@ -51,6 +49,8 @@ Then the exception <exception> is thrown
 
 Examples:
 | expression                                                    | exception                                                     |
+| a                                                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
+| A                                                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
 | (if (true) { 1; } else { 1.0; })                              | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
 | (if (true) { 1; } else if (false) { 1.0; } else { true; })    | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
 | (if (true) { 1; } else if (false) { 1; } else { true; })      | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
@@ -66,4 +66,4 @@ Examples:
 | statements                    | exception                                                             | message                                                                           |
 | a = 1; b = 1.0; a = b;        | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Incompatible types found on line [0-9]+:[0-9]+: Float is no assignable to Integer |
 |-- a = 1; { b = a + 1; } ; c = b;  | ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException | Cannot assign from Symbol(b: Void)    |
-
+| b; a = b;                     | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Type expected, but got Void. |

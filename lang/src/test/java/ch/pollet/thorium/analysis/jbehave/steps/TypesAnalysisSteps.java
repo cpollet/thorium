@@ -66,6 +66,7 @@ public class TypesAnalysisSteps extends BaseSteps {
 
         try {
             walker.walk(storyContext.typeAnalysisListener, storyContext.tree);
+            storyContext.typeAnalysisListener.checkAllNodesHaveType();
         } catch (Exception e) {
             if (!(e instanceof ThoriumException)) {
                 throw e;

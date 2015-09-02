@@ -30,6 +30,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * @fixme implement scopes support
+ * @fixme throw all exceptions at the end of the process?
  * @author Christophe Pollet
  */
 public class TypeAnalysisListener extends ThoriumBaseListener {
@@ -72,8 +75,6 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
     }
 
     //region Statements
-
-    // FIXME SEM implement scope
 
     @Override
     public void exitBlock(ThoriumParser.BlockContext ctx) {
@@ -386,5 +387,14 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
         }
 
         // LOG.info("-> [" + methodName + "] " + ctx.toString(ruleNames) + " " + ctx.toStringTree(ruleNames) + ": " + types.get(ctx));
+    }
+
+    public void checkAllNodesHaveType() {
+        for (ParserRuleContext parserRuleContext : nodeObserverRegistry.getUnresolvedObservers()) {
+            throw InvalidTypeException.typeExpected(parserRuleContext.start);
+        }
+        for (ParserRuleContext parserRuleContext : symbolObserverRegistry.getUnresolvedObservers()) {
+            throw InvalidTypeException.typeExpected(parserRuleContext.start);
+        }
     }
 }
