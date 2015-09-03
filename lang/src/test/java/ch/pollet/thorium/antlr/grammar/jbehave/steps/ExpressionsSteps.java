@@ -33,6 +33,7 @@ public class ExpressionsSteps extends BaseSteps {
     @Alias("an expression <expression>")
     public void anExpression(@Named("expression") String expression) {
         init();
+        storyContext.thoriumCode = expression;
         storyContext.parser = createParser(expression);
         storyContext.tree = storyContext.parser.expression();
     }

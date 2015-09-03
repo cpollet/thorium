@@ -51,6 +51,7 @@ public class ObserverRegistry<T> {
         ParseTreeWalker walker = new ParseTreeWalker();
 
         Iterator<ParserRuleContext> it = getRegisteredObservers(observable).iterator();
+
         while (it.hasNext()) {
             ParserRuleContext observer = it.next();
             it.remove();

@@ -49,5 +49,5 @@ When being executed
 Then the exception <exception> is thrown with message <message>
 
 Examples:
-| statements                    | exception                                                             | message                                           |
-| A = 1; A = 2;                 | ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException | Cannot assign Integer(2) to Symbol(A: Integer(1)) |
+| statements                    | exception                       | message                                           |
+| A = 1; A = 2;                 | java.lang.IllegalStateException | Cannot assign Integer(2) to Symbol(A: Integer(1)) |

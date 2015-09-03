@@ -27,7 +27,6 @@ import org.antlr.v4.runtime.Token;
 public class MethodNotFoundException extends ThoriumException {
     private static final String METHOD_NOT_FOUND = "Method {0}({1}) not implemented on {2}.";
 
-
     public MethodNotFoundException(String message) {
         super(message);
     }

@@ -17,11 +17,11 @@
 package ch.pollet.thorium.analysis.jbehave.steps;
 
 import ch.pollet.thorium.ThoriumException;
-import ch.pollet.thorium.analysis.TypeAnalysisListener;
+import ch.pollet.thorium.analysis.TypeAnalyser;
+import ch.pollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import ch.pollet.thorium.antlr.grammar.jbehave.steps.BaseSteps;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import ch.pollet.thorium.values.Symbol;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -43,6 +43,7 @@ public class TypesAnalysisSteps extends BaseSteps {
     public void aCompilationUnit(@Named("unit") String unit) {
         init();
         try {
+            storyContext.thoriumCode = unit;
             storyContext.parser = createParser(unit);
             storyContext.tree = storyContext.parser.compilationUnit();
         } catch (Exception e) {
@@ -59,31 +60,32 @@ public class TypesAnalysisSteps extends BaseSteps {
     }
 
     @When("types are attached to nodes")
-    public void attachTypes() {
-        ParseTreeWalker walker = new ParseTreeWalker();
-
-        storyContext.typeAnalysisListener = new TypeAnalysisListener(storyContext.parser, storyContext.baseScope);
+    public void attachTypes() throws Exception {
+        TypeAnalyser typeAnalyser = new TypeAnalyser(storyContext.baseScope, storyContext.parser, storyContext.tree);
 
         try {
-            walker.walk(storyContext.typeAnalysisListener, storyContext.tree);
-            storyContext.typeAnalysisListener.checkAllNodesHaveType();
-        } catch (Exception e) {
-            if (!(e instanceof ThoriumException)) {
-                throw e;
+            storyContext.types = typeAnalyser.analyze();
+        } catch (ThoriumSemanticException e) {
+            if (storyContext.exceptionExpected && storyContext.exception == null) {
+                if (e.getCauses().size() == 1) {
+                    storyContext.exception = e.getCauses().get(0);
+                } else {
+                    throw new IllegalStateException("Size was " + e.getCauses().size(), e);
+                }
             }
-
+        } catch (ThoriumException e) {
             if (storyContext.exceptionExpected && storyContext.exception == null) {
                 storyContext.exception = e;
-            } else {
-                throw e;
             }
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
     }
 
     @Then("root node is of type <type>")
     @Alias("root node is of type $type")
     public void assertRootNodeIsOfTypes(@Named("type") String type) {
-        assertThat(storyContext.typeAnalysisListener.getNodeTypes(storyContext.tree).iterator().next().toString())
+        assertThat(storyContext.types.get(storyContext.tree).toString())
                 .isEqualTo(type);
     }
 

@@ -22,6 +22,7 @@ import java.text.MessageFormat;
 
 /**
  * @author Christophe Pollet
+ * @fixme review exception hierarchy and grouping
  */
 public abstract class ThoriumException extends RuntimeException {
     public ThoriumException(String message) {
@@ -29,7 +30,7 @@ public abstract class ThoriumException extends RuntimeException {
     }
 
     protected static String location(Token token) {
-        return token.getLine() + ":" + token.getCharPositionInLine();
+        return token.getLine() + ":" + token.getCharPositionInLine() + " (" + token.getText() + ")";
     }
 
     protected static String formatMessage(String message, String... parameters) {

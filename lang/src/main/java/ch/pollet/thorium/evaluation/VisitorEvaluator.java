@@ -18,10 +18,7 @@ package ch.pollet.thorium.evaluation;
 
 import ch.pollet.thorium.antlr.ThoriumBaseVisitor;
 import ch.pollet.thorium.antlr.ThoriumParser;
-import ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException;
-import ch.pollet.thorium.semantic.exception.InvalidAssignmentTargetException;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
-import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.values.Constant;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
@@ -86,7 +83,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitConditionalUnlessStatement(ThoriumParser.ConditionalUnlessStatementContext ctx) {
-        // TDOD SEM add check that potential assigned variable is already defined in symbol table
+        // TODO SEM add check that potential assigned variable is already defined in symbol table
         if (!isExpressionTrue(ctx.expression(1))) {
             visit(ctx.expression(0));
             context.lastStatementValue = context.popStack();
@@ -135,7 +132,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
         // TODO SEM: move this
         if (!left.isWritable()) {
-            throw new InvalidAssignmentTargetException("Cannot assign " + right.toString() + " to " + left.toString());
+            throw new IllegalStateException("Cannot assign " + right.toString() + " to " + left.toString());
         }
 
         // TODO refactor without instanceof?

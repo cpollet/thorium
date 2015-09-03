@@ -29,7 +29,6 @@ import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -63,11 +62,7 @@ public abstract class BaseSteps {
 
         try {
             visitorEvaluator.visit(storyContext.tree);
-        } catch (Exception e) {
-            if (!(e instanceof ThoriumException)) {
-                throw e;
-            }
-
+        } catch (ThoriumException | IllegalStateException e) {
             if (storyContext.exceptionExpected && storyContext.exception == null) {
                 storyContext.exception = e;
             } else {

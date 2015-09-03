@@ -14,15 +14,29 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.semantic.exception;
+package ch.pollet.thorium.analysis.exceptions;
 
 import ch.pollet.thorium.ThoriumException;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Christophe Pollet
  */
-public class InvalidAssignmentTargetException extends ThoriumException {
-    public InvalidAssignmentTargetException(String message) {
+public class ThoriumSemanticException extends ThoriumException {
+    private final List<ThoriumException> exceptions;
+
+    public ThoriumSemanticException(String message, List<ThoriumException> exceptions) {
         super(message);
+        this.exceptions = exceptions;
+    }
+
+    public ThoriumSemanticException(String message) {
+        this(message, Collections.<ThoriumException>emptyList());
+    }
+
+    public List<ThoriumException> getCauses() {
+        return exceptions;
     }
 }

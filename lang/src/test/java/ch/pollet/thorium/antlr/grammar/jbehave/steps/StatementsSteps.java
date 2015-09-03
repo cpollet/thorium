@@ -41,13 +41,10 @@ public class StatementsSteps extends BaseSteps {
     public void aListOfStatements(@Named("statements") String statements) {
         init();
         try {
+            storyContext.thoriumCode = statements;
             storyContext.parser = createParser(statements);
             storyContext.tree = storyContext.parser.statements();
-        } catch (Exception e) {
-            if (!(e instanceof ThoriumException) && !(e instanceof ParseCancellationException)) {
-                throw e;
-            }
-
+        } catch (ThoriumException | ParseCancellationException e) {
             if (storyContext.exceptionExpected && storyContext.exception == null) {
                 storyContext.exception = e;
             } else {

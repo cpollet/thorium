@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.analysis;
 
+import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.analysis.exceptions.InvalidTypeException;
 import ch.pollet.thorium.analysis.exceptions.MethodNotFoundException;
 import ch.pollet.thorium.antlr.ThoriumBaseListener;
@@ -30,47 +31,58 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
- * @fixme implement scopes support
- * @fixme throw all exceptions at the end of the process?
  * @author Christophe Pollet
+ * @fixme implement scopes support
+ * @fixme all expressions must have a defined type (think about a; alone or a=b; with b having no type)
  */
 public class TypeAnalysisListener extends ThoriumBaseListener {
     private final static Logger LOG = LoggerFactory.getLogger(TypeAnalysisListener.class);
 
     private final List<String> ruleNames;
 
-    private final ParseTreeProperty<Set<Type>> types = new ParseTreeProperty<>();
+    private final ParseTreeTypes types = new ParseTreeTypes();
 
     private SymbolTable currentScope;
 
     private final ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
     private final ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
 
+    private final List<ThoriumException> exceptions = new ArrayList<>();
+
     public TypeAnalysisListener(Parser parser, SymbolTable baseScope) {
         this.ruleNames = Arrays.asList(parser.getRuleNames());
         this.currentScope = baseScope;
     }
 
-    public Type getNodeType(ParseTree ctx) {
+    public List<ThoriumException> getExceptions() {
+        return exceptions;
+    }
+
+    public ParseTreeProperty<Type> getTypes() {
+        return types.reduce();
+    }
+
+    private Type getNodeType(ParserRuleContext ctx) {
         Set<Type> possibleTypes = types.get(ctx);
         if (possibleTypes.size() != 1) {
-            throw new IllegalStateException();
+            exceptions.add(InvalidTypeException.ambiguousType(ctx.getStart(), possibleTypes));
+            return Type.VOID;
         }
 
         return possibleTypes.iterator().next();
     }
 
-    public Set<Type> getNodeTypes(ParseTree ctx) {
+    private Set<Type> getNodeTypes(ParseTree ctx) {
         return types.get(ctx);
     }
 
@@ -102,11 +114,10 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
         } else if (ctx.expressionStatement() != null) {
             findNodeTypes(ctx, ctx.expressionStatement());
         } else if (ctx.getText().equals(";")) {
-            // ignore
+            types.put(ctx, asSet(Type.VOID));
         } else {
             throw new IllegalStateException();
         }
-
     }
 
     //endregion
@@ -117,7 +128,7 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
     public void exitIfStatement(ThoriumParser.IfStatementContext ctx) {
         Type conditionType = getNodeType(ctx.expression());
         if (conditionType != Type.BOOLEAN) {
-            throw InvalidTypeException.invalidType(ctx.expression().getStart(), Type.BOOLEAN, conditionType);
+            exceptions.add(InvalidTypeException.invalidType(ctx.expression().getStart(), Type.BOOLEAN, conditionType));
         }
 
         Set<Type> possibleTypes = getNodeTypes(ctx.statements());
@@ -209,7 +220,8 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
         Method method = leftType.lookupMethod(new MethodMatcher("*", parametersTypes));
 
         if (method == null) {
-            throw MethodNotFoundException.build(token, methodName, leftType, parametersTypes);
+            exceptions.add(MethodNotFoundException.build(token, methodName, leftType, parametersTypes));
+            return Type.VOID;
         }
 
         return method.getType();
@@ -254,7 +266,9 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
                 symbol.setType(rightType);
                 symbolObserverRegistry.notifyObservers(symbol, this);
             } else if (!Type.isAssignableFrom(leftType, rightType)) {
-                throw InvalidTypeException.notCompatible(ctx.start, rightType, leftType);
+                exceptions.add(InvalidTypeException.notCompatible(ctx.start, rightType, leftType));
+                types.put(ctx, asSet(Type.VOID));
+                return;
             }
 
             types.put(ctx, asSet(rightType));
@@ -272,7 +286,9 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
         Set<Type> possibleTypes = types.get(ctx.block());
 
         if (possibleTypes.size() > 1) {
-            throw InvalidTypeException.ambiguousType(ctx.getStart(), possibleTypes);
+            exceptions.add(InvalidTypeException.ambiguousType(ctx.getStart(), possibleTypes));
+            types.put(ctx, asSet(Type.VOID));
+            return;
         }
 
         findNodeType(ctx, ctx.block());
@@ -387,14 +403,5 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
         }
 
         // LOG.info("-> [" + methodName + "] " + ctx.toString(ruleNames) + " " + ctx.toStringTree(ruleNames) + ": " + types.get(ctx));
-    }
-
-    public void checkAllNodesHaveType() {
-        for (ParserRuleContext parserRuleContext : nodeObserverRegistry.getUnresolvedObservers()) {
-            throw InvalidTypeException.typeExpected(parserRuleContext.start);
-        }
-        for (ParserRuleContext parserRuleContext : symbolObserverRegistry.getUnresolvedObservers()) {
-            throw InvalidTypeException.typeExpected(parserRuleContext.start);
-        }
     }
 }

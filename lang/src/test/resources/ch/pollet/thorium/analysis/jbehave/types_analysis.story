@@ -49,8 +49,8 @@ Then the exception <exception> is thrown
 
 Examples:
 | expression                                                    | exception                                                     |
-| a                                                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
-| A                                                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
+|-- a                                                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
+|-- A                                                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
 | (if (true) { 1; } else { 1.0; })                              | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
 | (if (true) { 1; } else if (false) { 1.0; } else { true; })    | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
 | (if (true) { 1; } else if (false) { 1; } else { true; })      | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
@@ -64,7 +64,7 @@ When types are attached to nodes
 Then the exception <exception> is thrown with message matching <message>
 Examples:
 | statements                    | exception                                                             | message                                                                           |
-| a = 1; b = 1.0; a = b;        | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Incompatible types found on line [0-9]+:[0-9]+: Float is no assignable to Integer |
+| a = 1; b = 1.0; a = b;        | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Incompatible types found on line [0-9]+:[0-9]+ \(a\): Float is no assignable to Integer |
 |-- a = 1; { b = a + 1; } ; c = b;  | ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException | Cannot assign from Symbol(b: Void)    |
-| b; a = b;                     | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Type expected, but got Void. |
+|-- b; a = b;                     | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Type expected, but got Void. |
 |-- a; b = a;                     | ch.pollet.thorium.semantic.exception.InvalidAssignmentSourceException | Cannot assign from Symbol(a: Void)                |
