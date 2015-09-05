@@ -16,7 +16,6 @@
 
 package ch.pollet.thorium.analysis.exceptions;
 
-import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.utils.CollectionUtils;
 import org.antlr.v4.runtime.Token;
@@ -26,7 +25,7 @@ import java.util.Collection;
 /**
  * @author Christophe Pollet
  */
-public class InvalidTypeException extends ThoriumException {
+public class InvalidTypeException extends ThoriumSemanticException {
     private static final String INVALID_TYPE = "Invalid type found on line {0}: expected {1} but got {2}.";
     private static final String AMBIGUOUS_TYPE = "Ambiguous type found on line {0}: expected only one, but got {1}.";
     private static final String TYPE_EXPECTED = "Type expected, but got Void on line {0}.";

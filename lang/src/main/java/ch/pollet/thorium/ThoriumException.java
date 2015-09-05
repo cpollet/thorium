@@ -22,7 +22,6 @@ import java.text.MessageFormat;
 
 /**
  * @author Christophe Pollet
- * @fixme review exception hierarchy and grouping
  */
 public abstract class ThoriumException extends RuntimeException {
     public ThoriumException(String message) {
