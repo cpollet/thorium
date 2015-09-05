@@ -44,6 +44,9 @@ import java.util.Set;
  * @author Christophe Pollet
  * @fixme implement scopes support
  * @fixme all expressions must have a defined type (think about a; alone or a=b; with b having no type)
+ * @fixme check symbol does not already exist
+ * @fixme implement constant check
+ * @fixme rename to SemanticListener
  */
 public class TypeAnalysisListener extends ThoriumBaseListener {
     private final static Logger LOG = LoggerFactory.getLogger(TypeAnalysisListener.class);

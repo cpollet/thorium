@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.values;
 
+import ch.pollet.thorium.analysis.exceptions.InvalidSymbolException;
 import ch.pollet.thorium.types.Type;
 
 /**
@@ -37,6 +38,16 @@ public class Constant extends Variable {
     public Constant(String name, DirectValue value) {
         super(name, value);
         valueDefined = true;
+    }
+
+    @Override
+    public void setValue(DirectValue value) {
+        if (hasValue()) {
+            // FIXME SEM move
+            throw new InvalidSymbolException("Cannot change value of constant " + getName());
+        }
+
+        super.setValue(value);
     }
 
     @Override

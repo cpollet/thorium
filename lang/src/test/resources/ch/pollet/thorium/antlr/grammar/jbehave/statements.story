@@ -41,13 +41,3 @@ Examples:
 | a = 1; b = 2;                 | 2         | Integer   |
 | 1 + 1 if true;                | 2         | Integer   |
 | 1 + 1 if false;               | N/A       | Void      |
-
-Scenario: statements with exceptions
-Given a list of statements <statements>
-Given exception expected
-When being executed
-Then the exception <exception> is thrown with message <message>
-
-Examples:
-| statements                    | exception                       | message                                           |
-| A = 1; A = 2;                 | java.lang.IllegalStateException | Cannot assign Integer(2) to Symbol(A: Integer(1)) |

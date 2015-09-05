@@ -135,18 +135,10 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
             throw new IllegalStateException("Cannot assign " + right.toString() + " to " + left.toString());
         }
 
-        // TODO refactor without instanceof?
-        Symbol symbol;
-        if (left instanceof Constant) {
-            symbol = new Constant(left.getName(), right.value());
-        } else if (left instanceof Variable) {
-            symbol = new Variable(left.getName(), right.value());
-        } else {
-            throw new IllegalStateException();
-        }
-
-        context.insertSymbol(symbol);
-        context.pushStack(symbol.value());
+        Symbol symbol = context.lookupSymbol(left.getName());
+        symbol.setValue(right.value());
+        symbol.setType(right.type());
+        context.pushStack(right.value());
 
         return null;
     }
@@ -230,6 +222,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
             symbol = context.lookupSymbol(ctx.getText());
         } catch (SymbolNotFoundException e) {
             symbol = new Variable(ctx.getText()); // TODO EVAL: should be symbol reference instead?
+            context.insertSymbol(symbol);
         }
 
         context.pushStack(symbol);
@@ -245,6 +238,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
             symbol = context.lookupSymbol(ctx.getText());
         } catch (SymbolNotFoundException e) {
             symbol = new Constant(ctx.getText()); // TODO EVAL: should be symbol reference instead?
+            context.insertSymbol(symbol);
         }
 
         context.pushStack(symbol);

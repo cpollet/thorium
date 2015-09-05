@@ -65,7 +65,6 @@ public class EvaluationContext {
     }
 
     public void insertSymbol(Symbol symbol) {
-        // TODO SEM: check symbol does not already exists
         symbolsTable.put(symbol);
     }
 

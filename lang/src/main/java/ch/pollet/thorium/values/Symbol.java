@@ -48,13 +48,6 @@ public abstract class Symbol implements Value {
         this.value = DirectValue.build();
     }
 
-    public void setType(Type type) {
-        if (this.type != Type.VOID) {
-            throw new IllegalStateException();
-        }
-        this.type = type;
-    }
-
     public static Symbol create(SymbolType symbolType, String name) {
         switch (symbolType) {
             case VARIABLE:
@@ -71,14 +64,30 @@ public abstract class Symbol implements Value {
         return name;
     }
 
+    public void setType(Type type) {
+        if (hasType() && this.type != type) {
+            throw new IllegalStateException("Cannot change symbol " + name + " from type " + this.type() + " to " + type);
+        }
+
+        this.type = type;
+    }
+
     @Override
     public Type type() {
         return type;
     }
 
+    private boolean hasType() {
+        return type != Type.VOID;
+    }
+
     @Override
     public boolean hasValue() {
         return value.hasValue();
+    }
+
+    public void setValue(DirectValue value) {
+        this.value = value;
     }
 
     @Override
