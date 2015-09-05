@@ -81,11 +81,6 @@ public abstract class Symbol implements Value {
         return type != Type.VOID;
     }
 
-    @Override
-    public boolean hasValue() {
-        return value.hasValue();
-    }
-
     public void setValue(DirectValue value) {
         this.value = value;
     }
@@ -93,6 +88,11 @@ public abstract class Symbol implements Value {
     @Override
     public DirectValue value() {
         return value;
+    }
+
+    @Override
+    public boolean hasValue() {
+        return value.hasValue();
     }
 
     @Override
