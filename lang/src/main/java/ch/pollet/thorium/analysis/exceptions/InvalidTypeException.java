@@ -28,8 +28,7 @@ import java.util.Collection;
  */
 public class InvalidTypeException extends ThoriumException {
     private static final String INVALID_TYPE = "Invalid type found on line {0}: expected {1} but got {2}.";
-    // FIXME change to expected only one type, got [...]
-    private static final String AMBIGUOUS_TYPE = "Ambiguous type found on line {0}: possible types are {1} but only one expected.";
+    private static final String AMBIGUOUS_TYPE = "Ambiguous type found on line {0}: expected only one, but got {1}.";
     private static final String TYPE_EXPECTED = "Type expected, but got Void on line {0}.";
     private static final String NOT_COMPATIBLE = "Incompatible types found on line {0}: {1} is no assignable to {2}";
 

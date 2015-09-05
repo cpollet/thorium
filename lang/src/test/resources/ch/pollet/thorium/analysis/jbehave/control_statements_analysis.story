@@ -14,6 +14,6 @@ When types are attached to nodes
 Then the exception <exception> is thrown with message matching <message>
 
 Examples:
-| statements                                | exception                                                     | message                                                                       |
-| if (1) { 1; }                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.   |
-| if (true) { 1; } else if (1) { 1; }       | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.   |
+| statements                                | exception                                                     | message                                                                           |
+| if (1) { 1; }                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer. |
+| if (true) { 1; } else if (1) { 1; }       | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer. |
