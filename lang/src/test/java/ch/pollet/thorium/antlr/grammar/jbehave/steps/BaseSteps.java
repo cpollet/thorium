@@ -95,7 +95,7 @@ public abstract class BaseSteps {
     @Alias("the symbol <symbol> has value <value> of type <type>")
     public void symbolHasValue(@Named("symbol") String expectedSymbol, @Named("value") String expectedValue, @Named("type") String expectedType) {
         Symbol symbol = storyContext.evaluationContext.lookupSymbol(expectedSymbol);
-        assertThat(symbol.type()).isEqualTo(toType(expectedType));
+        assertThat(symbol.type().toString()).isEqualTo(expectedType);
         assertThat(symbol.value()).isEqualTo(toValue(expectedValue, expectedType));
     }
 
@@ -107,8 +107,8 @@ public abstract class BaseSteps {
         String[] types = expectedTypes.split(",");
 
         for (int i = 0; i < symbols.length; i++) {
-            assertThat(storyContext.evaluationContext.lookupSymbol(symbols[i]).type())
-                    .isEqualTo(toType(types[i]));
+            assertThat(storyContext.evaluationContext.lookupSymbol(symbols[i]).type().toString())
+                    .isEqualTo(types[i]);
             assertThat(storyContext.evaluationContext.lookupSymbol(symbols[i]).value())
                     .isEqualTo(toValue(values[i], types[i]));
         }
@@ -215,28 +215,13 @@ public abstract class BaseSteps {
         return parser;
     }
 
-    // TODO remove
-    protected Type toType(String type) {
-        switch (type) {
-            case "IntegerType":
-                return Type.INTEGER;
-            case "FloatType":
-                return Type.FLOAT;
-            case "BooleanType":
-                return Type.BOOLEAN;
-        }
-
-        throw new IllegalArgumentException("[" + type + "] is not a valid type");
-    }
-
-    // TODO remove
     protected Value toValue(String value, String type) {
         switch (type) {
-            case "IntegerType":
+            case "Integer":
                 return DirectValue.build(Long.parseLong(value));
-            case "FloatType":
+            case "Float":
                 return DirectValue.build(Double.parseDouble(value));
-            case "BooleanType":
+            case "Boolean":
                 switch (value) {
                     case "true":
                         return DirectValue.build(true);
@@ -245,7 +230,7 @@ public abstract class BaseSteps {
                     default:
                         throw new IllegalArgumentException("[" + value + "] is not a valid Boolean value");
                 }
-            case "NullType":
+            case "Void":
                 return DirectValue.build();
         }
 
