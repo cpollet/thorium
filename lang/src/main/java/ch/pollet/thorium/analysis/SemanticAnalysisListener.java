@@ -44,8 +44,7 @@ import java.util.Set;
 
 /**
  * @author Christophe Pollet
- * @fixme implement scopes support
- * @fixme check symbol does not already exist
+ * @fixme check symbol does not already exist when using var/val/let/def
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
     private final static Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
@@ -100,6 +99,12 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     //region Statements
 
+
+    @Override
+    public void enterBlock(ThoriumParser.BlockContext ctx) {
+        currentScope = new SymbolTable<>(currentScope);
+    }
+
     @Override
     public void exitBlock(ThoriumParser.BlockContext ctx) {
         if (ctx.ifStatement() != null) {
@@ -107,6 +112,8 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         } else if (ctx.statementsBlock() != null) {
             findNodeTypes(ctx, ctx.statementsBlock());
         }
+
+        currentScope = currentScope.unwrap();
     }
 
     @Override
@@ -179,7 +186,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     //endregion
 
-    //region Mono-values statements
+    //region Mono-valued statements
 
     @Override
     public void exitUnconditionalStatement(ThoriumParser.UnconditionalStatementContext ctx) {

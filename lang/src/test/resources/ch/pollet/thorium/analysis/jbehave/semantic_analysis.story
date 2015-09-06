@@ -10,13 +10,16 @@ Examples:
 | a = b; b = 1;                 | a         | Integer   |
 | a = b; b = c; c = 1;          | a         | Integer   |
 | a = (b); b = 1;               | a         | Integer   |
-| b; a = ({ b; }); b = 1;       | a         | Integer   |
 | b; a = b; b = 1 if true;      | a         | Integer   |
 | b; a = b; b = 1 unless true;  | a         | Integer   |
 | b = a + 1; a = 1;             | b         | Integer   |
 | b = a * 1; a = 1.0;           | b         | Float     |
-|-- a = ({ b; }); b = 1; | c         | Void   |
-
+| a = ({ b; }); b = 1;          | a         | Void      |
+| b; a = ({ b; }); b = 1;       | a         | Integer   |
+| if (b = true) { ; } b;        | b         | Void      |
+| b; if (b = true) { ; }        | b         | Boolean   |
+| if (true) { b = 1; } b;       | b         | Void      |
+| b; if (true) { b = 1; } b;    | b         | Integer   |
 
 Scenario: types are attached to expression nodes
 Given an expression <expression>
@@ -49,8 +52,6 @@ Then the exception <exception> is thrown
 
 Examples:
 | expression                                                    | exception                                                     |
-|-- a                                                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
-|-- A                                                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
 | (if (true) { 1; } else { 1.0; })                              | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
 | (if (true) { 1; } else if (false) { 1.0; } else { true; })    | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
 | (if (true) { 1; } else if (false) { 1; } else { true; })      | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    |
@@ -63,8 +64,9 @@ And exception expected
 When types are attached to nodes
 Then the exception <exception> is thrown with message matching <message>
 Examples:
-| unit                          | exception                                                             | message                                                                                   |
-| a = 1; b = 1.0; a = b;        | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Incompatible types found on line [0-9]+:[0-9]+ \(a\): Float is no assignable to Integer   |
-| A = 1; A = 2;                 | ch.pollet.thorium.analysis.exceptions.InvalidAssignmentException      | Invalid assignment found on line [0-9]+:[0-9]+ \(A\): unable to change a constant value.  |
-| a;                            | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Type expected, but got Void on line [0-9]+:[0-9]+ \(a\). |
-|-- a = 1; { b = a + 1; } ; c = b;  | ch.pollet.thorium.analysis.exceptions.InvalidAssignmentSourceException | Cannot assign from Symbol(b: Void)    |
+| unit                          | exception                                                         | message                                                                                   |
+| a = 1; b = 1.0; a = b;        | ch.pollet.thorium.analysis.exceptions.InvalidTypeException        | Incompatible types found on line [0-9]+:[0-9]+ \(a\): Float is no assignable to Integer   |
+| A = 1; A = 2;                 | ch.pollet.thorium.analysis.exceptions.InvalidAssignmentException  | Invalid assignment found on line [0-9]+:[0-9]+ \(A\): unable to change a constant value.  |
+| a;                            | ch.pollet.thorium.analysis.exceptions.InvalidTypeException        | Type expected, but got Void on line [0-9]+:[0-9]+ \(a\).                                  |
+| a + 1;                        | ch.pollet.thorium.analysis.exceptions.InvalidTypeException        | Type expected, but got Void on line [0-9]+:[0-9]+ \(a\).                                  |
+| a = 1; { b = a + 1; } b + 1;  | ch.pollet.thorium.analysis.exceptions.InvalidTypeException        | Type expected, but got Void on line [0-9]+:[0-9]+ \(b\).                                  |

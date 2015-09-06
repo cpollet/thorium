@@ -46,6 +46,14 @@ public class SymbolTable<T> {
         table.symbols.put(name, symbol);
     }
 
+    public SymbolTable<T> unwrap() {
+        if (parent == null) {
+            throw new IllegalStateException("Called unwrap on root symbol table.");
+        }
+
+        return parent;
+    }
+
     private SymbolTable<T> findTableContaining(String name) {
         if (symbols.containsKey(name)) {
             return this;
