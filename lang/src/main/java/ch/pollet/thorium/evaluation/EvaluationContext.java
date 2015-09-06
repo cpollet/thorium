@@ -26,19 +26,19 @@ import java.util.Stack;
  */
 public class EvaluationContext {
     private final EvaluationContext parentContext;
-    private final SymbolTable symbolsTable;
+    private final SymbolTable<Symbol> symbolsTable;
     private final Stack<Value> stack;
     public Value lastStatementValue;
 
     private EvaluationContext() {
         this.stack = new Stack<>();
-        this.symbolsTable = new SymbolTable();
+        this.symbolsTable = new SymbolTable<>();
         this.parentContext = null;
     }
 
     private EvaluationContext(EvaluationContext parentContext) {
         this.stack = new Stack<>();
-        this.symbolsTable = new SymbolTable(parentContext.symbolsTable);
+        this.symbolsTable = new SymbolTable<>(parentContext.symbolsTable);
         this.parentContext = parentContext;
     }
 
@@ -65,7 +65,7 @@ public class EvaluationContext {
     }
 
     public void insertSymbol(Symbol symbol) {
-        symbolsTable.put(symbol);
+        symbolsTable.put(symbol.getName(), symbol);
     }
 
     public Symbol lookupSymbol(String name) {

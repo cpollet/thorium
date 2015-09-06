@@ -19,9 +19,9 @@ package ch.pollet.thorium.analysis.jbehave.steps;
 import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.analysis.TypeAnalyser;
 import ch.pollet.thorium.analysis.exceptions.ThoriumSemanticException;
+import ch.pollet.thorium.analysis.values.Symbol;
 import ch.pollet.thorium.antlr.grammar.jbehave.steps.BaseSteps;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
-import ch.pollet.thorium.values.Symbol;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -61,7 +61,7 @@ public class TypesAnalysisSteps extends BaseSteps {
 
     @When("types are attached to nodes")
     public void attachTypes() throws Exception {
-        TypeAnalyser typeAnalyser = new TypeAnalyser(storyContext.baseScope, storyContext.parser, storyContext.tree);
+        TypeAnalyser typeAnalyser = new TypeAnalyser(storyContext.analysisBaseScope, storyContext.parser, storyContext.tree);
 
         try {
             storyContext.types = typeAnalyser.analyze();
@@ -92,12 +92,12 @@ public class TypesAnalysisSteps extends BaseSteps {
     @Then("the symbol <symbol> is of type <type>")
     @Alias("the symbol $symbol is of type $type")
     public void assertSymbolIsOfType(@Named("symbol") String symbolName, @Named("type") String type) {
-        Symbol symbol = storyContext.baseScope.get(symbolName);
+        Symbol symbol = storyContext.analysisBaseScope.get(symbolName);
 
         assertThat(symbol)
                 .isNotNull();
 
-        assertThat(symbol.type().toString())
+        assertThat(symbol.getType().toString())
                 .isEqualTo(type);
     }
 }

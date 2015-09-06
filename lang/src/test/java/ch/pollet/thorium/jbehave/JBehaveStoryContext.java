@@ -32,7 +32,8 @@ public class JBehaveStoryContext {
     public Exception exception;
     public boolean exceptionExpected;
     public ThoriumParser parser;
-    public SymbolTable baseScope;
+    public SymbolTable<ch.pollet.thorium.values.Symbol> evaluationBaseScope;
+    public SymbolTable<ch.pollet.thorium.analysis.values.Symbol> analysisBaseScope;
     public ParseTreeProperty<Type> types;
     public String thoriumCode;
 }

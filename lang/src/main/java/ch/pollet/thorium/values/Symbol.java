@@ -82,6 +82,9 @@ public abstract class Symbol implements Value {
     }
 
     public void setValue(DirectValue value) {
+        if (!value.hasValue()) {
+            throw new IllegalStateException("Cannot change " + name + "'s value to " + value + " which has no value");
+        }
         this.value = value;
     }
 

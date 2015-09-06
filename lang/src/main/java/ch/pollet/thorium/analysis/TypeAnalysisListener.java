@@ -17,15 +17,16 @@
 package ch.pollet.thorium.analysis;
 
 import ch.pollet.thorium.ThoriumException;
+import ch.pollet.thorium.analysis.exceptions.InvalidAssignmentException;
 import ch.pollet.thorium.analysis.exceptions.InvalidTypeException;
 import ch.pollet.thorium.analysis.exceptions.MethodNotFoundException;
+import ch.pollet.thorium.analysis.values.Symbol;
 import ch.pollet.thorium.antlr.ThoriumBaseListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
 import ch.pollet.thorium.evaluation.SymbolTable;
 import ch.pollet.thorium.types.Type;
-import ch.pollet.thorium.values.Symbol;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -45,7 +46,6 @@ import java.util.Set;
  * @fixme implement scopes support
  * @fixme all expressions must have a defined type (think about a; alone or a=b; with b having no type)
  * @fixme check symbol does not already exist
- * @fixme implement constant check
  * @fixme rename to SemanticListener
  */
 public class TypeAnalysisListener extends ThoriumBaseListener {
@@ -55,14 +55,14 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     private final ParseTreeTypes types = new ParseTreeTypes();
 
-    private SymbolTable currentScope;
+    private SymbolTable<Symbol> currentScope;
 
     private final ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
     private final ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
 
     private final List<ThoriumException> exceptions = new ArrayList<>();
 
-    public TypeAnalysisListener(Parser parser, SymbolTable baseScope) {
+    public TypeAnalysisListener(Parser parser, SymbolTable<Symbol> baseScope) {
         this.ruleNames = Arrays.asList(parser.getRuleNames());
         this.currentScope = baseScope;
     }
@@ -262,13 +262,22 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
         Type leftType = getNodeType(ctx.identifier());
         Type rightType = getNodeType(ctx.expression());
 
+        Symbol symbol = currentScope.get(ctx.identifier().getText());
+
+        if (!symbol.isWritable()) {
+            exceptions.add(InvalidAssignmentException.build(ctx.start));
+            types.put(ctx, asSet(Type.VOID));
+            return;
+        }
+
+        symbol.lock();
+
         if (rightType != Type.VOID) {
             if (leftType == Type.VOID) {
-                Symbol symbol = currentScope.get(ctx.identifier().getText());
                 symbol.setType(rightType);
                 symbolObserverRegistry.notifyObservers(symbol, this);
             } else if (!Type.isAssignableFrom(leftType, rightType)) {
-                exceptions.add(InvalidTypeException.notCompatible(ctx.start, rightType, leftType));
+                exceptions.add(InvalidTypeException.notCompatible(ctx.getStart(), rightType, leftType));
                 types.put(ctx, asSet(Type.VOID));
                 return;
             }
@@ -330,20 +339,20 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitConstantName(ThoriumParser.ConstantNameContext ctx) {
-        registerSymbol(Symbol.SymbolType.VARIABLE, ctx);
+        registerSymbol(Symbol.SymbolType.CONSTANT, ctx);
     }
 
     private void registerSymbol(Symbol.SymbolType type, ParserRuleContext ctx) {
         String name = ctx.getText();
 
         if (!currentScope.isDefined(name)) {
-            currentScope.put(Symbol.create(type, name));
+            currentScope.put(name, Symbol.create(type, name));
         }
 
         Symbol symbol = currentScope.get(name);
-        types.put(ctx, asSet(symbol.type()));
+        types.put(ctx, asSet(symbol.getType()));
 
-        if (symbol.type() == Type.VOID) {
+        if (symbol.getType() == Type.VOID) {
             symbolObserverRegistry.registerObserver(ctx, symbol);
         } else {
             nodeObserverRegistry.notifyObservers(ctx, this);

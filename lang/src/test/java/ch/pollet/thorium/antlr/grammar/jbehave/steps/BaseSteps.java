@@ -25,7 +25,6 @@ import ch.pollet.thorium.evaluation.SymbolTable;
 import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
-import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
@@ -52,7 +51,8 @@ public abstract class BaseSteps {
     }
 
     protected void init() {
-        storyContext.baseScope = new SymbolTable();
+        storyContext.evaluationBaseScope = new SymbolTable<>();
+        storyContext.analysisBaseScope = new SymbolTable<>();
     }
 
     @When("being executed")

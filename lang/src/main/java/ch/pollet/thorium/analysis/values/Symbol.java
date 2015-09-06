@@ -14,38 +14,48 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.values;
+package ch.pollet.thorium.analysis.values;
 
 import ch.pollet.thorium.types.Type;
 
 /**
  * @author Christophe Pollet
  */
-public class Constant extends Variable {
+public class Symbol {
+    private Type type;
 
-    public Constant(String name) {
-        super(name);
+    public Symbol() {
+        this.type = Type.VOID;
     }
 
-    public Constant(String name, Type type) {
-        super(name, type);
+    public enum SymbolType {
+        VARIABLE, CONSTANT
     }
 
-    public Constant(String name, DirectValue value) {
-        super(name, value);
+    public boolean isWritable() {
+        return true;
     }
 
-    @Override
-    public void setValue(DirectValue value) {
-        if (!isWritable()) {
-            throw new IllegalStateException("Cannot change value of constant " + getName());
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void lock() {
+        // nothing
+    }
+
+    public static Symbol create(SymbolType type, String name) {
+        switch (type) {
+            case VARIABLE:
+                return new Symbol();
+            case CONSTANT:
+                return new ConstantSymbol();
         }
 
-        super.setValue(value);
-    }
-
-    @Override
-    public boolean isWritable() {
-        return !hasValue();
+        throw new IllegalArgumentException();
     }
 }

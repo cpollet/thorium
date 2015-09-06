@@ -25,31 +25,31 @@ import java.util.Map;
 /**
  * @author Christophe Pollet
  */
-public class SymbolTable {
-    private final SymbolTable parent;
-    private final Map<String, Symbol> symbols;
+public class SymbolTable<T> {
+    private final SymbolTable<T> parent;
+    private final Map<String, T> symbols;
 
     public SymbolTable() {
         this.parent = null;
         this.symbols = new HashMap<>();
     }
 
-    public SymbolTable(SymbolTable parent) {
+    public SymbolTable(SymbolTable<T> parent) {
         this.parent = parent;
         this.symbols = new HashMap<>();
     }
 
-    public void put(Symbol symbol) {
-        SymbolTable table = findTableContaining(symbol.getName());
+    public void put(String name, T symbol) {
+        SymbolTable<T> table = findTableContaining(name);
 
         if (table == null) {
             table = this;
         }
 
-        table.symbols.put(symbol.getName(), symbol);
+        table.symbols.put(name, symbol);
     }
 
-    private SymbolTable findTableContaining(String name) {
+    private SymbolTable<T> findTableContaining(String name) {
         if (symbols.containsKey(name)) {
             return this;
         }
@@ -71,8 +71,8 @@ public class SymbolTable {
         return true;
     }
 
-    public Symbol get(String name) {
-        SymbolTable symbolTable = findTableContaining(name);
+    public T get(String name) {
+        SymbolTable<T> symbolTable = findTableContaining(name);
 
         if (symbolTable == null) {
             throw new SymbolNotFoundException(name);
