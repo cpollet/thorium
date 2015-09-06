@@ -130,14 +130,11 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         Value right = context.popStack();
         Value left = context.popStack();
 
-        // TODO SEM: move this
-        if (!left.isWritable()) {
-            throw new IllegalStateException("Cannot assign " + right.toString() + " to " + left.toString());
-        }
-
         Symbol symbol = context.lookupSymbol(left.getName());
+
         symbol.setValue(right.value());
         symbol.setType(right.type());
+
         context.pushStack(right.value());
 
         return null;
