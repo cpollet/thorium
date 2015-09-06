@@ -59,6 +59,6 @@ When being executed
 Then the exception <exception> is thrown
 
 Examples:
-| expression    | exception                 |
-| true + 1      | java.lang.AssertionError  |
-| 1 + true      | java.lang.AssertionError  |
+| expression    | exception                         |
+| true + 1      | java.lang.IllegalStateException   |
+| 1 + true      | java.lang.IllegalStateException   |
