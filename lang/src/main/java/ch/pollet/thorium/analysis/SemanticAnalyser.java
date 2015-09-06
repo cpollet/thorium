@@ -17,6 +17,7 @@
 package ch.pollet.thorium.analysis;
 
 import ch.pollet.thorium.analysis.exceptions.ThoriumSemanticException;
+import ch.pollet.thorium.analysis.values.Symbol;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.evaluation.SymbolTable;
 import ch.pollet.thorium.types.Type;
@@ -28,11 +29,11 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
  * @author Christophe Pollet
  */
 public class SemanticAnalyser {
-    private final SymbolTable scope;
+    private final SymbolTable<Symbol> scope;
     private final ParseTree tree;
     private final ThoriumParser parser;
 
-    public SemanticAnalyser(SymbolTable scope, ThoriumParser parser, ParseTree tree) {
+    public SemanticAnalyser(SymbolTable<Symbol> scope, ThoriumParser parser, ParseTree tree) {
         this.scope = scope;
         this.parser = parser;
         this.tree = tree;

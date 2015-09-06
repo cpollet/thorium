@@ -16,13 +16,16 @@
 
 package ch.pollet.thorium.analysis.values;
 
+import org.antlr.v4.runtime.Token;
+
 /**
  * @author Christophe Pollet
  */
 public class ConstantSymbol extends Symbol {
     private boolean writeable;
 
-    public ConstantSymbol() {
+    public ConstantSymbol(Token token) {
+        super(token);
         this.writeable = true;
     }
 

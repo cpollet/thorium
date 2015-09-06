@@ -17,14 +17,17 @@
 package ch.pollet.thorium.analysis.values;
 
 import ch.pollet.thorium.types.Type;
+import org.antlr.v4.runtime.Token;
 
 /**
  * @author Christophe Pollet
  */
 public class Symbol {
+    private final Token token;
     private Type type;
 
-    public Symbol() {
+    public Symbol(Token token) {
+        this.token = token;
         this.type = Type.VOID;
     }
 
@@ -44,16 +47,20 @@ public class Symbol {
         return type;
     }
 
+    public Token getToken() {
+        return token;
+    }
+
     public void lock() {
         // nothing
     }
 
-    public static Symbol create(SymbolType type, String name) {
+    public static Symbol create(SymbolType type, Token token) {
         switch (type) {
             case VARIABLE:
-                return new Symbol();
+                return new Symbol(token);
             case CONSTANT:
-                return new ConstantSymbol();
+                return new ConstantSymbol(token);
         }
 
         throw new IllegalArgumentException();

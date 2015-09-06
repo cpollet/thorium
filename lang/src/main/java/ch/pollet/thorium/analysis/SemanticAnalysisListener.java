@@ -38,13 +38,13 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 /**
  * @author Christophe Pollet
  * @fixme implement scopes support
- * @fixme all expressions must have a defined type (think about a; alone or a=b; with b having no type)
  * @fixme check symbol does not already exist
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
@@ -55,6 +55,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     private final ParseTreeTypes types = new ParseTreeTypes();
 
     private SymbolTable<Symbol> currentScope;
+    private List<Symbol> symbols = new LinkedList<>();
 
     private final ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
     private final ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
@@ -86,6 +87,15 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     private Set<Type> getNodeTypes(ParseTree ctx) {
         return types.get(ctx);
+    }
+
+    @Override
+    public void exitCompilationUnit(ThoriumParser.CompilationUnitContext ctx) {
+        for (Symbol symbol : symbols) {
+            if (symbol.getType() == Type.VOID) {
+                exceptions.add(InvalidTypeException.typeExpected(symbol.getToken()));
+            }
+        }
     }
 
     //region Statements
@@ -346,7 +356,9 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         String name = ctx.getText();
 
         if (!currentScope.isDefined(name)) {
-            currentScope.put(name, Symbol.create(type, name));
+            Symbol symbol = Symbol.create(type, ctx.getStart());
+            symbols.add(symbol);
+            currentScope.put(name, symbol);
         }
 
         Symbol symbol = currentScope.get(name);
