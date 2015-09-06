@@ -218,6 +218,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         try {
             symbol = context.lookupSymbol(ctx.getText());
         } catch (SymbolNotFoundException e) {
+            // FIXME sem add check for this
             symbol = new Variable(ctx.getText()); // TODO EVAL: should be symbol reference instead?
             context.insertSymbol(symbol);
         }
@@ -234,6 +235,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         try {
             symbol = context.lookupSymbol(ctx.getText());
         } catch (SymbolNotFoundException e) {
+            // FIXME sem add check for this
             symbol = new Constant(ctx.getText()); // TODO EVAL: should be symbol reference instead?
             context.insertSymbol(symbol);
         }
