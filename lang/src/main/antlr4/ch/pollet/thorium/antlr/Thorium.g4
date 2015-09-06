@@ -44,6 +44,7 @@ statement
 
 expressionStatement
     : expression ';'                                    # unconditionalStatement
+    | variableDeclaration ';'                           # variableDeclarationStatement
     | expression IF expression ';'                      # conditionalIfStatement
     | expression UNLESS expression ';'                  # conditionalUnlessStatement
     // | expression WHILE expression ';'                   # repeatedStatement
@@ -73,6 +74,10 @@ elseStatement
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // EXPRESSIONS
 
+variableDeclaration
+    : DEF ( VariableName | ConstantName ) (':' ObjectOrClassName)? ('=' expression)?
+    ;
+
 expression
     : expression '*' expression                         # multiplicationExpression
     | expression '+' expression                         # additionExpression
@@ -100,6 +105,7 @@ identifier
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TOKENS
 
+DEF     : 'def';
 UNLESS  : 'unless';
 IF      : 'if';
 ELSE    : 'else';
