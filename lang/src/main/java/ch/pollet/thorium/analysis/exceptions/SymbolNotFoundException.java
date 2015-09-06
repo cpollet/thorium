@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.semantic.exception;
+package ch.pollet.thorium.analysis.exceptions;
 
 import ch.pollet.thorium.analysis.exceptions.ThoriumSemanticException;
 

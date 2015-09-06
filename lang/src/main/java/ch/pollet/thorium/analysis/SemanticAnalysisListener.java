@@ -46,10 +46,9 @@ import java.util.Set;
  * @fixme implement scopes support
  * @fixme all expressions must have a defined type (think about a; alone or a=b; with b having no type)
  * @fixme check symbol does not already exist
- * @fixme rename to SemanticListener
  */
-public class TypeAnalysisListener extends ThoriumBaseListener {
-    private final static Logger LOG = LoggerFactory.getLogger(TypeAnalysisListener.class);
+public class SemanticAnalysisListener extends ThoriumBaseListener {
+    private final static Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
 
     private final List<String> ruleNames;
 
@@ -62,7 +61,7 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
 
     private final List<ThoriumException> exceptions = new ArrayList<>();
 
-    public TypeAnalysisListener(Parser parser, SymbolTable<Symbol> baseScope) {
+    public SemanticAnalysisListener(Parser parser, SymbolTable<Symbol> baseScope) {
         this.ruleNames = Arrays.asList(parser.getRuleNames());
         this.currentScope = baseScope;
     }

@@ -27,12 +27,12 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 /**
  * @author Christophe Pollet
  */
-public class TypeAnalyser {
+public class SemanticAnalyser {
     private final SymbolTable scope;
     private final ParseTree tree;
     private final ThoriumParser parser;
 
-    public TypeAnalyser(SymbolTable scope, ThoriumParser parser, ParseTree tree) {
+    public SemanticAnalyser(SymbolTable scope, ThoriumParser parser, ParseTree tree) {
         this.scope = scope;
         this.parser = parser;
         this.tree = tree;
@@ -40,7 +40,7 @@ public class TypeAnalyser {
 
     public ParseTreeProperty<Type> analyze() {
         ParseTreeWalker walker = new ParseTreeWalker();
-        TypeAnalysisListener listener = new TypeAnalysisListener(parser, scope);
+        SemanticAnalysisListener listener = new SemanticAnalysisListener(parser, scope);
 
         walker.walk(listener, tree);
 
