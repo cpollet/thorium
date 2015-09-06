@@ -18,7 +18,6 @@ package ch.pollet.thorium.evaluation;
 
 import ch.pollet.thorium.antlr.ThoriumBaseVisitor;
 import ch.pollet.thorium.antlr.ThoriumParser;
-import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.Constant;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
@@ -215,10 +214,10 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     public Void visitVariableName(ThoriumParser.VariableNameContext ctx) {
         Symbol symbol;
 
-        try {
+        // FIXME sem add check for this
+        if (context.symbolDefined(ctx.getText())) {
             symbol = context.lookupSymbol(ctx.getText());
-        } catch (SymbolNotFoundException e) {
-            // FIXME sem add check for this
+        } else {
             symbol = new Variable(ctx.getText()); // TODO EVAL: should be symbol reference instead?
             context.insertSymbol(symbol);
         }
@@ -232,10 +231,10 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     public Void visitConstantName(ThoriumParser.ConstantNameContext ctx) {
         Symbol symbol;
 
-        try {
+        // FIXME sem add check for this
+        if (context.symbolDefined(ctx.getText())) {
             symbol = context.lookupSymbol(ctx.getText());
-        } catch (SymbolNotFoundException e) {
-            // FIXME sem add check for this
+        } else {
             symbol = new Constant(ctx.getText()); // TODO EVAL: should be symbol reference instead?
             context.insertSymbol(symbol);
         }

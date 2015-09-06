@@ -16,9 +16,6 @@
 
 package ch.pollet.thorium.evaluation;
 
-import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
-import ch.pollet.thorium.values.Symbol;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,20 +59,16 @@ public class SymbolTable<T> {
     }
 
     public boolean isDefined(String name) {
-        try {
-            get(name);
-        } catch (SymbolNotFoundException e) {
-            return false;
-        }
+        SymbolTable<T> table = findTableContaining(name);
 
-        return true;
+        return table != null;
     }
 
     public T get(String name) {
         SymbolTable<T> symbolTable = findTableContaining(name);
 
         if (symbolTable == null) {
-            throw new SymbolNotFoundException(name);
+            throw new IllegalStateException("Symbol " + name + " is not defined");
         }
 
         return symbolTable.symbols.get(name);

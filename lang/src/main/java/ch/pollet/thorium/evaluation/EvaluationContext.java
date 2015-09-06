@@ -71,4 +71,8 @@ public class EvaluationContext {
     public Symbol lookupSymbol(String name) {
         return symbolsTable.get(name);
     }
+
+    public boolean symbolDefined(String name){
+        return symbolsTable.isDefined(name);
+    }
 }

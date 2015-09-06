@@ -24,7 +24,6 @@ import ch.pollet.thorium.evaluation.EvaluationContext;
 import ch.pollet.thorium.evaluation.SymbolTable;
 import ch.pollet.thorium.evaluation.VisitorEvaluator;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
-import ch.pollet.thorium.semantic.exception.SymbolNotFoundException;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
@@ -38,7 +37,6 @@ import java.util.EmptyStackException;
 import java.util.Stack;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.failure;
 
 /**
  * @author Christophe Pollet
@@ -120,12 +118,9 @@ public abstract class BaseSteps {
         String[] symbols = expectedNotDefinedSymbols.split(",");
 
         for (String symbol : symbols) {
-            try {
-                storyContext.evaluationContext.lookupSymbol(symbol);
-                throw failure("Symbol table contains [" + symbol + "]");
-            } catch (SymbolNotFoundException e) {
-                // nothing
-            }
+            assertThat(storyContext.evaluationContext.symbolDefined(symbol))
+                    .overridingErrorMessage("Symbol table contains [" + symbol + "]")
+                    .isFalse();
         }
     }
 
