@@ -1,6 +1,30 @@
-# Variables
-Should be declared as:
-    var name (:type)? (=value)? ;
+This document is a work in progress, its content may change at any time.
+
+# Variables and consants
+ * Variables names must match ```[a-z][a-zA-Z0-9_$]*```
+ * Constant names must match ```[A-Z0-9_$]+```
+
+Both variables and constants must be declared using the following syntax: ```def varname (: Type)? (= expression)? ;```
+
+I other words, in one of the following ways:
+
+    def a;
+    def a : Integer;
+    def a = 1;
+    def a : Integer = b + 1;
+
+# Conditional statements
+Statements can be suffixed with with either ```if expression``` or ```unless expression```, such as in
+
+    // a = min(a, 5)
+    a = 5 if a < 5;
+
+# Repeatable statements
+Not implemented, yet.
+Much like conditional statements, a statement can be suffixed with ```while expression``` to repeat it as long as needed:
+
+    // make sure a > 0
+    a = a * 10 while a < 0;
 
 # Object creation
 ## Constructor / Destructors
