@@ -39,9 +39,9 @@ Scenario: integer method with unsupported parameter
 Given method is <left> <method> <right>
 Given an exception <exception> is expected
 When decode method
-Then the exception was thrown with message <message>
+Then the exception <exception> is thrown
 
 Examples:
-| left      | method    | right     | exception                                                     | message                                       |
-| Integer   | +         | Boolean   | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException  | Method +(Boolean) not implemented on Integer  |
-| Integer   | *         | Boolean   | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException  | Method *(Boolean) not implemented on Integer  |
+| left      | method    | right     | exception                 |
+| Integer   | +         | Boolean   | java.lang.AssertionError  |
+| Integer   | *         | Boolean   | java.lang.AssertionError  |

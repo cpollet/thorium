@@ -37,11 +37,11 @@ Scenario: boolean method with unsupported parameter
 Given method is <left> <method> <right>
 Given an exception <exception> is expected
 When decode method
-Then the exception was thrown with message <message>
+Then the exception <exception> is thrown
 
 Examples:
-| left      | method    | right     | exception                                                     | message                                       |
-| Boolean   | +         | Integer   | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException  | Method +(Integer) not implemented on Boolean  |
-| Boolean   | +         | Float     | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException  | Method +(Float) not implemented on Boolean    |
-| Boolean   | *         | Integer   | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException  | Method *(Integer) not implemented on Boolean  |
-| Boolean   | *         | Float     | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException  | Method *(Float) not implemented on Boolean    |
+| left      | method    | right     | exception                 |
+| Boolean   | +         | Integer   | java.lang.AssertionError  |
+| Boolean   | +         | Float     | java.lang.AssertionError  |
+| Boolean   | *         | Integer   | java.lang.AssertionError  |
+| Boolean   | *         | Float     | java.lang.AssertionError  |

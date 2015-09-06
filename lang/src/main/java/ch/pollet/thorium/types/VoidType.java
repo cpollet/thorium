@@ -18,7 +18,6 @@ package ch.pollet.thorium.types;
 
 import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
-import ch.pollet.thorium.analysis.exceptions.MethodNotFoundException;
 
 /**
  * @author Christophe Pollet
@@ -37,7 +36,7 @@ public class VoidType implements Type {
 
     @Override
     public Method lookupMethod(MethodMatcher matcher) {
-        throw new MethodNotFoundException("Method " + matcher + " not implemented on " + this);
+        return null;
     }
 
     @Override

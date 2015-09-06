@@ -39,9 +39,9 @@ Scenario: float method with unsupported parameter
 Given method is <left> <method> <right>
 Given an exception <exception> is expected
 When decode method
-Then the exception was thrown with message <message>
+Then the exception <exception> is thrown
 
 Examples:
-| left      | method    | right     | exception                                                     | message                                       |
-| Float     | +         | Boolean   | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException  | Method +(Boolean) not implemented on Float    |
-| Float     | *         | Boolean   | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException  | Method *(Boolean) not implemented on Float    |
+| left      | method    | right     | exception                 |
+| Float     | +         | Boolean   | java.lang.AssertionError  |
+| Float     | *         | Boolean   | java.lang.AssertionError  |

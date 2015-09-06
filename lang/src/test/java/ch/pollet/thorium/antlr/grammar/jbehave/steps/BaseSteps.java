@@ -60,7 +60,7 @@ public abstract class BaseSteps {
 
         try {
             visitorEvaluator.visit(storyContext.tree);
-        } catch (ThoriumException | IllegalStateException e) {
+        } catch (ThoriumException | IllegalStateException | AssertionError e) {
             if (storyContext.exceptionExpected && storyContext.exception == null) {
                 storyContext.exception = e;
             } else {

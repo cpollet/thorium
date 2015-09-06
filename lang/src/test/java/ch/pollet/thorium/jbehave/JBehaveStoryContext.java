@@ -29,7 +29,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 public class JBehaveStoryContext {
     public ParseTree tree;
     public EvaluationContext evaluationContext;
-    public Exception exception;
+    public Throwable exception;
     public boolean exceptionExpected;
     public ThoriumParser parser;
     public SymbolTable<ch.pollet.thorium.values.Symbol> evaluationBaseScope;

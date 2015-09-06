@@ -220,13 +220,14 @@ public class TypeAnalysisListener extends ThoriumBaseListener {
     }
 
     private Type inferMethodType(Token token, String methodName, Type leftType, Type... parametersTypes) {
-        try {
-            Method method = leftType.lookupMethod(new MethodMatcher("*", parametersTypes));
-            return method.getType();
-        } catch (MethodNotFoundException e) {
+        Method method = leftType.lookupMethod(new MethodMatcher("*", parametersTypes));
+
+        if (method == null) {
             exceptions.add(MethodNotFoundException.build(token, methodName, leftType, parametersTypes));
             return Type.VOID;
         }
+
+        return method.getType();
     }
 
     @Override

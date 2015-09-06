@@ -119,6 +119,8 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
         Method method = left.type().lookupMethod(new MethodMatcher(operator, right.type()));
 
+        assert method != null;
+
         context.pushStack(method.apply(left, right));
     }
 

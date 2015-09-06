@@ -18,7 +18,6 @@ package ch.pollet.thorium.types;
 
 import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
-import ch.pollet.thorium.analysis.exceptions.MethodNotFoundException;
 
 import java.util.Map;
 
@@ -32,7 +31,7 @@ public abstract class BaseType implements Type {
             return symbolTable().get(matcher);
         }
 
-        throw new MethodNotFoundException("Method " + matcher + " not implemented on " + this);
+        return null;
     }
 
     abstract Map<MethodMatcher, Method> symbolTable();

@@ -43,7 +43,7 @@ Then the symbols <symbols> have values <values> of types <types>
 Then the symbols <undefined-symbols> are not defined
 
 Examples:
-| expression                | symbols   | values    | types                 | undefined-symbols |
+| expression                | symbols   | values    | types             | undefined-symbols |
 | a = 1                     | a         | 1         | Integer           |                   |
 | a = 1.0                   | a         | 1.0       | Float             |                   |
 | A = 1                     | A         | 1         | Integer           |                   |
@@ -56,9 +56,9 @@ Scenario: expressions with exceptions
 Given an expression <expression>
 Given exception expected
 When being executed
-Then the exception <exception> is thrown with message <message>
+Then the exception <exception> is thrown
 
 Examples:
-| expression    | exception                                                     | message                                           |
-| true + 1      | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException | Method +(Integer) not implemented on Boolean      |
-| 1 + true      | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException | Method +(Boolean) not implemented on Integer      |
+| expression    | exception                 |
+| true + 1      | java.lang.AssertionError  |
+| 1 + true      | java.lang.AssertionError  |
