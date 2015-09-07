@@ -4,20 +4,22 @@ This document is a work in progress, its content may change at any time.
  * Variables names must match ```[a-z][a-zA-Z0-9_$]*```
  * Constant names must match ```[A-Z0-9_$]+```
 
-Both variables and constants must be declared using the following syntax: ```def varname (: Type)? (= expression)? ;```
+Both variables and constants must be declared using the following syntax: ```def (Type)? varname (= expression)? ;```
 
 I other words, in one of the following ways:
 
     def a;
-    def a : Integer;
+    def Integer a;
     def a = 1;
-    def a : Integer = b + 1;
+    def Integer a = b + 1;
 
 # Conditional statements
 Statements can be suffixed with with either ```if expression``` or ```unless expression```, such as in
 
     // a = min(a, 5)
     a = 5 if a < 5;
+    // a = max(a, 5)
+    a = 5 unless a < 5
 
 # Repeatable statements
 Not implemented, yet.
@@ -40,6 +42,7 @@ Much like conditional statements, a statement can be suffixed with ```while expr
 
 ## Creation
     instance = (new)? Class(parameters);
+    instance = Class.new(parameters);
 
 
 # Method call
@@ -67,10 +70,10 @@ in another one.
     }
     
     class Dog implements Walker {
-        Walker walker : delegate all;
+        Walker walker : delegate;
         
         +Dog() {
-            this.walker = Walker();
+            this.walker = Mammal();
         }
     }
 
@@ -78,13 +81,13 @@ in another one.
 If two delegate implements the same method, an error occurs.
 
     // delegates all Walker's public methods to walker
-    Walker walker : delegate all;
+    Walker walker : delegate;
     
     // delegates all Walker's public methods but a to walker
-    Walker walker : delegate all but a;
+    Walker walker : delegate but a;
     
     // delegates all Walker's public methods but a and b to walker
-    Walker walker : delegate all but a, b;          
+    Walker walker : delegate but a, b;          
     
     // delegates only Walker's public methods a to walker
     Walker walker : delegate a;
@@ -96,14 +99,20 @@ If two delegate implements the same method, an error occurs.
 to be defined
 
 # Getters / Setters
+    // generate public getter, protected setter
     get:public set:protected String a;
+    
+    // generate public getter, public setter
     public String b;
+    
+    // generate public getter, private setter
     get:public String c;
 
 # Visibility
 
 x         | class | subclasses | package | world 
 :-------- | :---: | :--------: | :-----: | :---: 
+          | Y     | N          | N       | N
 public    | Y     | Y          | Y       | Y     
 package   | Y     | Y          | Y       | N     
 protected | Y     | Y          | N       | N     
