@@ -32,11 +32,7 @@ Much like conditional statements, a statement can be suffixed with ```while expr
 ## Constructor / Destructors
     class A {
         // constructor
-        +A() {
-        }
-        
-        // destructor
-        -A() {
+        A() {
         }
     }
 
@@ -53,7 +49,7 @@ Much like conditional statements, a statement can be suffixed with ```while expr
     expression ?. method() // -> do nothing, return null if expression is null; otherwise, same as . 
 
 ## nullable arguments
-    Integer(1) + Integer   // -> ?
+    Integer(1) + Integer   // -> depends on implementation
 
 # Composition over inheritance
 Thorium does not feature class inheritance. The only tool available to extends an object's functionality is to "wrap" it
@@ -72,7 +68,7 @@ in another one.
     class Dog implements Walker {
         Walker walker : delegate;
         
-        +Dog() {
+        Dog() {
             this.walker = Mammal();
         }
     }
@@ -81,13 +77,13 @@ in another one.
 If two delegate implements the same method, an error occurs.
 
     // delegates all Walker's public methods to walker
-    Walker walker : delegate;
+    Walker walker : delegate all;
     
     // delegates all Walker's public methods but a to walker
-    Walker walker : delegate but a;
+    Walker walker : delegate all but a;
     
     // delegates all Walker's public methods but a and b to walker
-    Walker walker : delegate but a, b;          
+    Walker walker : delegate all but a, b;
     
     // delegates only Walker's public methods a to walker
     Walker walker : delegate a;
@@ -98,23 +94,37 @@ If two delegate implements the same method, an error occurs.
 # Traits
 to be defined
 
-# Getters / Setters
+# Class members, getters & setters
+General form is ```def (Type)? varname ({ getter/setter })? (= expression)? (: delegate)? ;```
+
     // generate public getter, protected setter
-    get:public set:protected String a;
+    def String a { public get; protected set; };
+    // is the same as
+    def String a {
+        public get { return a; }
+        protected set(_) { a = _; }
+    };
     
     // generate public getter, public setter
-    public String b;
+    def String b { public };
+
+To access a member from within its class:
+
+    // access directly, without using getter/setter
+    this->a = 1;
+    b = this->a + 1;
     
-    // generate public getter, private setter
-    get:public String c;
+    // access through getter/setter
+    this.a = 1;
+    b = this.a + 1;
 
 # Visibility
 
 x         | class | subclasses | package | world 
 :-------- | :---: | :--------: | :-----: | :---: 
-          | Y     | N          | N       | N
+          | Y     | N          | N       | N     
+private   | Y     | N          | N       | N     
 public    | Y     | Y          | Y       | Y     
 package   | Y     | Y          | Y       | N     
 protected | Y     | Y          | N       | N     
-private   | Y     | N          | N       | N     
 

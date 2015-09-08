@@ -43,11 +43,11 @@ statement
     ;
 
 expressionStatement
-    : expression ';'                                    # unconditionalStatement
-    | variableDeclaration ';'                           # variableDeclarationStatement
-    | expression IF expression ';'                      # conditionalIfStatement
-    | expression UNLESS expression ';'                  # conditionalUnlessStatement
-    // | expression WHILE expression ';'                   # repeatedStatement
+    : expression ';'                                                                    # unconditionalStatement
+//    | variableDeclaration ';'                                                           # variableDeclarationStatement
+    | expression IF expression ';'                                                      # conditionalIfStatement
+    | expression UNLESS expression ';'                                                  # conditionalUnlessStatement
+//     | expression WHILE expression ';'                                                   # repeatedStatement
     ;
 
 block
@@ -75,42 +75,90 @@ elseStatement
 // EXPRESSIONS
 
 variableDeclaration
-    : DEF ( VariableName | ConstantName ) (':' ObjectOrClassName)? ('=' expression)?
+    : DEF type? name ('=' expression)?
+    ;
+
+type
+    : UCFirstIdentifier '?'?
+    ;
+
+name
+    : LCFirstIdentifier
+    | UCIdentifier;
+
+memberDeclaration
+    : DEF type? name accessors? ('=' expression)? (':' DELEGATE delegate)?
+    ;
+
+accessors
+    : '{' visibility GET (statementsBlock | ';') visibility SET statementsBlock? '}'    # fullAccessorDefinition
+    | '{' visibility '}'                                                                # shortAccessorDefinition
+    ;
+
+visibility
+    : PRIVATE
+    | PROTECTED
+    | PACKAGE
+    | PUBLIC
+    ;
+
+delegate
+    : ALL                                                                               # delegateAll
+    | methodName (',' methodName)*                                                      # delegateList
+    | ALL BUT methodName (',' methodName)*                                              # delegateAllButList
+    ;
+
+methodName
+    : LCFirstIdentifier
+    | LCFirstIdentifierWithMarkSuffix
+    | SymbolMethodName
     ;
 
 expression
-    : expression '*' expression                         # multiplicationExpression
-    | expression '+' expression                         # additionExpression
-    | literal                                           # literalExpression
-    | '(' expression ')'                                # parenthesisExpression
-    // | expression ':' expression '?' expression       # inlineConditionExpression
-    | <assoc=right> identifier '=' expression           # assignmentExpression
-    | '(' block ')'                                     # blockExpression
+    : expression '*' expression                                                         # multiplicationExpression
+    | expression '+' expression                                                         # additionExpression
+    | literal                                                                           # literalExpression
+    | '(' expression ')'                                                                # parenthesisExpression
+    // | expression ':' expression '?' expression                                       # inlineConditionExpression
+    | <assoc=right> identifier '=' expression                                           # assignmentExpression
+    | '(' block ')'                                                                     # blockExpression
     ;
 
 literal
-    : IntegerLiteral                                    # integerLiteral
-    | FloatLiteral                                      # floatLiteral
-    | BooleanLiteral                                    # booleanLiteral
-    | identifier                                        # identifierLiteral
+    : IntegerLiteral                                                                    # integerLiteral
+    | FloatLiteral                                                                      # floatLiteral
+    | BooleanLiteral                                                                    # booleanLiteral
+    | identifier                                                                        # identifierLiteral
     ;
 
 identifier
-    : ObjectOrClassName                                 # objectOrClassName
-    | VariableName                                      # variableName
-    | ConstantName                                      # constantName
-    | MethodName                                        # methodName
+    : UCFirstIdentifier                                                                 # objectOrClassName
+    | ( LCFirstIdentifier | LCFirstIdentifierWithMarkSuffix )                           # variableName // FIXME rename to variableOrMethodName
+    | UCIdentifier                                                                      # constantName
     ;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TOKENS
 
-DEF     : 'def';
-UNLESS  : 'unless';
-IF      : 'if';
-ELSE    : 'else';
-WHILE   : 'while';
-FOR     : 'for';
+// CLASS       : 'class';
+// INTERFACE   : 'interface';
+// IMPLEMENTS  : 'implements';
+// RETURN      : 'return';
+ALL         : 'all';
+BUT         : 'but';
+DELEGATE    : 'delegate';
+GET         : 'get';
+SET         : 'set';
+PRIVATE     : 'private';
+PROTECTED   : 'protected';
+PACKAGE     : 'package';
+PUBLIC      : 'public';
+DEF         : 'def';
+UNLESS      : 'unless';
+IF          : 'if';
+ELSE        : 'else';
+WHILE       : 'while';
+FOR         : 'for';
 
 IntegerLiteral
     : '0'
@@ -122,27 +170,35 @@ FloatLiteral
     ;
 
 BooleanLiteral
-    : 'true'
-    | 'false'
+    : TRUE
+    | FALSE
     ;
 
-ObjectOrClassName
+TRUE        : 'true';
+FALSE       : 'false';
+
+fragment
+IdentifierChars
+    : [a-zA-Z0-9_]+
+    ;
+
+UCFirstIdentifier
     : [A-Z] IdentifierChars
     ;
 
-VariableName
+LCFirstIdentifierWithMarkSuffix
+     : LCFirstIdentifier '?'
+     | LCFirstIdentifier '!'
+     ;
+
+LCFirstIdentifier
     : [a-z_] IdentifierChars*
     ;
 
-ConstantName
-    : [A-Z0-9_$]+
+UCIdentifier
+    : [A-Z0-9_]+
     ;
 
-OptionalMethodName
-    : '?' SymbolMethodName
-    ;
-
-fragment
 SymbolMethodName
     : '+=' | '++' | '+'
     | '-=' | '--' | '-'
@@ -159,23 +215,15 @@ SymbolMethodName
     | '>>=' | '>>' | '>=' | '>'
     | '<=>'
     | '..'                          // builds a sequence when applied on Integer
-    | '->' | '=>'
+    | '->'                          // accesses a property without using getter/setter
+    | '=>'
+    | '??='                         // a ??= 1 is the same as a = a ?? 1;
     | '??'                          // return left unless it's null, then return right
     ;
 
 MethodCall
     : '.'
     | '?.'
-    ;
-
-MethodName
-    : [a-z_] IdentifierChars* [!?]?
-    | SymbolMethodName
-    ;
-
-fragment
-IdentifierChars
-    : [a-zA-Z0-9_$]+
     ;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
