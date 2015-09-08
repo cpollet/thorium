@@ -35,13 +35,12 @@ Examples:
 
 Scenario: boolean method with unsupported parameter
 Given method is <left> <method> <right>
-Given an exception <exception> is expected
 When decode method
-Then the exception <exception> is thrown
+Then the method is not found
 
 Examples:
-| left      | method    | right     | exception                 |
-| Boolean   | +         | Integer   | java.lang.AssertionError  |
-| Boolean   | +         | Float     | java.lang.AssertionError  |
-| Boolean   | *         | Integer   | java.lang.AssertionError  |
-| Boolean   | *         | Float     | java.lang.AssertionError  |
+| left      | method    | right     |
+| Boolean   | +         | Integer   |
+| Boolean   | +         | Float     |
+| Boolean   | *         | Integer   |
+| Boolean   | *         | Float     |

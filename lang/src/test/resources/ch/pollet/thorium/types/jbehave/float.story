@@ -37,11 +37,10 @@ Examples:
 
 Scenario: float method with unsupported parameter
 Given method is <left> <method> <right>
-Given an exception <exception> is expected
 When decode method
-Then the exception <exception> is thrown
+Then the method is not found
 
 Examples:
-| left      | method    | right     | exception                 |
-| Float     | +         | Boolean   | java.lang.AssertionError  |
-| Float     | *         | Boolean   | java.lang.AssertionError  |
+| left      | method    | right     |
+| Float     | +         | Boolean   |
+| Float     | *         | Boolean   |

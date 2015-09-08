@@ -76,24 +76,16 @@ public abstract class BaseSteps {
         assertThat(result).isEqualTo(decodeValue(expectedResult));
     }
 
-    // @Then("the exception was thrown with message <message>")
-    // public void assertExceptionMessage(@Named("message") String message) {
-    //     assertThat(exception)
-    //             .overridingErrorMessage("Exception was not thrown")
-    //             .isNotNull();
-    //     assertThat(exception)
-    //             .hasMessage(message);
-    //
-    //     this.expectedExceptionType = null;
-    //     this.exception = null;
-    // }
-
     @Then("the result type is <type>")
     public void assertResultType(@Named("type") String type) {
         assertThat(method.getType().toString())
                 .isEqualTo(type);
     }
 
+    @Then("the method is not found")
+    public void assertMethodNotFound() {
+        assertThat(method).isNull();
+    }
 
     private Value decodeValue(String value) {
         switch (value) {

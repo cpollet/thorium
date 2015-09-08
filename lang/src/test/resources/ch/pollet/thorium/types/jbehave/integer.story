@@ -37,11 +37,10 @@ Examples:
 
 Scenario: integer method with unsupported parameter
 Given method is <left> <method> <right>
-Given an exception <exception> is expected
 When decode method
-Then the exception <exception> is thrown
+Then the method is not found
 
 Examples:
-| left      | method    | right     | exception                 |
-| Integer   | +         | Boolean   | java.lang.AssertionError  |
-| Integer   | *         | Boolean   | java.lang.AssertionError  |
+| left      | method    | right     |
+| Integer   | +         | Boolean   |
+| Integer   | *         | Boolean   |
