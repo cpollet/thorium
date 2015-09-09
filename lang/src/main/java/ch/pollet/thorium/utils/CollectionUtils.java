@@ -32,6 +32,6 @@ public class CollectionUtils {
     }
 
     public static String concat(Collection<?> collection, String separator) {
-        return collection.stream().map(Object::toString).reduce("", (l, r) -> l + (l.isEmpty() ? "" : separator) + r);
+        return collection.stream().map(Object::toString).sorted(String::compareTo).reduce("", (l, r) -> l + (l.isEmpty() ? "" : separator) + r);
     }
 }

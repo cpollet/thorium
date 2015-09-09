@@ -72,6 +72,10 @@ public class SymbolTable<T> {
         return table != null;
     }
 
+    public boolean isDefinedInCurrentScope(String name) {
+        return symbols.containsKey(name);
+    }
+
     public T get(String name) {
         SymbolTable<T> symbolTable = findTableContaining(name);
 

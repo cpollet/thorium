@@ -26,7 +26,7 @@ grammar Thorium;
 
 // starting point for parsing a thorium file
 compilationUnit
-    : statement* EOF
+    : statements EOF
     ;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,6 +39,7 @@ statements
 statement
     : block
     | expressionStatement
+    | variableOrConstantDeclarationStatement
     | ';'
     ;
 
@@ -71,48 +72,45 @@ elseStatement
 //     : (WHILE | FOR) '(' expression  (';' expression)* ')' '{' statements '}'
 //     ;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// EXPRESSIONS
-
-variableDeclaration
-    : DEF type? name ('=' expression)?
+variableOrConstantDeclarationStatement
+    : DEF type? LCFirstIdentifier ('=' expression)? ';'                                     # variableDeclarationStatement
+    | DEF type? UCIdentifier '=' expression ';'                                             # constantDeclarationStatement
     ;
 
 type
     : UCFirstIdentifier '?'?
     ;
 
-name
-    : LCFirstIdentifier
-    | UCIdentifier;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// EXPRESSIONS
 
-memberDeclaration
-    : DEF type? name accessors? ('=' expression)? (':' DELEGATE delegate)?
-    ;
-
-accessors
-    : '{' visibility GET (statementsBlock | ';') visibility SET statementsBlock? '}'    # fullAccessorDefinition
-    | '{' visibility '}'                                                                # shortAccessorDefinition
-    ;
-
-visibility
-    : PRIVATE
-    | PROTECTED
-    | PACKAGE
-    | PUBLIC
-    ;
-
-delegate
-    : ALL                                                                               # delegateAll
-    | methodName (',' methodName)*                                                      # delegateList
-    | ALL BUT methodName (',' methodName)*                                              # delegateAllButList
-    ;
-
-methodName
-    : LCFirstIdentifier
-    | LCFirstIdentifierWithMarkSuffix
-    | SymbolMethodName
-    ;
+// memberDeclaration
+//     : DEF type? name accessors? ('=' expression)? (':' DELEGATE delegate)?
+//     ;
+//
+// accessors
+//     : '{' visibility GET (statementsBlock | ';') visibility SET statementsBlock? '}'    # fullAccessorDefinition
+//     | '{' visibility '}'                                                                # shortAccessorDefinition
+//     ;
+//
+// visibility
+//     : PRIVATE
+//     | PROTECTED
+//     | PACKAGE
+//     | PUBLIC
+//     ;
+//
+// delegate
+//     : ALL                                                                               # delegateAll
+//     | methodName (',' methodName)*                                                      # delegateList
+//     | ALL BUT methodName (',' methodName)*                                              # delegateAllButList
+//     ;
+//
+// methodName
+//     : LCFirstIdentifier
+//     | LCFirstIdentifierWithMarkSuffix
+//     | SymbolMethodName
+//     ;
 
 expression
     : expression '*' expression                                                         # multiplicationExpression

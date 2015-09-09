@@ -24,13 +24,16 @@ import org.antlr.v4.runtime.Token;
  */
 public class Symbol {
     private final Token token;
+    private final String name;
     private Type type;
 
-    public Symbol(Token token) {
+    public Symbol(String name, Token token, Type type) {
+        this.name = name;
         this.token = token;
-        this.type = Type.VOID;
+        this.type = type;
     }
 
+    // TODO rename to SymbolKind
     public enum SymbolType {
         VARIABLE, CONSTANT
     }
@@ -55,14 +58,19 @@ public class Symbol {
         // nothing
     }
 
-    public static Symbol create(SymbolType type, Token token) {
-        switch (type) {
+    public static Symbol create(String name, SymbolType kind, Type type, Token token) {
+        switch (kind) {
             case VARIABLE:
-                return new Symbol(token);
+                return new Symbol(name, token, type);
             case CONSTANT:
-                return new ConstantSymbol(token);
+                return new ConstantSymbol(name, token, type);
         }
 
         throw new IllegalArgumentException();
+    }
+
+    @Override
+    public String toString() {
+        return name + ":" + type.toString();
     }
 }

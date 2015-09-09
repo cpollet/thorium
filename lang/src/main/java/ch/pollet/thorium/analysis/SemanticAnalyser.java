@@ -46,7 +46,7 @@ public class SemanticAnalyser {
         walker.walk(listener, tree);
 
         if (!listener.getExceptions().isEmpty()) {
-            throw new ThoriumSemanticException("Semantic errors occurred.", listener.getExceptions());
+            throw new ThoriumSemanticException(listener.getExceptions().size() + " semantic errors occurred.", listener.getExceptions());
         }
 
         return listener.getTypes();

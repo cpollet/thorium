@@ -29,8 +29,8 @@ public class ExpressionsSteps extends BaseSteps {
         super(storyContext);
     }
 
-    @Given("an expression $expression")
-    @Alias("an expression <expression>")
+    @Given("an expression <expression>")
+    @Alias("an expression $expression")
     public void anExpression(@Named("expression") String expression) {
         init();
         storyContext.thoriumCode = expression;

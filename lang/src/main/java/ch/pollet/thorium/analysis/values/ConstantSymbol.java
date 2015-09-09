@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.analysis.values;
 
+import ch.pollet.thorium.types.Type;
 import org.antlr.v4.runtime.Token;
 
 /**
@@ -24,8 +25,8 @@ import org.antlr.v4.runtime.Token;
 public class ConstantSymbol extends Symbol {
     private boolean writeable;
 
-    public ConstantSymbol(Token token) {
-        super(token);
+    public ConstantSymbol(String name, Token token, Type type) {
+        super(name, token, type);
         this.writeable = true;
     }
 

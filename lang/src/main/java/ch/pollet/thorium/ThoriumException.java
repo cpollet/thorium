@@ -29,7 +29,7 @@ public abstract class ThoriumException extends RuntimeException {
     }
 
     protected static String location(Token token) {
-        return token.getLine() + ":" + token.getCharPositionInLine() + " (" + token.getText() + ")";
+        return token.getLine() + ":" + (token.getCharPositionInLine() + 1) + " (" + token.getText() + ")";
     }
 
     protected static String formatMessage(String message, String... parameters) {

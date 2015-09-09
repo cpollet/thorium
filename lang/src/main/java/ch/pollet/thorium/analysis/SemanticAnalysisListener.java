@@ -53,8 +53,9 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     private final ParseTreeTypes types = new ParseTreeTypes();
 
-    private SymbolTable<Symbol> currentScope;
+    private SymbolTable<Symbol> currentScope; // FIXME rename to currentSymbolTable
     private List<Symbol> symbols = new LinkedList<>();
+    private ParseTreeProperty<SymbolTable<Symbol>> contextScope = new ParseTreeProperty<>();
 
     private final ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
     private final ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
@@ -90,6 +91,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitCompilationUnit(ThoriumParser.CompilationUnitContext ctx) {
+        //noinspection Convert2streamapi
         for (Symbol symbol : symbols) {
             if (symbol.getType() == Type.VOID) {
                 exceptions.add(InvalidTypeException.typeExpected(symbol.getToken()));
@@ -98,7 +100,6 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     //region Statements
-
 
     @Override
     public void enterBlock(ThoriumParser.BlockContext ctx) {
@@ -132,11 +133,96 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             findNodeTypes(ctx, ctx.block());
         } else if (ctx.expressionStatement() != null) {
             findNodeTypes(ctx, ctx.expressionStatement());
+        } else if (ctx.variableOrConstantDeclarationStatement() != null) {
+            findNodeTypes(ctx, ctx.variableOrConstantDeclarationStatement());
         } else if (ctx.getText().equals(";")) {
             types.put(ctx, asSet(Type.VOID));
         } else {
             throw new IllegalStateException();
         }
+    }
+
+    @Override
+    public void exitVariableDeclarationStatement(ThoriumParser.VariableDeclarationStatementContext ctx) {
+        variableOrConstantDeclarationStatement(ctx, Symbol.SymbolType.VARIABLE, ctx.LCFirstIdentifier().getText(), ctx.type(), ctx.expression());
+
+        logContextInformation(ctx);
+    }
+
+    private void variableOrConstantDeclarationStatement(ParserRuleContext ctx, Symbol.SymbolType symbolKind, String name, ThoriumParser.TypeContext typeCtx, ThoriumParser.ExpressionContext expressionCtx) {
+        Type symbolType = findSymbolType(ctx, typeCtx, expressionCtx);
+
+        Symbol symbol = registerSymbol(symbolKind, name, symbolType, ctx);
+
+        if (symbol.getType() == Type.VOID) {
+            symbol.setType(symbolType);
+        }
+
+        types.put(ctx, asSet(symbol.getType()));
+
+        if (symbol.getType() != Type.VOID) {
+            nodeObserverRegistry.notifyObservers(ctx, this);
+            symbolObserverRegistry.notifyObservers(symbol, this);
+        }
+    }
+
+    private Type findSymbolType(ParserRuleContext ctx, ThoriumParser.TypeContext typeCtx, ThoriumParser.ExpressionContext expressionCtx) {
+        Type symbolType = Type.VOID;
+
+        if (typeCtx != null) {
+            symbolType = getNodeType(typeCtx);
+        }
+
+        Type expressionType;
+        if (expressionCtx != null) {
+            expressionType = getNodeType(expressionCtx);
+
+            if (expressionType != Type.VOID) {
+                if (!Type.isAssignableFrom(symbolType, expressionType)) {
+                    exceptions.add(InvalidTypeException.notCompatible(expressionCtx.getStart(), expressionType, symbolType));
+                } else {
+                    symbolType = expressionType;
+                }
+            }
+
+            if (symbolType == Type.VOID) {
+                nodeObserverRegistry.registerObserver(ctx, expressionCtx);
+            }
+        }
+
+        return symbolType;
+    }
+
+    private Symbol registerSymbol(Symbol.SymbolType kind, String name, Type type, ParserRuleContext ctx) {
+        SymbolTable<Symbol> backupScope = currentScope;
+        restoreScopeForNode(ctx);
+
+        if (!currentScope.isDefinedInCurrentScope(name)) {
+            Symbol symbol = Symbol.create(name, kind, type, ctx.getStart());
+            symbols.add(symbol);
+            currentScope.put(name, symbol);
+        }
+
+        currentScope = backupScope;
+
+        return currentScope.get(name);
+    }
+
+    private void restoreScopeForNode(ParserRuleContext ctx) {
+        if (contextScope.get(ctx) == null) {
+            contextScope.put(ctx, currentScope);
+        }
+
+        currentScope = contextScope.get(ctx);
+    }
+
+    @Override
+    public void exitConstantDeclarationStatement(ThoriumParser.ConstantDeclarationStatementContext ctx) {
+        variableOrConstantDeclarationStatement(ctx, Symbol.SymbolType.CONSTANT, ctx.UCIdentifier().getText(), ctx.type(), ctx.expression());
+
+        currentScope.get(ctx.UCIdentifier().getText()).lock();
+
+        logContextInformation(ctx);
     }
 
     //endregion
@@ -239,7 +325,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         Method method = leftType.lookupMethod(new MethodMatcher("*", parametersTypes));
 
         if (method == null) {
-            exceptions.add(MethodNotFoundException.build(token, methodName, leftType, parametersTypes));
+            exceptions.add(MethodNotFoundException.methodNotFound(token, methodName, leftType, parametersTypes));
             return Type.VOID;
         }
 
@@ -351,21 +437,13 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitVariableName(ThoriumParser.VariableNameContext ctx) {
-        registerSymbol(Symbol.SymbolType.VARIABLE, ctx);
+        exitVariableOrConstantName(ctx, ctx.LCFirstIdentifier().getText(), Symbol.SymbolType.VARIABLE);
     }
 
-    @Override
-    public void exitConstantName(ThoriumParser.ConstantNameContext ctx) {
-        registerSymbol(Symbol.SymbolType.CONSTANT, ctx);
-    }
-
-    private void registerSymbol(Symbol.SymbolType type, ParserRuleContext ctx) {
-        String name = ctx.getText();
-
+    private void exitVariableOrConstantName(ParserRuleContext ctx, String name, Symbol.SymbolType kind) {
         if (!currentScope.isDefined(name)) {
-            Symbol symbol = Symbol.create(type, ctx.getStart());
-            symbols.add(symbol);
-            currentScope.put(name, symbol);
+            exceptions.add(MethodNotFoundException.identifierNotFound(ctx.getStart(), name));
+            registerSymbol(kind, name, Type.VOID, ctx);
         }
 
         Symbol symbol = currentScope.get(name);
@@ -380,7 +458,29 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         logContextInformation(ctx);
     }
 
+    @Override
+    public void exitConstantName(ThoriumParser.ConstantNameContext ctx) {
+        exitVariableOrConstantName(ctx, ctx.UCIdentifier().getText(), Symbol.SymbolType.CONSTANT);
+    }
+
     //endregion
+
+    @Override
+    public void exitType(ThoriumParser.TypeContext ctx) {
+        switch (ctx.UCFirstIdentifier().getText()) {
+            case "Integer":
+                types.put(ctx, asSet(Type.INTEGER));
+                break;
+            case "Float":
+                types.put(ctx, asSet(Type.FLOAT));
+                break;
+            case "Boolean":
+                types.put(ctx, asSet(Type.BOOLEAN));
+                break;
+            default:
+                throw new IllegalStateException("Invalid type");
+        }
+    }
 
     /**
      * Finds the type of the parent node from the child node. Assigns the child node's type to the parent node. If the

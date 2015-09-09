@@ -72,6 +72,8 @@ public class SemanticAnalysisSteps extends BaseSteps {
                 } else {
                     throw new IllegalStateException("Size was " + e.getCauses().size(), e);
                 }
+            } else {
+                throw e;
             }
         } catch (ThoriumException e) {
             if (storyContext.exceptionExpected && storyContext.exception == null) {
