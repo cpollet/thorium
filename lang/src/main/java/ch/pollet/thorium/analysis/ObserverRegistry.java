@@ -50,7 +50,6 @@ public class ObserverRegistry<T> {
     }
 
     private void resetRegisteredObservers(T observable) {
-        // FIXME should have observer only once per observable
         observers.put(observable, new LinkedList<>());
     }
 
