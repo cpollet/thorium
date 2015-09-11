@@ -141,6 +141,7 @@ public abstract class BaseSteps {
 
         storyContext.exception = null;
         storyContext.exceptionExpected = false;
+        storyContext.exceptionsExpected=0;
     }
 
     @SuppressWarnings("unchecked")
@@ -157,6 +158,7 @@ public abstract class BaseSteps {
 
         storyContext.exception = null;
         storyContext.exceptionExpected = false;
+        storyContext.exceptionsExpected=0;
     }
 
     @SuppressWarnings("unchecked")
@@ -172,6 +174,7 @@ public abstract class BaseSteps {
 
         storyContext.exception = null;
         storyContext.exceptionExpected = false;
+        storyContext.exceptionsExpected=0;
     }
 
     @Then("no exceptions were thrown")

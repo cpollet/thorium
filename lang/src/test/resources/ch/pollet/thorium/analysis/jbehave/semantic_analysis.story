@@ -1,7 +1,3 @@
-!-- TODO: tests multiple exceptions:
-!-- a;
-!-- a + 1;
-
 Scenario: types attached to all symbols
 Given a compilation unit <unit>
 When types are attached to nodes
@@ -26,26 +22,6 @@ Examples:
 | def a; if (a = true) { ; }                | a         | Boolean   |
 | def a; if (true) { a = 1; }               | a         | Integer   |
 
-Scenario: failing statements
-Given a compilation unit <unit>
-And exception expected
-When types are attached to nodes
-Then the exception <exception> is thrown with message matching <message>
-
-Examples:
-| unit                                                          | exception                                                             | message                                                                                                   |
-| def a;                                                        | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Type expected, but got Void on line [0-9]+:[0-9]+ \(def\).                                                |
-| def Integer a = 1.0;                                          | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Incompatible types found on line [0-9]+:[0-9]+ \(1.0\): Float is no assignable to Integer                 |
-| def a = b; def b = 1;                                         | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException         | Identifier b not found in line [0-9]+:[0-9]+ \(b\).                                                       |
-| if (b = true) { ; } def b = 1;                                | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException         | Identifier b not found in line [0-9]+:[0-9]+ \(b\).                                                       |
-| def b; if (true) { def b = 1; }                               | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Type expected, but got Void on line [0-9]+:[0-9]+ \(def\).                                                |
-| def a = 1; def b = 1.0; a = b;                                | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Incompatible types found on line [0-9]+:[0-9]+ \(a\): Float is no assignable to Integer                   |
-| (if (true) { 1; } else { 1.0; });                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Ambiguous type found on line [0-9]+:[0-9]+ \(\(\): expected only one, but got Float, Integer.             |
-| (if (true) { 1; } else if (false) { 1.0; } else { true; });   | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Ambiguous type found on line [0-9]+:[0-9]+ \(\(\): expected only one, but got Boolean, Float, Integer.    |
-| (if (true) { 1; } else if (false) { 1; } else { true; });     | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Ambiguous type found on line [0-9]+:[0-9]+ \(\(\): expected only one, but got Boolean, Integer.           |
-| 1 + true;                                                     | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException         | Method \+\(Boolean\) not implemented on Integer on line [0-9]+:[0-9]+ \(1\).                              |
-| def A = 1; A = 2;                                             | ch.pollet.thorium.analysis.exceptions.InvalidAssignmentException    | Invalid assignment found on line [0-9]+:[0-9]+ \(A\): unable to change a constant value.                  |
-
 Scenario: types are attached to expression nodes
 Given an expression <expression>
 When types are attached to nodes
@@ -69,3 +45,38 @@ Examples:
 | (if (true) { 1; })                                    | Integer       |
 | (if (true) { 1; } else { 1; })                        | Integer       |
 | (if (true) { 1; } else if (false) { 1; } else { 1; }) | Integer       |
+
+
+Scenario: failing statements with only one exception
+Given a compilation unit <unit>
+And exception expected
+When types are attached to nodes
+Then the exception <exception> is thrown with message matching <message>
+
+Examples:
+| unit                                                          | exception                                                             | message                                                                                                   |
+| def a;                                                        | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Type expected, but got Void on line [0-9]+:[0-9]+ \(def\).                                                |
+| def Integer a = 1.0;                                          | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Incompatible types found on line [0-9]+:[0-9]+ \(1.0\): Float is no assignable to Integer                 |
+| def a = b; def b = 1;                                         | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException         | Identifier b not found in line [0-9]+:[0-9]+ \(b\).                                                       |
+| if (b = true) { ; } def b = 1;                                | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException         | Identifier b not found in line [0-9]+:[0-9]+ \(b\).                                                       |
+| def b; if (true) { def b = 1; }                               | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Type expected, but got Void on line [0-9]+:[0-9]+ \(def\).                                                |
+| def a = 1; def b = 1.0; a = b;                                | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Incompatible types found on line [0-9]+:[0-9]+ \(a\): Float is no assignable to Integer                   |
+| (if (true) { 1; } else { 1.0; });                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Ambiguous type found on line [0-9]+:[0-9]+ \(\(\): expected only one, but got Float, Integer.             |
+| (if (true) { 1; } else if (false) { 1.0; } else { true; });   | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Ambiguous type found on line [0-9]+:[0-9]+ \(\(\): expected only one, but got Boolean, Float, Integer.    |
+| (if (true) { 1; } else if (false) { 1; } else { true; });     | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Ambiguous type found on line [0-9]+:[0-9]+ \(\(\): expected only one, but got Boolean, Integer.           |
+| 1 + true;                                                     | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException         | Method \+\(Boolean\) not implemented on Integer on line [0-9]+:[0-9]+ \(1\).                              |
+| def A = 1; A = 2;                                             | ch.pollet.thorium.analysis.exceptions.InvalidAssignmentException      | Invalid assignment found on line [0-9]+:[0-9]+ \(A\): unable to change a constant value.                  |
+
+Scenario: failing statements with only one exception
+Given a compilation unit <unit>
+And <n> exceptions expected
+When types are attached to nodes
+Then the exception <i> is <exception> with message matching <message>
+
+Examples:
+| unit      | n | i | exception                                                     | message                                                   |
+| a;        | 2 | 0 | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException | Identifier a not found in line [0-9]+:[0-9]+ \(a\).       |
+| a;        | 2 | 1 | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    | Type expected, but got Void on line [0-9]+:[0-9]+ \(a\).  |
+| a + 1;    | 2 | 0 | ch.pollet.thorium.analysis.exceptions.MethodNotFoundException | Identifier a not found in line [0-9]+:[0-9]+ \(a\).       |
+| a + 1;    | 2 | 1 | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    | Type expected, but got Void on line [0-9]+:[0-9]+ \(a\).  |
+

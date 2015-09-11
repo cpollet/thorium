@@ -59,6 +59,12 @@ public class SemanticAnalysisSteps extends BaseSteps {
         }
     }
 
+    @Given("<n> exceptions expected")
+    @Alias("$n exceptions expected")
+    public void exceptionsExpected(@Named("n") int n) {
+        storyContext.exceptionsExpected = n;
+    }
+
     @When("types are attached to nodes")
     public void attachTypes() throws Exception {
         SemanticAnalyser semanticAnalyser = new SemanticAnalyser(storyContext.analysisBaseScope, storyContext.parser, storyContext.tree);
@@ -72,6 +78,8 @@ public class SemanticAnalysisSteps extends BaseSteps {
                 } else {
                     throw new IllegalStateException("Size was " + e.getCauses().size(), e);
                 }
+            } else if (storyContext.exceptionsExpected > 0 && storyContext.exception == null) {
+                storyContext.exception = e;
             } else {
                 throw e;
             }
@@ -101,5 +109,30 @@ public class SemanticAnalysisSteps extends BaseSteps {
 
         assertThat(symbol.getType().toString())
                 .isEqualTo(type);
+    }
+
+    @SuppressWarnings({"unchecked", "ThrowableResultOfMethodCallIgnored"})
+    @Then("the exception <i> is <exception> with message matching <message>")
+    @Alias("the exception $i is $exception with message matching $message")
+    public void assertNthException(@Named("i") int i, @Named("exception") String exceptionClass, @Named("message") String message) throws ClassNotFoundException {
+        assertThat(storyContext.exception)
+                .isInstanceOf(ThoriumSemanticException.class);
+
+        ThoriumSemanticException exception = (ThoriumSemanticException) storyContext.exception;
+
+        assertThat(exception.getCauses())
+                .hasSize(storyContext.exceptionsExpected);
+
+        assertThat(exception.getCauses().get(i))
+                .isNotNull()
+                .isInstanceOf((Class<? extends Throwable>) Class.forName(exceptionClass));
+
+
+        assertThat(exception.getCauses().get(i).getMessage())
+                .matches(message);
+
+        storyContext.exception = null;
+        storyContext.exceptionExpected = false;
+        storyContext.exceptionsExpected=0;
     }
 }
