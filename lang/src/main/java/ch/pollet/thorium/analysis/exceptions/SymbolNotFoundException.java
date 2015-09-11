@@ -25,19 +25,19 @@ import org.antlr.v4.runtime.Token;
  * @author Christophe Pollet
  */
 // FIXME rename to SymbolNotFoundException
-public class MethodNotFoundException extends ThoriumSemanticException {
+public class SymbolNotFoundException extends ThoriumSemanticException {
     private static final String METHOD_NOT_FOUND = "Method {1}({2}) not implemented on {3} on line {0}.";
     private static final String IDENTIFIER_NOT_FOUND = "Identifier {1} not found in line {0}.";
 
-    public MethodNotFoundException(String message) {
+    public SymbolNotFoundException(String message) {
         super(message);
     }
 
-    public static MethodNotFoundException methodNotFound(Token token, String methodName, Type leftType, Type... parametersTypes) {
-        return new MethodNotFoundException(formatMessage(METHOD_NOT_FOUND, location(token), methodName, CollectionUtils.concat(parametersTypes), leftType.toString()));
+    public static SymbolNotFoundException methodNotFound(Token token, String methodName, Type leftType, Type... parametersTypes) {
+        return new SymbolNotFoundException(formatMessage(METHOD_NOT_FOUND, location(token), methodName, CollectionUtils.concat(parametersTypes), leftType.toString()));
     }
 
     public static ThoriumException identifierNotFound(Token token, String name) {
-        return new MethodNotFoundException(formatMessage(IDENTIFIER_NOT_FOUND, location(token), name));
+        return new SymbolNotFoundException(formatMessage(IDENTIFIER_NOT_FOUND, location(token), name));
     }
 }

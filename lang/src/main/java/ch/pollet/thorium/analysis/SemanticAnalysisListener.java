@@ -19,7 +19,7 @@ package ch.pollet.thorium.analysis;
 import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.analysis.exceptions.InvalidAssignmentException;
 import ch.pollet.thorium.analysis.exceptions.InvalidTypeException;
-import ch.pollet.thorium.analysis.exceptions.MethodNotFoundException;
+import ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException;
 import ch.pollet.thorium.analysis.values.Symbol;
 import ch.pollet.thorium.antlr.ThoriumBaseListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
@@ -325,7 +325,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         Method method = leftType.lookupMethod(new MethodMatcher("*", parametersTypes));
 
         if (method == null) {
-            exceptions.add(MethodNotFoundException.methodNotFound(token, methodName, leftType, parametersTypes));
+            exceptions.add(SymbolNotFoundException.methodNotFound(token, methodName, leftType, parametersTypes));
             return Type.VOID;
         }
 
@@ -442,7 +442,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     private void exitVariableOrConstantName(ParserRuleContext ctx, String name, Symbol.SymbolType kind) {
         if (!currentScope.isDefined(name)) {
-            exceptions.add(MethodNotFoundException.identifierNotFound(ctx.getStart(), name));
+            exceptions.add(SymbolNotFoundException.identifierNotFound(ctx.getStart(), name));
             registerSymbol(kind, name, Type.VOID, ctx);
         }
 
