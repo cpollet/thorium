@@ -17,6 +17,7 @@
 package ch.pollet.thorium.analysis.values;
 
 import ch.pollet.thorium.types.Type;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 /**
@@ -26,11 +27,13 @@ public class Symbol {
     private final Token token;
     private final String name;
     private Type type;
+    private ParserRuleContext definedAt;
 
     public Symbol(String name, Token token, Type type) {
         this.name = name;
         this.token = token;
         this.type = type;
+        this.definedAt = null;
     }
 
     public enum SymbolKind {
@@ -47,6 +50,14 @@ public class Symbol {
 
     public Type getType() {
         return type;
+    }
+
+    public ParserRuleContext getDefinedAt() {
+        return definedAt;
+    }
+
+    public void setDefinedAt(ParserRuleContext definedAt) {
+        this.definedAt = definedAt;
     }
 
     public Token getToken() {

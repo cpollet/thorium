@@ -19,7 +19,7 @@ package ch.pollet.thorium.analysis;
 import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.analysis.exceptions.InvalidAssignmentException;
 import ch.pollet.thorium.analysis.exceptions.InvalidTypeException;
-import ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException;
+import ch.pollet.thorium.analysis.exceptions.InvalidSymbolException;
 import ch.pollet.thorium.analysis.values.Symbol;
 import ch.pollet.thorium.antlr.ThoriumBaseListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
@@ -44,7 +44,6 @@ import java.util.Set;
 
 /**
  * @author Christophe Pollet
- * @fixme check symbol does not already exist when using def
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
     private final static Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
@@ -153,6 +152,12 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         Type symbolType = findSymbolType(ctx, typeCtx, expressionCtx);
 
         Symbol symbol = registerSymbol(symbolKind, name, symbolType, ctx);
+
+        if (symbol.getDefinedAt() != null && symbol.getDefinedAt() != ctx) {
+            exceptions.add(InvalidSymbolException.alreadyDefined(ctx.getStart(), name));
+        } else {
+            symbol.setDefinedAt(ctx);
+        }
 
         if (symbol.getType() == Type.VOID) {
             symbol.setType(symbolType);
@@ -325,7 +330,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         Method method = leftType.lookupMethod(new MethodMatcher("*", parametersTypes));
 
         if (method == null) {
-            exceptions.add(SymbolNotFoundException.methodNotFound(token, methodName, leftType, parametersTypes));
+            exceptions.add(InvalidSymbolException.methodNotFound(token, methodName, leftType, parametersTypes));
             return Type.VOID;
         }
 
@@ -442,7 +447,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     private void exitVariableOrConstantName(ParserRuleContext ctx, String name, Symbol.SymbolKind kind) {
         if (!currentSymbolSymbolTable.isDefined(name)) {
-            exceptions.add(SymbolNotFoundException.identifierNotFound(ctx.getStart(), name));
+            exceptions.add(InvalidSymbolException.identifierNotFound(ctx.getStart(), name));
             registerSymbol(kind, name, Type.VOID, ctx);
         }
 

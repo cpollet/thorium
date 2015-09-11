@@ -29,7 +29,7 @@ public class InvalidTypeException extends ThoriumSemanticException {
     private static final String INVALID_TYPE = "Invalid type found on line {0}: expected {1} but got {2}.";
     private static final String AMBIGUOUS_TYPE = "Ambiguous type found on line {0}: expected only one, but got {1}.";
     private static final String TYPE_EXPECTED = "Type expected, but got Void on line {0}.";
-    private static final String NOT_COMPATIBLE = "Incompatible types found on line {0}: {1} is no assignable to {2}";
+    private static final String NOT_COMPATIBLE = "Incompatible types found on line {0}: {1} is no assignable to {2}.";
 
     public InvalidTypeException(String message) {
         super(message);
