@@ -57,8 +57,8 @@ Examples:
 | unit                                                          | exception                                                             | message                                                                                                   |
 | def a;                                                        | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Type expected, but got Void on line [0-9]+:[0-9]+ \(def\).                                                |
 | def Integer a = 1.0;                                          | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Incompatible types found on line [0-9]+:[0-9]+ \(1.0\): Float is no assignable to Integer                 |
-| def a = b; def b = 1;                                         | ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException         | Identifier b not found in line [0-9]+:[0-9]+ \(b\).                                                       |
-| if (b = true) { ; } def b = 1;                                | ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException         | Identifier b not found in line [0-9]+:[0-9]+ \(b\).                                                       |
+| def a = b; def b = 1;                                         | ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException         | Identifier b not found on line [0-9]+:[0-9]+ \(b\).                                                       |
+| if (b = true) { ; } def b = 1;                                | ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException         | Identifier b not found on line [0-9]+:[0-9]+ \(b\).                                                       |
 | def b; if (true) { def b = 1; }                               | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Type expected, but got Void on line [0-9]+:[0-9]+ \(def\).                                                |
 | def a = 1; def b = 1.0; a = b;                                | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Incompatible types found on line [0-9]+:[0-9]+ \(a\): Float is no assignable to Integer                   |
 | (if (true) { 1; } else { 1.0; });                             | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Ambiguous type found on line [0-9]+:[0-9]+ \(\(\): expected only one, but got Float, Integer.             |
@@ -66,6 +66,7 @@ Examples:
 | (if (true) { 1; } else if (false) { 1; } else { true; });     | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Ambiguous type found on line [0-9]+:[0-9]+ \(\(\): expected only one, but got Boolean, Integer.           |
 | 1 + true;                                                     | ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException         | Method \+\(Boolean\) not implemented on Integer on line [0-9]+:[0-9]+ \(1\).                              |
 | def A = 1; A = 2;                                             | ch.pollet.thorium.analysis.exceptions.InvalidAssignmentException      | Invalid assignment found on line [0-9]+:[0-9]+ \(A\): unable to change a constant value.                  |
+| a = 1 if true;                                                | ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException         | Identifier a not found on line [0-9]+:[0-9]+ \(a\).                                                       |
 
 Scenario: failing statements with only one exception
 Given a compilation unit <unit>
@@ -75,8 +76,8 @@ Then the exception <i> is <exception> with message matching <message>
 
 Examples:
 | unit      | n | i | exception                                                     | message                                                   |
-| a;        | 2 | 0 | ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException | Identifier a not found in line [0-9]+:[0-9]+ \(a\).       |
+| a;        | 2 | 0 | ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException | Identifier a not found on line [0-9]+:[0-9]+ \(a\).       |
 | a;        | 2 | 1 | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    | Type expected, but got Void on line [0-9]+:[0-9]+ \(a\).  |
-| a + 1;    | 2 | 0 | ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException | Identifier a not found in line [0-9]+:[0-9]+ \(a\).       |
+| a + 1;    | 2 | 0 | ch.pollet.thorium.analysis.exceptions.SymbolNotFoundException | Identifier a not found on line [0-9]+:[0-9]+ \(a\).       |
 | a + 1;    | 2 | 1 | ch.pollet.thorium.analysis.exceptions.InvalidTypeException    | Type expected, but got Void on line [0-9]+:[0-9]+ \(a\).  |
 

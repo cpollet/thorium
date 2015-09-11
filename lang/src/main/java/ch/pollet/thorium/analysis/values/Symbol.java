@@ -33,8 +33,7 @@ public class Symbol {
         this.type = type;
     }
 
-    // TODO rename to SymbolKind
-    public enum SymbolType {
+    public enum SymbolKind {
         VARIABLE, CONSTANT
     }
 
@@ -58,7 +57,7 @@ public class Symbol {
         // nothing
     }
 
-    public static Symbol create(String name, SymbolType kind, Type type, Token token) {
+    public static Symbol create(String name, SymbolKind kind, Type type, Token token) {
         switch (kind) {
             case VARIABLE:
                 return new Symbol(name, token, type);
