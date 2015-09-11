@@ -48,7 +48,8 @@ expressionStatement
 //    | variableDeclaration ';'                                                           # variableDeclarationStatement
     | expression IF expression ';'                                                      # conditionalIfStatement
     | expression UNLESS expression ';'                                                  # conditionalUnlessStatement
-//     | expression WHILE expression ';'                                                   # repeatedStatement
+    | expression WHILE expression ';'                                                   # repeatedWhileStatement
+    | expression UNTIL expression ';'                                                   # repeatedUntilStatement
     ;
 
 block
@@ -156,6 +157,7 @@ UNLESS      : 'unless';
 IF          : 'if';
 ELSE        : 'else';
 WHILE       : 'while';
+UNTIL       : 'until';
 FOR         : 'for';
 
 IntegerLiteral
