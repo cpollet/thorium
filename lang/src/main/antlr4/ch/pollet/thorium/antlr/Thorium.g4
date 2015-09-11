@@ -131,7 +131,7 @@ literal
 
 identifier
     : UCFirstIdentifier                                                                 # objectOrClassName
-    | ( LCFirstIdentifier | LCFirstIdentifierWithMarkSuffix )                           # variableName // FIXME rename to variableOrMethodName
+    | ( LCFirstIdentifier | LCFirstIdentifierWithMarkSuffix )                           # variableName
     | UCIdentifier                                                                      # constantName
     ;
 
