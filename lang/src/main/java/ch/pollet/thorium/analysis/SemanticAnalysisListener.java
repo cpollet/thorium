@@ -18,8 +18,8 @@ package ch.pollet.thorium.analysis;
 
 import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.analysis.exceptions.InvalidAssignmentException;
-import ch.pollet.thorium.analysis.exceptions.InvalidTypeException;
 import ch.pollet.thorium.analysis.exceptions.InvalidSymbolException;
+import ch.pollet.thorium.analysis.exceptions.InvalidTypeException;
 import ch.pollet.thorium.analysis.values.Symbol;
 import ch.pollet.thorium.antlr.ThoriumBaseListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
@@ -286,12 +286,34 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitConditionalIfStatement(ThoriumParser.ConditionalIfStatementContext ctx) {
-        findNodeType(ctx, ctx.expression(0));
+        conditionalOrRepeatedStatement(ctx, ctx.expression(0), ctx.expression(1));
+    }
+
+    private void conditionalOrRepeatedStatement(ParserRuleContext ctx, ThoriumParser.ExpressionContext expressionCtx, ThoriumParser.ExpressionContext conditionCtx) {
+        findNodeType(ctx, expressionCtx);
+
+        Type type = getNodeType(conditionCtx);
+
+        if (type == Type.VOID) {
+            nodeObserverRegistry.registerObserver(ctx, conditionCtx);
+        } else if (type != Type.BOOLEAN) {
+            exceptions.add(InvalidTypeException.invalidType(conditionCtx.getStart(), Type.BOOLEAN, type));
+        }
     }
 
     @Override
     public void exitConditionalUnlessStatement(ThoriumParser.ConditionalUnlessStatementContext ctx) {
-        findNodeType(ctx, ctx.expression(0));
+        conditionalOrRepeatedStatement(ctx, ctx.expression(0), ctx.expression(1));
+    }
+
+    @Override
+    public void exitRepeatedWhileStatement(ThoriumParser.RepeatedWhileStatementContext ctx) {
+        conditionalOrRepeatedStatement(ctx, ctx.expression(0), ctx.expression(1));
+    }
+
+    @Override
+    public void exitRepeatedUntilStatement(ThoriumParser.RepeatedUntilStatementContext ctx) {
+        conditionalOrRepeatedStatement(ctx, ctx.expression(0), ctx.expression(1));
     }
 
     //endregion

@@ -4,23 +4,27 @@ When types are attached to nodes
 Then the symbol <symbol> is of type <type>
 
 Examples:
-| unit                                      | symbol    | type      |
-| def A = 1;                                | A         | Integer   |
-| def Integer A = 1;                        | A         | Integer   |
-| def a = 1;                                | a         | Integer   |
-| def Integer a;                            | a         | Integer   |
-| def Integer a = 1;                        | a         | Integer   |
-| def a; a = 1;                             | a         | Integer   |
-| def a = 1; def b = a + 1;                 | b         | Integer   |
-| def b; def a = b; b = 1;                  | a         | Integer   |
-| def b; def a = b; b = 1 if true;          | a         | Integer   |
-| def b; def a = b; b = 1 unless true;      | a         | Integer   |
-| def a = 1.0; def b = a * 1;               | b         | Float     |
-| def a = ({ def b = 1.0; }); def b = 1;    | a         | Float     |
-| def a = ({ def b = 1.0; }); def b = 1;    | b         | Integer   |
-| def b; def a = ({ b; }); b = 1;           | a         | Integer   |
-| def a; if (a = true) { ; }                | a         | Boolean   |
-| def a; if (true) { a = 1; }               | a         | Integer   |
+| unit                                              | symbol    | type      |
+| def A = 1;                                        | A         | Integer   |
+| def Integer A = 1;                                | A         | Integer   |
+| def a = 1;                                        | a         | Integer   |
+| def Integer a;                                    | a         | Integer   |
+| def Integer a = 1;                                | a         | Integer   |
+| def a; a = 1;                                     | a         | Integer   |
+| def a = 1; def b = a + 1;                         | b         | Integer   |
+| def b; def a = b; b = 1;                          | a         | Integer   |
+| def b; def a = b; b = 1 if true;                  | a         | Integer   |
+| def b; def a = b; b = 1 unless true;              | a         | Integer   |
+| def a = 1.0; def b = a * 1;                       | b         | Float     |
+| def a = ({ def b = 1.0; }); def b = 1;            | a         | Float     |
+| def a = ({ def b = 1.0; }); def b = 1;            | b         | Integer   |
+| def b; def a = ({ b; }); b = 1;                   | a         | Integer   |
+| def a; if (a = true) { ; }                        | a         | Boolean   |
+| def a; if (true) { a = 1; }                       | a         | Integer   |
+| def Integer a; def b; a = 1 if b; b = true;       | b         | Boolean   |
+| def Integer a; def b; a = 1 unless b; b = true;   | b         | Boolean   |
+| def Integer a; def b; a = 1 while b; b = true;    | b         | Boolean   |
+| def Integer a; def b; a = 1 until b; b = true;    | b         | Boolean   |
 
 Scenario: types are attached to expression nodes
 Given an expression <expression>
@@ -46,7 +50,6 @@ Examples:
 | (if (true) { 1; } else { 1; })                        | Integer       |
 | (if (true) { 1; } else if (false) { 1; } else { 1; }) | Integer       |
 
-
 Scenario: failing statements with only one exception
 Given a compilation unit <unit>
 And exception expected
@@ -69,6 +72,10 @@ Examples:
 | a = 1 if true;                                                | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Identifier a not found on line [0-9]+:[0-9]+ \(a\).                                                       |
 | def Integer a; def Integer a;                                 | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Identifier a already defined on line [0-9]+:[0-9]+ \(def\).                                               |
 | def Integer a; def Float a;                                   | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Identifier a already defined on line [0-9]+:[0-9]+ \(def\).                                               |
+| def Integer a; a = 1 if 1;                                    | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
+| def Integer a; a = 1 unless 1;                                | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
+| def Integer a; a = 1 while 1;                                 | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
+| def Integer a; a = 1 until 1;                                 | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
 
 Scenario: failing statements with only one exception
 Given a compilation unit <unit>
