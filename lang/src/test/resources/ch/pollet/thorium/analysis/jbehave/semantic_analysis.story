@@ -103,8 +103,8 @@ Examples:
 | 1.0 <= true;                                                  | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method <=\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                             |
 | 1.0 > true;                                                   | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                              |
 | 1.0 >= true;                                                  | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >=\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                             |
-| !1;                                                           | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method !\(\) not implemented on Integer on line [0-9]+:[0-9]+ \(!\).                                   |
-| !1.0;                                                         | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method !\(\) not implemented on Float on line [0-9]+:[0-9]+ \(!\).                                     |
+| !1;                                                           | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method !\(\) not implemented on Integer on line [0-9]+:[0-9]+ \(!\).                                      |
+| !1.0;                                                         | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method !\(\) not implemented on Float on line [0-9]+:[0-9]+ \(!\).                                        |
 
 Scenario: failing statements with only one exception
 Given a compilation unit <unit>
