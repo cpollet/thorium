@@ -33,6 +33,7 @@ public class BooleanType extends BaseType {
     private static final Map<MethodMatcher, Method> symbolTable = new HashMap<MethodMatcher, Method>() {{
         put(new MethodMatcher("+", BooleanType.INSTANCE), new Method(BooleanType.INSTANCE, BooleanType::or));
         put(new MethodMatcher("*", BooleanType.INSTANCE), new Method(BooleanType.INSTANCE, BooleanType::and));
+        put(new MethodMatcher("!"), new Method(BooleanType.INSTANCE, BooleanType::not));
     }};
 
     private BooleanType() {
@@ -88,7 +89,11 @@ public class BooleanType extends BaseType {
         return DirectValue.build(Type.BOOLEAN);
     }
 
-    // FIXME expose this
+    // FIXME clean!
+    public static Value not(Value value, Value useless) {
+        return not(value);
+    }
+
     public static Value not(Value value) {
         if (!value.hasValue()) {
             return DirectValue.build(Type.BOOLEAN);

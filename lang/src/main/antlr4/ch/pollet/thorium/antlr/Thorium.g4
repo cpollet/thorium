@@ -113,8 +113,9 @@ type
 //     ;
 
 expression
-    : expression op='*' expression                                                         # multiplicationExpression
-    | expression op='+' expression                                                         # additionExpression
+    : op='!' expression                                                                 # notExpression
+    | expression op='*' expression                                                      # multiplicationExpression
+    | expression op='+' expression                                                      # additionExpression
     | expression op=( '<' | '<=' | '>' | '>=' ) expression                              # orderComparisonExpression
     | literal                                                                           # literalExpression
     | '(' expression ')'                                                                # parenthesisExpression

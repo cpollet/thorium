@@ -326,6 +326,22 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     @Override
+    public void exitNotExpression(ThoriumParser.NotExpressionContext ctx) {
+        Type type = getNodeType(ctx.expression());
+
+        if (type == Type.VOID) {
+            nodeObserverRegistry.registerObserver(ctx, ctx.expression());
+            types.put(ctx, asSet(Type.VOID));
+        } else {
+            Type resultType = inferMethodType(ctx.getStart(), ctx.op.getText(), type);
+            types.put(ctx, asSet(resultType));
+            nodeObserverRegistry.notifyObservers(ctx, this);
+        }
+
+        logContextInformation(ctx);
+    }
+
+    @Override
     public void exitMultiplicationExpression(ThoriumParser.MultiplicationExpressionContext ctx) {
         exitBinaryOperator(ctx.op.getText(), ctx.expression(0), ctx.expression(1), ctx);
     }

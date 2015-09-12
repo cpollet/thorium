@@ -25,6 +25,7 @@ Examples:
 | def Integer a; def b; a = 1 unless b; b = true;   | b         | Boolean   |
 | def Integer a; def b; a = 1 while b; b = true;    | b         | Boolean   |
 | def Integer a; def b; a = 1 until b; b = true;    | b         | Boolean   |
+| def Boolean a; def b = !a;                        | b         | Boolean   |
 
 Scenario: types are attached to expression nodes
 Given an expression <expression>
@@ -65,6 +66,8 @@ Examples:
 | 1.0 >= 1.0                                            | Boolean       |
 | 1.0 < 1.0                                             | Boolean       |
 | 1.0 <= 1.0                                            | Boolean       |
+| !true                                                 | Boolean       |
+| !false                                                | Boolean       |
 
 Scenario: failing statements with only one exception
 Given a compilation unit <unit>
@@ -96,10 +99,12 @@ Examples:
 | 1 <= true;                                                    | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method <=\(Boolean\) not implemented on Integer on line [0-9]+:[0-9]+ \(1\).                              |
 | 1 > true;                                                     | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >\(Boolean\) not implemented on Integer on line [0-9]+:[0-9]+ \(1\).                               |
 | 1 >= true;                                                    | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >=\(Boolean\) not implemented on Integer on line [0-9]+:[0-9]+ \(1\).                              |
-| 1.0 < true;                                                   | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method <\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                               |
-| 1.0 <= true;                                                  | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method <=\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                              |
-| 1.0 > true;                                                   | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                               |
-| 1.0 >= true;                                                  | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >=\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                              |
+| 1.0 < true;                                                   | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method <\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                              |
+| 1.0 <= true;                                                  | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method <=\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                             |
+| 1.0 > true;                                                   | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                              |
+| 1.0 >= true;                                                  | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >=\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                             |
+| !1;                                                           | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method !\(\) not implemented on Integer on line [0-9]+:[0-9]+ \(!\).                                   |
+| !1.0;                                                         | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method !\(\) not implemented on Float on line [0-9]+:[0-9]+ \(!\).                                     |
 
 Scenario: failing statements with only one exception
 Given a compilation unit <unit>
