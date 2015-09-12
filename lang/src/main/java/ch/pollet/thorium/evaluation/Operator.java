@@ -23,5 +23,5 @@ import ch.pollet.thorium.values.Value;
  */
 @FunctionalInterface
 public interface Operator {
-    Value apply(Value left, Value right);
+    Value apply(Value... values);
 }

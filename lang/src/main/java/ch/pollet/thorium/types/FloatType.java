@@ -64,7 +64,10 @@ public class FloatType extends BaseType {
         return "Float";
     }
 
-    private static Value plusFloat(Value left, Value right) {
+    private static Value plusFloat(Value... values) {
+        Value left = values[0];
+        Value right = values[1];
+
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
                     (Double) (left.value().internalValue()) + (Double) (right.value().internalValue())
@@ -74,7 +77,10 @@ public class FloatType extends BaseType {
         return DirectValue.build(Type.FLOAT);
     }
 
-    private static Value plusInteger(Value left, Value right) {
+    private static Value plusInteger(Value... values) {
+        Value left = values[0];
+        Value right = values[1];
+
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
                     (Double) (left.value().internalValue()) + ((Long) (right.value().internalValue())).doubleValue()
@@ -84,7 +90,10 @@ public class FloatType extends BaseType {
         return DirectValue.build(Type.FLOAT);
     }
 
-    private static Value timesFloat(Value left, Value right) {
+    private static Value timesFloat(Value... values) {
+        Value left = values[0];
+        Value right = values[1];
+
         if (isFloatZero(left) || isFloatZero(right)) {
             return DirectValue.build(0.0);
         }
@@ -102,7 +111,10 @@ public class FloatType extends BaseType {
         return value.hasValue() && value.value().internalValue().equals(0.0);
     }
 
-    private static Value timesInteger(Value left, Value right) {
+    private static Value timesInteger(Value... values) {
+        Value left = values[0];
+        Value right = values[1];
+
         if (isFloatZero(left) || isIntegerZero(right)) {
             return DirectValue.build(0.0);
         }
@@ -120,7 +132,10 @@ public class FloatType extends BaseType {
         return value.hasValue() && value.value().internalValue().equals(0L);
     }
 
-    private static Value lessThanFloat(Value left, Value right) {
+    private static Value lessThanFloat(Value... values) {
+        Value left = values[0];
+        Value right = values[1];
+
         if (!left.hasValue() || !right.hasValue()) {
             return DirectValue.build(Type.BOOLEAN);
         }
@@ -132,7 +147,10 @@ public class FloatType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value lessThanInteger(Value left, Value right) {
+    private static Value lessThanInteger(Value... values) {
+        Value left = values[0];
+        Value right = values[1];
+
         if (!left.hasValue() || !right.hasValue()) {
             return DirectValue.build(Type.BOOLEAN);
         }
@@ -144,7 +162,10 @@ public class FloatType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value lessThanOrEqualToFloat(Value left, Value right) {
+    private static Value lessThanOrEqualToFloat(Value... values) {
+        Value left = values[0];
+        Value right = values[1];
+
         if (!left.hasValue() || !right.hasValue()) {
             return DirectValue.build(Type.BOOLEAN);
         }
@@ -156,7 +177,10 @@ public class FloatType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value lessThanOrEqualToInteger(Value left, Value right) {
+    private static Value lessThanOrEqualToInteger(Value... values) {
+        Value left = values[0];
+        Value right = values[1];
+
         if (!left.hasValue() || !right.hasValue()) {
             return DirectValue.build(Type.BOOLEAN);
         }
@@ -168,19 +192,19 @@ public class FloatType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value biggerThanFloat(Value right, Value left) {
-        return BooleanType.not(lessThanOrEqualToFloat(right, left));
+    private static Value biggerThanFloat(Value... values) {
+        return BooleanType.not(lessThanOrEqualToFloat(values));
     }
 
-    private static Value biggerThanInteger(Value left, Value right) {
-        return BooleanType.not(lessThanOrEqualToInteger(left, right));
+    private static Value biggerThanInteger(Value... values) {
+        return BooleanType.not(lessThanOrEqualToInteger(values));
     }
 
-    private static Value biggerThanOrEqualToFloat(Value left, Value right) {
-        return BooleanType.not(lessThanFloat(left, right));
+    private static Value biggerThanOrEqualToFloat(Value... values) {
+        return BooleanType.not(lessThanFloat(values));
     }
 
-    private static Value biggerThanOrEqualToInteger(Value left, Value right) {
-        return BooleanType.not(lessThanInteger(left, right));
+    private static Value biggerThanOrEqualToInteger(Value... values) {
+        return BooleanType.not(lessThanInteger(values));
     }
 }

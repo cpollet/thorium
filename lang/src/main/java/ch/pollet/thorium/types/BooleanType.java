@@ -55,7 +55,10 @@ public class BooleanType extends BaseType {
         return "Boolean";
     }
 
-    private static Value or(Value left, Value right) {
+    private static Value or(Value... values) {
+        Value left = values[0];
+        Value right = values[1];
+
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
                     (Boolean) (left.value().internalValue()) || (Boolean) (right.value().internalValue())
@@ -72,7 +75,10 @@ public class BooleanType extends BaseType {
         return DirectValue.build(Type.BOOLEAN);
     }
 
-    private static Value and(Value left, Value right) {
+    private static Value and(Value... values) {
+        Value left = values[0];
+        Value right = values[1];
+
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
                     (Boolean) (left.value().internalValue()) && (Boolean) (right.value().internalValue())
@@ -89,12 +95,14 @@ public class BooleanType extends BaseType {
         return DirectValue.build(Type.BOOLEAN);
     }
 
-    // FIXME clean!
-    public static Value not(Value value, Value useless) {
-        return not(value);
-    }
+    // // FIXME clean!
+    // public static Value not(Value value, Value useless) {
+    //     return not(value);
+    // }
 
-    public static Value not(Value value) {
+    public static Value not(Value... values) {
+        Value value = values[0];
+
         if (!value.hasValue()) {
             return DirectValue.build(Type.BOOLEAN);
         }
