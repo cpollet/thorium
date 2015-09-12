@@ -201,20 +201,20 @@ UCIdentifier
     ;
 
 SymbolMethodName
-    : '+=' | '++' | '+'
+    : '+=' | '++' | '+'             // + implemented on Integer, Float and Boolean
     | '-=' | '--' | '-'
-    | '*=' | '*'
+    | '*=' | '*'                    // * implemented on Integer, Float and Boolean
     | '/=' | '/'
     | '%=' | '%'
     | '^=' | '^'
     | '~=' | '~'
     | '===' | '=='
-    | '!==' | '!=' | '!'
+    | '!==' | '!=' | '!'            // ! implemented on Boolean
     | '&&=' | '&&' | '&=' | '&'
     | '||=' | '||' | '|=' | '|'
-    | '<<=' | '<<' | '<=' | '<'
-    | '>>=' | '>>' | '>=' | '>'
-    | '<=>'
+    | '<<=' | '<<' | '<=' | '<'     // <=, < implemented on Integer and Float
+    | '>>=' | '>>' | '>=' | '>'     // >=, > implemented on Integer and Float
+    | '<=>'                         // compare to with Ineteger, Float
     | '..'                          // builds a sequence when applied on Integer
     | '->'                          // accesses a property without using getter/setter
     | '=>'
