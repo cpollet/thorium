@@ -91,6 +91,30 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visitRepeatedWhileStatement(ThoriumParser.RepeatedWhileStatementContext ctx) {
+        context.lastStatementValue = DirectValue.build();
+
+        while (isExpressionTrue(ctx.expression(1))) {
+            visit(ctx.expression(0));
+            context.lastStatementValue = context.popStack();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Void visitRepeatedUntilStatement(ThoriumParser.RepeatedUntilStatementContext ctx) {
+        context.lastStatementValue = DirectValue.build();
+
+        while (!isExpressionTrue(ctx.expression(1))) {
+            visit(ctx.expression(0));
+            context.lastStatementValue = context.popStack();
+        }
+
+        return null;
+    }
+
     //endregion
 
     //region Expressions
@@ -98,20 +122,12 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
     @Override
     public Void visitMultiplicationExpression(ThoriumParser.MultiplicationExpressionContext ctx) {
         super.visitMultiplicationExpression(ctx);
-        evalOperator("*");
+        evalBinaryOperator(ctx.op.getText());
 
         return null;
     }
 
-    @Override
-    public Void visitAdditionExpression(ThoriumParser.AdditionExpressionContext ctx) {
-        super.visitAdditionExpression(ctx);
-        evalOperator("+");
-
-        return null;
-    }
-
-    private void evalOperator(String operator) {
+    private void evalBinaryOperator(String operator) {
         Value right = context.popStack();
         Value left = context.popStack();
 
@@ -122,6 +138,42 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
         }
 
         context.pushStack(method.apply(left, right));
+    }
+
+    @Override
+    public Void visitAdditionExpression(ThoriumParser.AdditionExpressionContext ctx) {
+        super.visitAdditionExpression(ctx);
+        evalBinaryOperator(ctx.op.getText());
+
+        return null;
+    }
+
+    @Override
+    public Void visitOrderComparisonExpression(ThoriumParser.OrderComparisonExpressionContext ctx) {
+        super.visitOrderComparisonExpression(ctx);
+        evalBinaryOperator(ctx.op.getText());
+
+        return null;
+    }
+
+    @Override
+    public Void visitNotExpression(ThoriumParser.NotExpressionContext ctx) {
+        super.visitNotExpression(ctx);
+
+        evalUnaryOperator(ctx.op.getText());
+        return null;
+    }
+
+    private void evalUnaryOperator(String operator) {
+        Value value = context.popStack();
+
+        Method method = value.type().lookupMethod(new MethodMatcher(operator));
+
+        if (method == null) {
+            throw new IllegalStateException("Method " + operator + "() not found on " + value.type());
+        }
+
+        context.pushStack(method.apply(value));
     }
 
     @Override

@@ -35,7 +35,7 @@ public class Method {
         return type;
     }
 
-    public Value apply(Value left, Value right) {
-        return op.apply(left, right);
+    public Value apply(Value... values) {
+        return op.apply(values);
     }
 }
