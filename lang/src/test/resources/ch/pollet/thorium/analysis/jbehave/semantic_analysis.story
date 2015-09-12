@@ -21,10 +21,10 @@ Examples:
 | def b; def a = ({ b; }); b = 1;                   | a         | Integer   |
 | def a; if (a = true) { ; }                        | a         | Boolean   |
 | def a; if (true) { a = 1; }                       | a         | Integer   |
-| def Integer a; def b; a = 1 if b; b = true;       | b         | Boolean   |
-| def Integer a; def b; a = 1 unless b; b = true;   | b         | Boolean   |
-| def Integer a; def b; a = 1 while b; b = true;    | b         | Boolean   |
-| def Integer a; def b; a = 1 until b; b = true;    | b         | Boolean   |
+| def Integer a; def b; a = 1 if b; b = true;       | b         | Boolean   |
+| def Integer a; def b; a = 1 unless b; b = true;   | b         | Boolean   |
+| def Integer a; def b; a = 1 while b; b = true;    | b         | Boolean   |
+| def Integer a; def b; a = 1 until b; b = true;    | b         | Boolean   |
 
 Scenario: types are attached to expression nodes
 Given an expression <expression>
@@ -49,6 +49,22 @@ Examples:
 | (if (true) { 1; })                                    | Integer       |
 | (if (true) { 1; } else { 1; })                        | Integer       |
 | (if (true) { 1; } else if (false) { 1; } else { 1; }) | Integer       |
+| 1 > 1                                                 | Boolean       |
+| 1 >= 1                                                | Boolean       |
+| 1 < 1                                                 | Boolean       |
+| 1 <= 1                                                | Boolean       |
+| 1.0 > 1                                               | Boolean       |
+| 1.0 >= 1                                              | Boolean       |
+| 1.0 < 1                                               | Boolean       |
+| 1.0 <= 1                                              | Boolean       |
+| 1 > 1.0                                               | Boolean       |
+| 1 >= 1.0                                              | Boolean       |
+| 1 < 1.0                                               | Boolean       |
+| 1 <= 1.0                                              | Boolean       |
+| 1.0 > 1.0                                             | Boolean       |
+| 1.0 >= 1.0                                            | Boolean       |
+| 1.0 < 1.0                                             | Boolean       |
+| 1.0 <= 1.0                                            | Boolean       |
 
 Scenario: failing statements with only one exception
 Given a compilation unit <unit>
@@ -72,10 +88,18 @@ Examples:
 | a = 1 if true;                                                | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Identifier a not found on line [0-9]+:[0-9]+ \(a\).                                                       |
 | def Integer a; def Integer a;                                 | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Identifier a already defined on line [0-9]+:[0-9]+ \(def\).                                               |
 | def Integer a; def Float a;                                   | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Identifier a already defined on line [0-9]+:[0-9]+ \(def\).                                               |
-| def Integer a; a = 1 if 1;                                    | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
-| def Integer a; a = 1 unless 1;                                | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
-| def Integer a; a = 1 while 1;                                 | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
-| def Integer a; a = 1 until 1;                                 | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
+| def Integer a; a = 1 if 1;                                    | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
+| def Integer a; a = 1 unless 1;                                | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
+| def Integer a; a = 1 while 1;                                 | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
+| def Integer a; a = 1 until 1;                                 | ch.pollet.thorium.analysis.exceptions.InvalidTypeException            | Invalid type found on line [0-9]+:[0-9]+ \(1\): expected Boolean but got Integer.                         |
+| 1 < true;                                                     | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method <\(Boolean\) not implemented on Integer on line [0-9]+:[0-9]+ \(1\).                               |
+| 1 <= true;                                                    | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method <=\(Boolean\) not implemented on Integer on line [0-9]+:[0-9]+ \(1\).                              |
+| 1 > true;                                                     | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >\(Boolean\) not implemented on Integer on line [0-9]+:[0-9]+ \(1\).                               |
+| 1 >= true;                                                    | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >=\(Boolean\) not implemented on Integer on line [0-9]+:[0-9]+ \(1\).                              |
+| 1.0 < true;                                                   | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method <\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                               |
+| 1.0 <= true;                                                  | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method <=\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                              |
+| 1.0 > true;                                                   | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                               |
+| 1.0 >= true;                                                  | ch.pollet.thorium.analysis.exceptions.InvalidSymbolException          | Method >=\(Boolean\) not implemented on Float on line [0-9]+:[0-9]+ \(1\.0\).                              |
 
 Scenario: failing statements with only one exception
 Given a compilation unit <unit>

@@ -327,20 +327,24 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitMultiplicationExpression(ThoriumParser.MultiplicationExpressionContext ctx) {
-        Type leftType = getNodeType(ctx.expression(0));
-        Type rightType = getNodeType(ctx.expression(1));
+        exitBinaryOperator(ctx.op.getText(), ctx.expression(0), ctx.expression(1), ctx);
+    }
+
+    private void exitBinaryOperator(String operator, ThoriumParser.ExpressionContext leftExpr, ThoriumParser.ExpressionContext rightExpr, ParserRuleContext ctx) {
+        Type leftType = getNodeType(leftExpr);
+        Type rightType = getNodeType(rightExpr);
 
         if (leftType == Type.VOID) {
-            nodeObserverRegistry.registerObserver(ctx, ctx.expression(0));
+            nodeObserverRegistry.registerObserver(ctx, leftExpr);
         }
         if (rightType == Type.VOID) {
-            nodeObserverRegistry.registerObserver(ctx, ctx.expression(1));
+            nodeObserverRegistry.registerObserver(ctx, rightExpr);
         }
 
         if (leftType == Type.VOID || rightType == Type.VOID) {
             types.put(ctx, asSet(Type.VOID));
         } else {
-            Type resultType = inferMethodType(ctx.start, "*", leftType, rightType);
+            Type resultType = inferMethodType(ctx.getStart(), operator, leftType, rightType);
             types.put(ctx, asSet(resultType));
             nodeObserverRegistry.notifyObservers(ctx, this);
         }
@@ -349,7 +353,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     private Type inferMethodType(Token token, String methodName, Type leftType, Type... parametersTypes) {
-        Method method = leftType.lookupMethod(new MethodMatcher("*", parametersTypes));
+        Method method = leftType.lookupMethod(new MethodMatcher(methodName, parametersTypes));
 
         if (method == null) {
             exceptions.add(InvalidSymbolException.methodNotFound(token, methodName, leftType, parametersTypes));
@@ -361,25 +365,12 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitAdditionExpression(ThoriumParser.AdditionExpressionContext ctx) {
-        Type leftType = getNodeType(ctx.expression(0));
-        Type rightType = getNodeType(ctx.expression(1));
+        exitBinaryOperator(ctx.op.getText(), ctx.expression(0), ctx.expression(1), ctx);
+    }
 
-        if (leftType == Type.VOID) {
-            nodeObserverRegistry.registerObserver(ctx, ctx.expression(0));
-        }
-        if (rightType == Type.VOID) {
-            nodeObserverRegistry.registerObserver(ctx, ctx.expression(1));
-        }
-
-        if (leftType == Type.VOID || rightType == Type.VOID) {
-            types.put(ctx, asSet(Type.VOID));
-        } else {
-            Type resultType = inferMethodType(ctx.start, "+", leftType, rightType);
-            types.put(ctx, asSet(resultType));
-            nodeObserverRegistry.notifyObservers(ctx, this);
-        }
-
-        logContextInformation(ctx);
+    @Override
+    public void exitOrderComparisonExpression(ThoriumParser.OrderComparisonExpressionContext ctx) {
+        exitBinaryOperator(ctx.op.getText(), ctx.expression(0), ctx.expression(1), ctx);
     }
 
     @Override

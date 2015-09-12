@@ -45,7 +45,6 @@ statement
 
 expressionStatement
     : expression ';'                                                                    # unconditionalStatement
-//    | variableDeclaration ';'                                                           # variableDeclarationStatement
     | expression IF expression ';'                                                      # conditionalIfStatement
     | expression UNLESS expression ';'                                                  # conditionalUnlessStatement
     | expression WHILE expression ';'                                                   # repeatedWhileStatement
@@ -114,8 +113,9 @@ type
 //     ;
 
 expression
-    : expression '*' expression                                                         # multiplicationExpression
-    | expression '+' expression                                                         # additionExpression
+    : expression op='*' expression                                                         # multiplicationExpression
+    | expression op='+' expression                                                         # additionExpression
+    | expression op=( '<' | '<=' | '>' | '>=' ) expression                              # orderComparisonExpression
     | literal                                                                           # literalExpression
     | '(' expression ')'                                                                # parenthesisExpression
     // | expression ':' expression '?' expression                                       # inlineConditionExpression

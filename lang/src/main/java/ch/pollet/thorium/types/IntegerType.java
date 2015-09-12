@@ -35,7 +35,7 @@ public class IntegerType extends BaseType {
         put(new MethodMatcher("+", IntegerType.INSTANCE), new Method(IntegerType.INSTANCE, IntegerType::plusInteger));
         put(new MethodMatcher("*", FloatType.INSTANCE), new Method(FloatType.INSTANCE, IntegerType::timesFloat));
         put(new MethodMatcher("*", IntegerType.INSTANCE), new Method(IntegerType.INSTANCE, IntegerType::timesInteger));
-        put(new MethodMatcher("<", IntegerType.INSTANCE), new Method(IntegerType.INSTANCE, IntegerType::lessThanInteger));
+        put(new MethodMatcher("<", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::lessThanInteger));
         put(new MethodMatcher("<", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::lessThanFloat));
         put(new MethodMatcher("<=", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::lessThanOrEqualToInteger));
         put(new MethodMatcher("<=", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::lessThanOrEqualToFloat));

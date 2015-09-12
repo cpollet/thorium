@@ -36,7 +36,7 @@ public class FloatType extends BaseType {
         put(new MethodMatcher("*", FloatType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::timesFloat));
         put(new MethodMatcher("*", IntegerType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::timesInteger));
         put(new MethodMatcher("<", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanFloat));
-        put(new MethodMatcher("<", IntegerType.INSTANCE), new Method(IntegerType.INSTANCE, FloatType::lessThanInteger));
+        put(new MethodMatcher("<", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanInteger));
         put(new MethodMatcher("<=", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanOrEqualToFloat));
         put(new MethodMatcher("<=", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanOrEqualToInteger));
         put(new MethodMatcher(">", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::biggerThanFloat));
