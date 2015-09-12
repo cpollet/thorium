@@ -35,6 +35,14 @@ public class IntegerType extends BaseType {
         put(new MethodMatcher("+", IntegerType.INSTANCE), new Method(IntegerType.INSTANCE, IntegerType::plusInteger));
         put(new MethodMatcher("*", FloatType.INSTANCE), new Method(FloatType.INSTANCE, IntegerType::timesFloat));
         put(new MethodMatcher("*", IntegerType.INSTANCE), new Method(IntegerType.INSTANCE, IntegerType::timesInteger));
+        put(new MethodMatcher("<", IntegerType.INSTANCE), new Method(IntegerType.INSTANCE, IntegerType::lessThanInteger));
+        put(new MethodMatcher("<", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::lessThanFloat));
+        put(new MethodMatcher("<=", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::lessThanOrEqualToInteger));
+        put(new MethodMatcher("<=", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::lessThanOrEqualToFloat));
+        put(new MethodMatcher(">", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::biggerThanInteger));
+        put(new MethodMatcher(">", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::biggerThanFloat));
+        put(new MethodMatcher(">=", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::biggerThanOrEqualToInteger));
+        put(new MethodMatcher(">=", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::biggerThanOrEqualToFloat));
     }};
 
     private IntegerType() {
@@ -111,5 +119,70 @@ public class IntegerType extends BaseType {
 
     private static boolean isIntegerZero(Value value) {
         return value.hasValue() && value.value().internalValue().equals(0L);
+    }
+
+    private static Value lessThanInteger(Value left, Value right) {
+        if (!left.hasValue() || !right.hasValue()) {
+            return DirectValue.build(Type.BOOLEAN);
+        }
+
+        if (Long.compare(integerValue(left), integerValue(right)) < 0) {
+            return DirectValue.build(true);
+        }
+
+        return DirectValue.build(false);
+    }
+
+    private static Value lessThanFloat(Value left, Value right) {
+        if (!left.hasValue() || !right.hasValue()) {
+            return DirectValue.build(Type.BOOLEAN);
+        }
+
+        if (Double.compare(integerValue(left).doubleValue(), floatValue(right)) < 0) {
+            return DirectValue.build(true);
+        }
+
+        return DirectValue.build(false);
+    }
+
+    private static Value lessThanOrEqualToInteger(Value left, Value right) {
+        if (!left.hasValue() || !right.hasValue()) {
+            return DirectValue.build(Type.BOOLEAN);
+        }
+
+        if (Long.compare(integerValue(left), integerValue(right)) <= 0) {
+            return DirectValue.build(true);
+        }
+
+        return DirectValue.build(false);
+    }
+
+    private static Value lessThanOrEqualToFloat(Value left, Value right) {
+        if (!left.hasValue() || !right.hasValue()) {
+            return DirectValue.build(Type.BOOLEAN);
+        }
+
+        if (Double.compare(integerValue(left).doubleValue(), floatValue(right)) <= 0) {
+            return DirectValue.build(true);
+        }
+
+        return DirectValue.build(false);
+    }
+
+    private static Value biggerThanInteger(Value left, Value right) {
+        return BooleanType.not(lessThanOrEqualToInteger(left, right));
+    }
+
+    private static Value biggerThanFloat(Value left, Value right) {
+        return BooleanType.not(lessThanOrEqualToFloat(left, right));
+    }
+
+
+    private static Value biggerThanOrEqualToInteger(Value left, Value right) {
+        return BooleanType.not(lessThanInteger(left, right));
+    }
+
+    private static Value biggerThanOrEqualToFloat(Value left, Value right) {
+        return BooleanType.not(lessThanFloat(left, right));
     }
 }

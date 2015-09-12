@@ -22,6 +22,25 @@ Examples:
 | 0.0       | *         | Float     | 0.0       |
 | Float     | *         | 0         | 0.0       |
 | Float     | *         | 0.0       | 0.0       |
+| 1.0       | <         | 2.0       | true      |
+| 1.0       | <         | 1.0       | false     |
+| 1.0       | <         | 1         | false     |
+| 1.0       | <=        | 2.0       | true      |
+| 1.0       | <=        | 1.0       | true      |
+| 1.0       | <=        | 1         | true      |
+| 2.0       | >         | 1.0       | true      |
+| 2.0       | >         | 2.0       | false     |
+| 2.0       | >         | 2         | false     |
+| 2.0       | >=        | 1.0       | true      |
+| 2.0       | >=        | 2.0       | true      |
+| 2.0       | >=        | 2         | true      |
+| Float     | <         | 1         | Boolean   |
+| 1         | <         | Float     | Boolean   |
+| Float     | <=        | 1         | Boolean   |
+| 1         | <=        | Float     | Boolean   |
+| Float     | >         | 1         | Boolean   |
+| 1         | >         | Float     | Boolean   |
+| Float     | >=        | 1         | Boolean   |
 
 Scenario: float method types
 Given method is <left> <method> <right>

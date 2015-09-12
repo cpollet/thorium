@@ -87,4 +87,13 @@ public class BooleanType extends BaseType {
 
         return DirectValue.build(Type.BOOLEAN);
     }
+
+    // FIXME expose this
+    public static Value not(Value value) {
+        if (!value.hasValue()) {
+            return DirectValue.build(Type.BOOLEAN);
+        }
+
+        return DirectValue.build(!booleanValue(value));
+    }
 }

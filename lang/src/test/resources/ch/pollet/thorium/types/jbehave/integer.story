@@ -22,6 +22,25 @@ Examples:
 | 0         | *         | Float     | 0.0       |
 | Integer   | *         | 0         | 0         |
 | Integer   | *         | 0.0       | 0.0       |
+| 1         | <         | 2         | true      |
+| 1         | <         | 1         | false     |
+| 1         | <         | 1.0       | false     |
+| 1         | <=        | 2         | true      |
+| 1         | <=        | 1         | true      |
+| 1         | <=        | 1.0       | true      |
+| 2         | >         | 1         | true      |
+| 2         | >         | 2         | false     |
+| 2         | >         | 2.0       | false     |
+| 2         | >=        | 1         | true      |
+| 2         | >=        | 2         | true      |
+| 2         | >=        | 2.0       | true      |
+| Integer   | <         | 1         | Boolean   |
+| 1         | <         | Integer   | Boolean   |
+| Integer   | <=        | 1         | Boolean   |
+| 1         | <=        | Integer   | Boolean   |
+| Integer   | >         | 1         | Boolean   |
+| 1         | >         | Integer   | Boolean   |
+| Integer   | >=        | 1         | Boolean   |
 
 Scenario: integer method types
 Given method is <left> <method> <right>

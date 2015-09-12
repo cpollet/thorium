@@ -18,6 +18,7 @@ package ch.pollet.thorium.types;
 
 import ch.pollet.thorium.evaluation.Method;
 import ch.pollet.thorium.evaluation.MethodMatcher;
+import ch.pollet.thorium.values.Value;
 
 import java.util.Map;
 
@@ -35,4 +36,16 @@ public abstract class BaseType implements Type {
     }
 
     abstract Map<MethodMatcher, Method> symbolTable();
+
+    protected static Long integerValue(Value value) {
+        return (Long) value.value().internalValue();
+    }
+
+    protected static Double floatValue(Value value) {
+        return (Double) value.value().internalValue();
+    }
+
+    protected static Boolean booleanValue(Value value) {
+        return (Boolean) value.value().internalValue();
+    }
 }
