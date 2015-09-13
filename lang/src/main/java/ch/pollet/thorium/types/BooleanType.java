@@ -95,11 +95,6 @@ public class BooleanType extends BaseType {
         return DirectValue.build(Type.BOOLEAN);
     }
 
-    // // FIXME clean!
-    // public static Value not(Value value, Value useless) {
-    //     return not(value);
-    // }
-
     public static Value not(Value... values) {
         Value value = values[0];
 
