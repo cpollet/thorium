@@ -241,6 +241,20 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
     //endregion
 
+    //region Loop Statements
+
+    @Override
+    public Void visitWhileLoopStatement(ThoriumParser.WhileLoopStatementContext ctx) {
+        while (isExpressionTrue(ctx.expression())) {
+            visit(ctx.statements());
+        }
+
+        return null;
+    }
+
+
+    //endregion
+
     //region Values
 
     @Override

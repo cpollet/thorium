@@ -54,6 +54,8 @@ expressionStatement
 block
     : statementsBlock
     | ifStatement
+    | whileLoopStatement
+    | forLoopStatement
     ;
 
 statementsBlock
@@ -68,6 +70,12 @@ elseStatement
     | ELSE ifStatement
     ;
 
+whileLoopStatement
+    : WHILE '(' expression ')' '{' statements '}'
+    ;
+forLoopStatement
+    : FOR '(' init=expression ';' condition=expression ';' increment=expression ')' '{' statements '}'
+    ;
 // loopStatement
 //     : (WHILE | FOR) '(' expression  (';' expression)* ')' '{' statements '}'
 //     ;
