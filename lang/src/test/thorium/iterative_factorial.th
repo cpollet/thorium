@@ -1,0 +1,7 @@
+def n = 10;
+def i;
+def result = 1;
+
+for (i = 1; i <= n; i = i + 1) {
+    result = result * i;
+}

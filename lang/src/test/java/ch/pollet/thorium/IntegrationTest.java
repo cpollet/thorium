@@ -41,8 +41,29 @@ import static org.fest.assertions.Assertions.assertThat;
 public class IntegrationTest {
     @Test
     public void iterativeFibonacci() throws IOException {
+        // GIVEN + WHEN
+        EvaluationContext evaluationContext = eval("iterative_fibonacci.th");
+
+        // THEN
+        Symbol result = evaluationContext.lookupSymbol("result");
+        assertThat((Long) (result.value().internalValue()))
+                .isEqualTo(34L);
+    }
+
+    @Test
+    public void iterativeFactorial() throws IOException {
+        // GIVEN + WHEN
+        EvaluationContext evaluationContext = eval("iterative_factorial.th");
+
+        // THEN
+        Symbol result = evaluationContext.lookupSymbol("result");
+        assertThat((Long) (result.value().internalValue()))
+                .isEqualTo(3628800L);
+    }
+
+    private EvaluationContext eval(String program) throws IOException {
         // GIVEN
-        ANTLRInputStream input = new ANTLRInputStream(IntegrationTest.class.getClassLoader().getResourceAsStream("iterative_fibonacci.th"));
+        ANTLRInputStream input = new ANTLRInputStream(IntegrationTest.class.getClassLoader().getResourceAsStream(program));
         ThoriumLexer lexer = new ThoriumLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         ThoriumParser parser = new ThoriumParser(tokens);
@@ -57,9 +78,6 @@ public class IntegrationTest {
         VisitorEvaluator evaluator = new VisitorEvaluator(evaluationContext);
         evaluator.visit(tree);
 
-        // THEN
-        Symbol result = evaluationContext.lookupSymbol("result");
-        assertThat((Long) (result.value().internalValue()))
-                .isEqualTo(34L);
+        return evaluationContext;
     }
 }
