@@ -1,8 +1,8 @@
 This document is a work in progress, its content may change at any time.
 
 # Variables and consants
- * Variables names must match ```[a-z][a-zA-Z0-9_$]*```
- * Constant names must match ```[A-Z0-9_$]+```
+ * Variables names must match ```[a-z][a-zA-Z0-9_]*```
+ * Constant names must match ```[A-Z0-9_]+```
 
 Both variables and constants must be declared using the following syntax: ```def (Type)? varname (= expression)? ;```
 
@@ -13,7 +13,8 @@ I other words, in one of the following ways:
     def a = 1;
     def Integer a = b + 1;
 
-# Conditional statements
+# Statements
+## Conditional statements
 Statements can be suffixed with with either ```if expression``` or ```unless expression```, such as in
 
     // a = min(a, 5)
@@ -21,12 +22,38 @@ Statements can be suffixed with with either ```if expression``` or ```unless exp
     // a = max(a, 5)
     a = 5 unless a < 5
 
-# Repeatable statements
-Not implemented, yet.
-Much like conditional statements, a statement can be suffixed with ```while expression``` to repeat it as long as needed:
+## Repeatable statements
+Much like conditional statements, a statement can be suffixed with ```while expression``` or ```until expression``` to repeat it as long as needed:
 
     // make sure a > 0
     a = a * 10 while a < 0;
+    // make sure a > 0
+    a = a * 10 until a >= 0
+
+# Control structures
+Thorium supports standard control structures: ```if```, ```for```, ```while```. ```{``` and ```}``` ae mandatory. General symtax is:
+
+    if (expression) {
+        // somehting
+    } else if (expression) {
+        // something else
+    } else {
+        // something even different
+    }
+    
+    while (expression) {
+        // something
+    }
+    
+    // condition must be evaluated as a Boolean
+    for (initialization?; condition?; afterthought?) {
+        // something
+    }
+    
+    // not implemented, yet
+    for (element in collection) {
+    }
+
 
 # Object creation
 ## Constructor / Destructors
