@@ -36,6 +36,48 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
     //region Statements
 
+
+     @Override
+     public Void visitVariableDeclarationStatement(ThoriumParser.VariableDeclarationStatementContext ctx) {
+         Symbol symbol;
+
+         if (context.symbolDefined(ctx.LCFirstIdentifier().getText())) {
+             symbol = context.lookupSymbol(ctx.getText());
+         } else {
+             symbol = new Variable(ctx.LCFirstIdentifier().getText()); // TODO EVAL: should be symbol reference instead?
+             context.insertSymbol(symbol);
+         }
+
+         if (ctx.expression()!=null) {
+             visit(ctx.expression());
+             symbol.setValue(context.popStack().value());
+             symbol.setType(symbol.value().type());
+         }
+
+         return null;
+     }
+
+    @Override
+    public Void visitConstantDeclarationStatement(ThoriumParser.ConstantDeclarationStatementContext ctx) {
+        Symbol symbol;
+
+        if (context.symbolDefined(ctx.UCIdentifier().getText())) {
+            symbol = context.lookupSymbol(ctx.getText());
+        } else {
+            symbol = new Constant(ctx.UCIdentifier().getText()); // TODO EVAL: should be symbol reference instead?
+            context.insertSymbol(symbol);
+        }
+
+        if (ctx.expression()!=null) {
+            visit(ctx.expression());
+            symbol.setValue(context.popStack().value());
+            symbol.setType(symbol.value().type());
+        }
+
+        return null;
+
+    }
+
     @Override
     public Void visitUnconditionalStatement(ThoriumParser.UnconditionalStatementContext ctx) {
         super.visitUnconditionalStatement(ctx);
@@ -245,15 +287,21 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitWhileLoopStatement(ThoriumParser.WhileLoopStatementContext ctx) {
+        context = context.createChild();
+
         while (isExpressionTrue(ctx.expression())) {
             visit(ctx.statements());
         }
+
+        context = context.destroyAndRestoreParent();
 
         return null;
     }
 
     @Override
     public Void visitForLoopStatement(ThoriumParser.ForLoopStatementContext ctx) {
+        context = context.createChild();
+
         if (ctx.init != null) {
             visit(ctx.init);
             context.popStack();
@@ -266,6 +314,8 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
                 context.popStack();
             }
         }
+
+        context = context.destroyAndRestoreParent();
 
         return null;
     }

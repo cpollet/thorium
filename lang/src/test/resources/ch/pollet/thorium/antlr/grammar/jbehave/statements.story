@@ -26,6 +26,10 @@ Examples:
 | a = 0; a = a + 1 until a >= 5;                                | a         | 5         | Integer                   |                   |
 | a = 0; while (a < 3) { a = a + 1; }                           | a         | 3         | Integer                   |                   |
 | b = 0; a = 0; for (b = 0; b < 3; b = b + 1) { a = a + 1; }    | a         | 3         | Integer                   |                   |
+| def a;                                                        | a         |           | Void                      |                   |
+| def Integer a;                                                | a         |           | Void                      |                   |
+| def a = 1;                                                    | a         | 1         | Integer                   |                   |
+| def A = 1;                                                    | A         | 1         | Integer                   |                   |
 
 Scenario: statements with result
 Given a list of statements <statements>
