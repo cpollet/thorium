@@ -1,0 +1,19 @@
+def a = 0;
+def b = 1;
+
+def result;
+def counter;
+
+def i = 10;
+
+if (i < 1) {
+    result = a;
+} else if (i < 2) {
+    result = b;
+} else {
+    for (counter = 0; counter < i + (-2); counter = counter + 1) {
+        result = a + b;
+        a = b;
+        b = result;
+    }
+}
