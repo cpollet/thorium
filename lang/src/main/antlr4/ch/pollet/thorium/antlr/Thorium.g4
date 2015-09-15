@@ -73,12 +73,9 @@ elseStatement
 whileLoopStatement
     : WHILE '(' expression ')' '{' statements '}'
     ;
-forLoopStatement
+forLoopStatement // TODO init must be able to handle variable definition
     : FOR '(' init=expression? ';' condition=expression? ';' increment=expression? ')' '{' statements '}'
     ;
-// loopStatement
-//     : (WHILE | FOR) '(' expression  (';' expression)* ')' '{' statements '}'
-//     ;
 
 variableOrConstantDeclarationStatement
     : DEF type? LCFirstIdentifier ('=' expression)? ';'                                     # variableDeclarationStatement
