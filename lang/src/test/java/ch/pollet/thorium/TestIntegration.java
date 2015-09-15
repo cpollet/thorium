@@ -38,7 +38,7 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Christophe Pollet
  */
 @RunWith(BlockJUnit4ClassRunner.class)
-public class IntegrationTest {
+public class TestIntegration {
     @Test
     public void iterativeFibonacci() throws IOException {
         // GIVEN + WHEN
@@ -63,7 +63,7 @@ public class IntegrationTest {
 
     private EvaluationContext eval(String program) throws IOException {
         // GIVEN
-        ANTLRInputStream input = new ANTLRInputStream(IntegrationTest.class.getClassLoader().getResourceAsStream(program));
+        ANTLRInputStream input = new ANTLRInputStream(TestIntegration.class.getClassLoader().getResourceAsStream(program));
         ThoriumLexer lexer = new ThoriumLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         ThoriumParser parser = new ThoriumParser(tokens);
