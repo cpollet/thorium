@@ -68,6 +68,8 @@ Examples:
 | 1.0 <= 1.0                                            | Boolean       |
 | !true                                                 | Boolean       |
 | !false                                                | Boolean       |
+| (while (true) { 1; })                                 | Integer       |
+| (for (1; true; 1) { 1; })                             | Integer       |
 
 Scenario: failing statements with only one exception
 Given a compilation unit <unit>

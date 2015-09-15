@@ -44,6 +44,7 @@ import java.util.Set;
 
 /**
  * @author Christophe Pollet
+ * @fixme nullable (if for/while/if conditions -> forbidden)
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
     private final static Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
@@ -111,6 +112,12 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             findNodeTypes(ctx, ctx.ifStatement());
         } else if (ctx.statementsBlock() != null) {
             findNodeTypes(ctx, ctx.statementsBlock());
+        } else if (ctx.forLoopStatement() != null) {
+            findNodeTypes(ctx, ctx.forLoopStatement());
+        } else if (ctx.whileLoopStatement() != null) {
+            findNodeTypes(ctx, ctx.whileLoopStatement());
+        } else {
+            throw new IllegalStateException("Unhandled block type");
         }
 
         currentSymbolSymbolTable = currentSymbolSymbolTable.unwrap();
@@ -236,6 +243,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitIfStatement(ThoriumParser.IfStatementContext ctx) {
+        // FIXME case where conditionType can be determined afterwards
         Type conditionType = getNodeType(ctx.expression());
         if (conditionType != Type.BOOLEAN) {
             exceptions.add(InvalidTypeException.invalidType(ctx.expression().getStart(), Type.BOOLEAN, conditionType));
@@ -273,6 +281,39 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    //endregion
+
+    //region Loop Statements
+
+    @Override
+    public void exitForLoopStatement(ThoriumParser.ForLoopStatementContext ctx) {
+        exitLoopStatement(ctx, ctx.statements(), ctx.condition);
+    }
+
+    @Override
+    public void exitWhileLoopStatement(ThoriumParser.WhileLoopStatementContext ctx) {
+        exitLoopStatement(ctx, ctx.statements(), ctx.expression());
+    }
+
+    private void exitLoopStatement(ParserRuleContext ctx, ThoriumParser.StatementsContext stmtsCtx, ThoriumParser.ExpressionContext exprCtx) {
+        // FIXME case where exprCtx can be determined afterwards
+        Type conditionType = getNodeType(exprCtx);
+        if (conditionType != Type.BOOLEAN) {
+            exceptions.add(InvalidTypeException.invalidType(exprCtx.getStart(), Type.BOOLEAN, conditionType));
+        }
+
+        Set<Type> possibleTypes = getNodeTypes(stmtsCtx);
+        if (possibleTypes.contains(Type.VOID)) {
+            nodeObserverRegistry.registerObserver(ctx, stmtsCtx);
+        } else {
+            nodeObserverRegistry.notifyObservers(ctx, this);
+        }
+
+        types.put(ctx, possibleTypes);
+
+        logContextInformation(ctx);
     }
 
     //endregion
