@@ -44,7 +44,8 @@ import java.util.Set;
 
 /**
  * @author Christophe Pollet
- * @fixme nullable (if for/while/if conditions -> forbidden)
+ * @todo nullable (if for/while/if conditions -> forbidden)
+ * @todo check for redefinition of symbols...
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
     private final static Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
