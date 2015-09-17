@@ -239,7 +239,6 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitIfStatement(ThoriumParser.IfStatementContext ctx) {
-        // FIXME case where conditionType can be determined afterwards
         Type conditionType = getNodeType(ctx.expression());
         if (conditionType != Type.BOOLEAN) {
             exceptions.add(InvalidTypeException.invalidType(ctx.expression().getStart(), Type.BOOLEAN, conditionType));
@@ -299,7 +298,6 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     private void exitLoopStatement(ParserRuleContext ctx, ThoriumParser.StatementsContext stmtsCtx, ThoriumParser.ExpressionContext exprCtx) {
-        // FIXME case where exprCtx can be determined afterwards
         Type conditionType = getNodeType(exprCtx);
         if (conditionType != Type.BOOLEAN) {
             exceptions.add(InvalidTypeException.invalidType(exprCtx.getStart(), Type.BOOLEAN, conditionType));

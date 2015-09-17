@@ -73,7 +73,7 @@ elseStatement
 whileLoopStatement
     : WHILE '(' expression ')' '{' statements '}'
     ;
-forLoopStatement // TODO init must be able to handle variable definition
+forLoopStatement
     : FOR '(' init=forLoopStatementInit? ';' condition=expression? ';' increment=expression? ')' '{' statements '}'
     ;
 forLoopStatementInit
