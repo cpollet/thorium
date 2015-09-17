@@ -38,43 +38,44 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitVariableDeclarationStatement(ThoriumParser.VariableDeclarationStatementContext ctx) {
-        Symbol symbol;
-
-        if (context.symbolDefined(ctx.LCFirstIdentifier().getText())) {
-            symbol = context.lookupSymbol(ctx.getText());
-        } else {
-            symbol = new Variable(ctx.LCFirstIdentifier().getText()); // TODO EVAL: should be symbol reference instead?
-            context.insertSymbol(symbol);
-        }
-
-        if (ctx.expression() != null) {
-            visit(ctx.expression());
-            symbol.setValue(context.popStack().value());
-            symbol.setType(symbol.value().type());
-        }
+        createSymbol(ctx.LCFirstIdentifier().getText(), Symbol.SymbolType.VARIABLE, ctx.expression());
 
         return null;
     }
 
     @Override
     public Void visitConstantDeclarationStatement(ThoriumParser.ConstantDeclarationStatementContext ctx) {
-        Symbol symbol;
-
-        if (context.symbolDefined(ctx.UCIdentifier().getText())) {
-            symbol = context.lookupSymbol(ctx.getText());
-        } else {
-            symbol = new Constant(ctx.UCIdentifier().getText()); // TODO EVAL: should be symbol reference instead?
-            context.insertSymbol(symbol);
-        }
-
-        if (ctx.expression() != null) {
-            visit(ctx.expression());
-            symbol.setValue(context.popStack().value());
-            symbol.setType(symbol.value().type());
-        }
+        createSymbol(ctx.UCIdentifier().getText(), Symbol.SymbolType.CONSTANT, ctx.expression());
 
         return null;
+    }
 
+    private Symbol createSymbol(String identifier, Symbol.SymbolType type, ThoriumParser.ExpressionContext exprCtx) {
+        if (!context.symbolDefined(identifier)) {
+            Symbol symbol;
+            switch (type) {
+                case CONSTANT:
+                    symbol = new Constant(identifier); // TODO EVAL: should be symbol reference instead?
+                    break;
+                case VARIABLE:
+                    symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead?
+                    break;
+                default:
+                    throw new IllegalStateException("SymbolType not handled");
+            }
+
+            context.insertSymbol(symbol);
+
+            if (exprCtx != null) {
+                visit(exprCtx);
+                symbol.setValue(context.popStack().value());
+                symbol.setType(symbol.value().type());
+            }
+
+            return symbol;
+        }
+
+        return context.lookupSymbol(identifier);
     }
 
     @Override
@@ -324,25 +325,10 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
         return visit(ctx.expression());
     }
 
-    // FIXME lots of duplicate between this and visitVariableDeclarationStatement and visitConstantDeclarationStatement
     @Override
     public Void visitForLoopStatementInitVariableDeclaration(ThoriumParser.ForLoopStatementInitVariableDeclarationContext ctx) {
-        Symbol symbol;
-
-        if (context.symbolDefined(ctx.LCFirstIdentifier().getText())) {
-            symbol = context.lookupSymbol(ctx.getText());
-        } else {
-            symbol = new Variable(ctx.LCFirstIdentifier().getText()); // TODO EVAL: should be symbol reference instead?
-            context.insertSymbol(symbol);
-        }
-
-        if (ctx.expression() != null) {
-            visit(ctx.expression());
-            symbol.setValue(context.popStack().value());
-            symbol.setType(symbol.value().type());
-
-            context.pushStack(symbol.value());
-        }
+        Symbol symbol = createSymbol(ctx.LCFirstIdentifier().getText(), Symbol.SymbolType.VARIABLE, ctx.expression());
+        context.pushStack(symbol.value());
 
         return null;
     }
@@ -374,14 +360,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitVariableName(ThoriumParser.VariableNameContext ctx) {
-        Symbol symbol;
-
-        if (context.symbolDefined(ctx.getText())) {
-            symbol = context.lookupSymbol(ctx.getText());
-        } else {
-            symbol = new Variable(ctx.getText()); // TODO EVAL: should be symbol reference instead?
-            context.insertSymbol(symbol);
-        }
+        Symbol symbol = createSymbol(ctx.LCFirstIdentifier().getText(), Symbol.SymbolType.VARIABLE, null);
 
         context.pushStack(symbol);
 
@@ -390,14 +369,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitConstantName(ThoriumParser.ConstantNameContext ctx) {
-        Symbol symbol;
-
-        if (context.symbolDefined(ctx.getText())) {
-            symbol = context.lookupSymbol(ctx.getText());
-        } else {
-            symbol = new Constant(ctx.getText()); // TODO EVAL: should be symbol reference instead?
-            context.insertSymbol(symbol);
-        }
+        Symbol symbol = createSymbol(ctx.UCIdentifier().getText(), Symbol.SymbolType.CONSTANT, null);
 
         context.pushStack(symbol);
 
