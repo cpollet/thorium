@@ -45,7 +45,6 @@ import java.util.Set;
 /**
  * @author Christophe Pollet
  * @todo nullable (if for/while/if conditions -> forbidden)
- * @todo check for redefinition of symbols...
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
     private final static Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
@@ -169,7 +168,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         Symbol symbol = registerSymbol(symbolKind, name, symbolType, ctx);
 
         if (symbol.getDefinedAt() != null && symbol.getDefinedAt() != ctx) {
-            exceptions.add(InvalidSymbolException.alreadyDefined(ctx.getStart(), name));
+            exceptions.add(InvalidSymbolException.alreadyDefined(ctx.getStart(), name, symbol.getDefinedAt().getStart()));
         } else {
             symbol.setDefinedAt(ctx);
         }

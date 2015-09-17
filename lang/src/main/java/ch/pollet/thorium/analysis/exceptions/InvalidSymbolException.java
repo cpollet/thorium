@@ -27,7 +27,7 @@ import org.antlr.v4.runtime.Token;
 public class InvalidSymbolException extends ThoriumSemanticException {
     private static final String METHOD_NOT_FOUND = "Method {1}({2}) not implemented on {3} on line {0}.";
     private static final String IDENTIFIER_NOT_FOUND = "Identifier {1} not found on line {0}.";
-    private static final String ALREADY_DEFINED = "Identifier {1} already defined on line {0}.";
+    private static final String ALREADY_DEFINED = "Identifier {1} already defined on line {0} (was on line {2}).";
 
     public InvalidSymbolException(String message) {
         super(message);
@@ -41,7 +41,7 @@ public class InvalidSymbolException extends ThoriumSemanticException {
         return new InvalidSymbolException(formatMessage(IDENTIFIER_NOT_FOUND, location(token), name));
     }
     
-    public static ThoriumException alreadyDefined(Token token, String name) {
-        return new InvalidSymbolException(formatMessage(ALREADY_DEFINED, location(token), name));
+    public static ThoriumException alreadyDefined(Token token, String name, Token original) {
+        return new InvalidSymbolException(formatMessage(ALREADY_DEFINED, location(token), name, location(original)));
     }
 }
