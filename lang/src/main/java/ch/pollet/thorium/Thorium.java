@@ -18,8 +18,8 @@ package ch.pollet.thorium;
 
 import ch.pollet.thorium.antlr.ThoriumLexer;
 import ch.pollet.thorium.antlr.ThoriumParser;
-import ch.pollet.thorium.evaluation.EvaluationContext;
-import ch.pollet.thorium.evaluation.VisitorEvaluator;
+import ch.pollet.thorium.execution.ExecutionContext;
+import ch.pollet.thorium.execution.ExecutionVisitor;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -38,12 +38,12 @@ public class Thorium {
 
         System.out.println(tree.toStringTree(parser));
 
-        EvaluationContext evaluationContext = EvaluationContext.createEmpty();
-        VisitorEvaluator visitorEvaluator = new VisitorEvaluator(evaluationContext);
+        ExecutionContext executionContext = ExecutionContext.createEmpty();
+        ExecutionVisitor executionVisitor = new ExecutionVisitor(executionContext);
 
-        visitorEvaluator.visit(tree);
+        executionVisitor.visit(tree);
 
-        System.out.println(evaluationContext.lastStatementValue);
+        System.out.println(executionContext.lastStatementValue);
         System.out.println();
     }
 }

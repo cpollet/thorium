@@ -19,9 +19,9 @@ package ch.pollet.thorium;
 import ch.pollet.thorium.analysis.SemanticAnalyser;
 import ch.pollet.thorium.antlr.ThoriumLexer;
 import ch.pollet.thorium.antlr.ThoriumParser;
-import ch.pollet.thorium.evaluation.EvaluationContext;
-import ch.pollet.thorium.evaluation.SymbolTable;
-import ch.pollet.thorium.evaluation.VisitorEvaluator;
+import ch.pollet.thorium.execution.ExecutionContext;
+import ch.pollet.thorium.execution.SymbolTable;
+import ch.pollet.thorium.execution.ExecutionVisitor;
 import ch.pollet.thorium.values.Symbol;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -42,10 +42,10 @@ public class TestIntegration {
     @Test
     public void iterativeFibonacci() throws IOException {
         // GIVEN + WHEN
-        EvaluationContext evaluationContext = eval("iterative_fibonacci.th");
+        ExecutionContext executionContext = eval("iterative_fibonacci.th");
 
         // THEN
-        Symbol result = evaluationContext.lookupSymbol("result");
+        Symbol result = executionContext.lookupSymbol("result");
         assertThat((Long) (result.value().internalValue()))
                 .isEqualTo(34L);
     }
@@ -53,15 +53,15 @@ public class TestIntegration {
     @Test
     public void iterativeFactorial() throws IOException {
         // GIVEN + WHEN
-        EvaluationContext evaluationContext = eval("iterative_factorial.th");
+        ExecutionContext executionContext = eval("iterative_factorial.th");
 
         // THEN
-        Symbol result = evaluationContext.lookupSymbol("result");
+        Symbol result = executionContext.lookupSymbol("result");
         assertThat((Long) (result.value().internalValue()))
                 .isEqualTo(3628800L);
     }
 
-    private EvaluationContext eval(String program) throws IOException {
+    private ExecutionContext eval(String program) throws IOException {
         // GIVEN
         ANTLRInputStream input = new ANTLRInputStream(TestIntegration.class.getClassLoader().getResourceAsStream(program));
         ThoriumLexer lexer = new ThoriumLexer(input);
@@ -74,10 +74,10 @@ public class TestIntegration {
         SemanticAnalyser semanticAnalyser = new SemanticAnalyser(new SymbolTable<>(), parser, tree);
         semanticAnalyser.analyze();
 
-        EvaluationContext evaluationContext = EvaluationContext.createEmpty();
-        VisitorEvaluator evaluator = new VisitorEvaluator(evaluationContext);
+        ExecutionContext executionContext = ExecutionContext.createEmpty();
+        ExecutionVisitor evaluator = new ExecutionVisitor(executionContext);
         evaluator.visit(tree);
 
-        return evaluationContext;
+        return executionContext;
     }
 }

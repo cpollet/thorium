@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.evaluation;
+package ch.pollet.thorium.execution;
 
 import ch.pollet.thorium.values.Symbol;
 import ch.pollet.thorium.values.Value;
@@ -24,33 +24,33 @@ import java.util.Stack;
 /**
  * @author Christophe Pollet
  */
-public class EvaluationContext {
-    private final EvaluationContext parentContext;
+public class ExecutionContext {
+    private final ExecutionContext parentContext;
     private final SymbolTable<Symbol> symbolsTable;
     private final Stack<Value> stack;
     public Value lastStatementValue;
 
-    private EvaluationContext() {
+    private ExecutionContext() {
         this.stack = new Stack<>();
         this.symbolsTable = new SymbolTable<>();
         this.parentContext = null;
     }
 
-    private EvaluationContext(EvaluationContext parentContext) {
+    private ExecutionContext(ExecutionContext parentContext) {
         this.stack = new Stack<>();
         this.symbolsTable = new SymbolTable<>(parentContext.symbolsTable);
         this.parentContext = parentContext;
     }
 
-    public static EvaluationContext createEmpty() {
-        return new EvaluationContext();
+    public static ExecutionContext createEmpty() {
+        return new ExecutionContext();
     }
 
-    public EvaluationContext createChild() {
-        return new EvaluationContext(this);
+    public ExecutionContext createChild() {
+        return new ExecutionContext(this);
     }
 
-    public EvaluationContext destroyAndRestoreParent() {
+    public ExecutionContext destroyAndRestoreParent() {
         parentContext.lastStatementValue = lastStatementValue;
 
         return parentContext;

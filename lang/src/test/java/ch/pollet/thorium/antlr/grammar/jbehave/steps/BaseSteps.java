@@ -20,9 +20,9 @@ import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.ThrowingErrorListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.antlr.grammar.ParserBuilder;
-import ch.pollet.thorium.evaluation.EvaluationContext;
-import ch.pollet.thorium.evaluation.SymbolTable;
-import ch.pollet.thorium.evaluation.VisitorEvaluator;
+import ch.pollet.thorium.execution.ExecutionContext;
+import ch.pollet.thorium.execution.SymbolTable;
+import ch.pollet.thorium.execution.ExecutionVisitor;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Symbol;
@@ -55,11 +55,11 @@ public abstract class BaseSteps {
 
     @When("being executed")
     public void execute() {
-        storyContext.evaluationContext = EvaluationContext.createEmpty();
-        VisitorEvaluator visitorEvaluator = new VisitorEvaluator(storyContext.evaluationContext);
+        storyContext.executionContext = ExecutionContext.createEmpty();
+        ExecutionVisitor executionVisitor = new ExecutionVisitor(storyContext.executionContext);
 
         try {
-            visitorEvaluator.visit(storyContext.tree);
+            executionVisitor.visit(storyContext.tree);
         } catch (ThoriumException | IllegalStateException | AssertionError e) {
             if (storyContext.exceptionExpected && storyContext.exception == null) {
                 storyContext.exception = e;
@@ -72,11 +72,11 @@ public abstract class BaseSteps {
     @Then("the result is $value of type $type")
     @Alias("the result is <value> of type <type>")
     public void theResultIs(@Named("value") String expectedValue, @Named("type") String expectedType) {
-        Value value = storyContext.evaluationContext.popStack();
+        Value value = storyContext.executionContext.popStack();
 
         assertThat(value).isEqualTo(toValue(expectedValue, expectedType));
 
-        storyContext.evaluationContext.pushStack(value);
+        storyContext.executionContext.pushStack(value);
     }
 
     @Then("the symbol table contains $symbols")
@@ -85,14 +85,14 @@ public abstract class BaseSteps {
         String[] symbols = expectedSymbols.split(",");
 
         for (String symbol : symbols) {
-            assertThat(storyContext.evaluationContext.lookupSymbol(symbol)).isNotNull();
+            assertThat(storyContext.executionContext.lookupSymbol(symbol)).isNotNull();
         }
     }
 
     @Then("the symbol $symbol has value $value of type $type")
     @Alias("the symbol <symbol> has value <value> of type <type>")
     public void symbolHasValue(@Named("symbol") String expectedSymbol, @Named("value") String expectedValue, @Named("type") String expectedType) {
-        Symbol symbol = storyContext.evaluationContext.lookupSymbol(expectedSymbol);
+        Symbol symbol = storyContext.executionContext.lookupSymbol(expectedSymbol);
         assertThat(symbol.type().toString()).isEqualTo(expectedType);
         assertThat(symbol.value()).isEqualTo(toValue(expectedValue, expectedType));
     }
@@ -105,9 +105,9 @@ public abstract class BaseSteps {
         String[] types = expectedTypes.split(",");
 
         for (int i = 0; i < symbols.length; i++) {
-            assertThat(storyContext.evaluationContext.lookupSymbol(symbols[i]).type().toString())
+            assertThat(storyContext.executionContext.lookupSymbol(symbols[i]).type().toString())
                     .isEqualTo(types[i]);
-            assertThat(storyContext.evaluationContext.lookupSymbol(symbols[i]).value())
+            assertThat(storyContext.executionContext.lookupSymbol(symbols[i]).value())
                     .isEqualTo(toValue(values[i], types[i]));
         }
     }
@@ -118,7 +118,7 @@ public abstract class BaseSteps {
         String[] symbols = expectedNotDefinedSymbols.split(",");
 
         for (String symbol : symbols) {
-            assertThat(storyContext.evaluationContext.symbolDefined(symbol))
+            assertThat(storyContext.executionContext.symbolDefined(symbol))
                     .overridingErrorMessage("Symbol table contains [" + symbol + "]")
                     .isFalse();
         }
@@ -191,12 +191,12 @@ public abstract class BaseSteps {
         try {
             //noinspection InfiniteLoopStatement
             while (true) {
-                stack.push(storyContext.evaluationContext.popStack());
+                stack.push(storyContext.executionContext.popStack());
             }
         } catch (EmptyStackException e) {
             assertThat(stack.size()).isEqualTo(expectedCount);
             while (!stack.empty()) {
-                storyContext.evaluationContext.pushStack(stack.pop());
+                storyContext.executionContext.pushStack(stack.pop());
             }
         }
     }

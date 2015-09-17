@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.evaluation;
+package ch.pollet.thorium.execution;
 
 import ch.pollet.thorium.antlr.ThoriumBaseVisitor;
 import ch.pollet.thorium.antlr.ThoriumParser;
@@ -27,10 +27,10 @@ import ch.pollet.thorium.values.Variable;
 /**
  * @author Christophe Pollet
  */
-public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
-    private EvaluationContext context;
+public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
+    private ExecutionContext context;
 
-    public VisitorEvaluator(EvaluationContext context) {
+    public ExecutionVisitor(ExecutionContext context) {
         this.context = context;
     }
 

@@ -16,8 +16,8 @@
 
 package ch.pollet.thorium.types.jbehave.steps;
 
-import ch.pollet.thorium.evaluation.Method;
-import ch.pollet.thorium.evaluation.MethodMatcher;
+import ch.pollet.thorium.execution.Method;
+import ch.pollet.thorium.execution.MethodMatcher;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;

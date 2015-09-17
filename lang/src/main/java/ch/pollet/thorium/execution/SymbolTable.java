@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.evaluation;
+package ch.pollet.thorium.execution;
 
 import java.util.HashMap;
 import java.util.Map;

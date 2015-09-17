@@ -16,8 +16,8 @@
 
 package ch.pollet.thorium.types;
 
-import ch.pollet.thorium.evaluation.Method;
-import ch.pollet.thorium.evaluation.MethodMatcher;
+import ch.pollet.thorium.execution.Method;
+import ch.pollet.thorium.execution.MethodMatcher;
 
 /**
  * @author Christophe Pollet

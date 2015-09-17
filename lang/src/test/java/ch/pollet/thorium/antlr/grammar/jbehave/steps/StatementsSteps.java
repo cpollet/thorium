@@ -56,7 +56,7 @@ public class StatementsSteps extends BaseSteps {
     @Then("the statement result is <result> of type <type>")
     @Alias("the statement result is $result of type $type")
     public void statementResult(@Named("result") String expectedValue, @Named("type") String expectedType) {
-        Object value = storyContext.evaluationContext.lastStatementValue;
+        Object value = storyContext.executionContext.lastStatementValue;
 
         assertThat(value).isEqualTo(toValue(expectedValue, expectedType));
     }
@@ -66,7 +66,7 @@ public class StatementsSteps extends BaseSteps {
         Exception expectedException = null;
 
         try {
-            storyContext.evaluationContext.popStack();
+            storyContext.executionContext.popStack();
         } catch (EmptyStackException e) {
             expectedException = e;
         }
