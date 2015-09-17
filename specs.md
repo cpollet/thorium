@@ -145,6 +145,24 @@ To access a member from within its class:
     this.a = 1;
     b = this.a + 1;
 
+# Type intersection
+Using ```&``` operator:
+
+    // the instance stored in myVar must implement both A and B
+    def A & B myVar;
+
+Using the ```|``` operator:
+
+    // the instance stored in myVar must implement the common methods of A and B:
+    def A | B myVar;
+
+# Type aliases
+Using ```=>``` operator:
+
+    List<Integer> => ListOfInteger;
+    AAndB => A & B;
+    AOrB => A | B;
+
 # Visibility
 
 x         | class | subclasses | package | world 
