@@ -90,6 +90,13 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     @Override
+    public void enterEveryRule(ParserRuleContext ctx) {
+        if (contextScope.get(ctx) == null) {
+            contextScope.put(ctx, currentSymbolSymbolTable);
+        }
+    }
+
+    @Override
     public void exitCompilationUnit(ThoriumParser.CompilationUnitContext ctx) {
         //noinspection Convert2streamapi
         for (Symbol symbol : symbols) {
@@ -103,7 +110,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void enterBlock(ThoriumParser.BlockContext ctx) {
-        currentSymbolSymbolTable = new SymbolTable<>(currentSymbolSymbolTable);
+        currentSymbolSymbolTable = currentSymbolSymbolTable.wrap();
     }
 
     @Override
@@ -150,12 +157,12 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitVariableDeclarationStatement(ThoriumParser.VariableDeclarationStatementContext ctx) {
-        variableOrConstantDeclarationStatement(ctx, Symbol.SymbolKind.VARIABLE, ctx.LCFirstIdentifier().getText(), ctx.type(), ctx.expression());
+        registerVariableOrConstant(ctx, Symbol.SymbolKind.VARIABLE, ctx.LCFirstIdentifier().getText(), ctx.type(), ctx.expression());
 
         logContextInformation(ctx);
     }
 
-    private void variableOrConstantDeclarationStatement(ParserRuleContext ctx, Symbol.SymbolKind symbolKind, String name, ThoriumParser.TypeContext typeCtx, ThoriumParser.ExpressionContext expressionCtx) {
+    private void registerVariableOrConstant(ParserRuleContext ctx, Symbol.SymbolKind symbolKind, String name, ThoriumParser.TypeContext typeCtx, ThoriumParser.ExpressionContext expressionCtx) {
         Type symbolType = findSymbolType(ctx, typeCtx, expressionCtx);
 
         Symbol symbol = registerSymbol(symbolKind, name, symbolType, ctx);
@@ -206,31 +213,20 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     private Symbol registerSymbol(Symbol.SymbolKind kind, String name, Type type, ParserRuleContext ctx) {
-        SymbolTable<Symbol> backupScope = currentSymbolSymbolTable;
-        restoreScopeForNode(ctx);
+        SymbolTable<Symbol> ctxOriginalScope = contextScope.get(ctx);
 
-        if (!currentSymbolSymbolTable.isDefinedInCurrentScope(name)) {
+        if (!ctxOriginalScope.isDefinedInCurrentScope(name)) {
             Symbol symbol = Symbol.create(name, kind, type, ctx.getStart());
             symbols.add(symbol);
-            currentSymbolSymbolTable.put(name, symbol);
+            ctxOriginalScope.putInCurrentScope(name, symbol);
         }
 
-        currentSymbolSymbolTable = backupScope;
-
-        return currentSymbolSymbolTable.get(name);
-    }
-
-    private void restoreScopeForNode(ParserRuleContext ctx) {
-        if (contextScope.get(ctx) == null) {
-            contextScope.put(ctx, currentSymbolSymbolTable);
-        }
-
-        currentSymbolSymbolTable = contextScope.get(ctx);
+        return ctxOriginalScope.get(name);
     }
 
     @Override
     public void exitConstantDeclarationStatement(ThoriumParser.ConstantDeclarationStatementContext ctx) {
-        variableOrConstantDeclarationStatement(ctx, Symbol.SymbolKind.CONSTANT, ctx.UCIdentifier().getText(), ctx.type(), ctx.expression());
+        registerVariableOrConstant(ctx, Symbol.SymbolKind.CONSTANT, ctx.UCIdentifier().getText(), ctx.type(), ctx.expression());
 
         currentSymbolSymbolTable.get(ctx.UCIdentifier().getText()).lock();
 
@@ -290,6 +286,11 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     @Override
     public void exitForLoopStatement(ThoriumParser.ForLoopStatementContext ctx) {
         exitLoopStatement(ctx, ctx.statements(), ctx.condition);
+    }
+
+    @Override
+    public void exitForLoopStatementInitVariableDeclaration(ThoriumParser.ForLoopStatementInitVariableDeclarationContext ctx) {
+        registerVariableOrConstant(ctx, Symbol.SymbolKind.VARIABLE, ctx.LCFirstIdentifier().getText(), ctx.type(), ctx.expression());
     }
 
     @Override

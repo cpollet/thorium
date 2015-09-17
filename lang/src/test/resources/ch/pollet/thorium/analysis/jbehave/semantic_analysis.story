@@ -4,28 +4,30 @@ When types are attached to nodes
 Then the symbol <symbol> is of type <type>
 
 Examples:
-| unit                                              | symbol    | type      |
-| def A = 1;                                        | A         | Integer   |
-| def Integer A = 1;                                | A         | Integer   |
-| def a = 1;                                        | a         | Integer   |
-| def Integer a;                                    | a         | Integer   |
-| def Integer a = 1;                                | a         | Integer   |
-| def a; a = 1;                                     | a         | Integer   |
-| def a = 1; def b = a + 1;                         | b         | Integer   |
-| def b; def a = b; b = 1;                          | a         | Integer   |
-| def b; def a = b; b = 1 if true;                  | a         | Integer   |
-| def b; def a = b; b = 1 unless true;              | a         | Integer   |
-| def a = 1.0; def b = a * 1;                       | b         | Float     |
-| def a = ({ def b = 1.0; }); def b = 1;            | a         | Float     |
-| def a = ({ def b = 1.0; }); def b = 1;            | b         | Integer   |
-| def b; def a = ({ b; }); b = 1;                   | a         | Integer   |
-| def a; if (a = true) { ; }                        | a         | Boolean   |
-| def a; if (true) { a = 1; }                       | a         | Integer   |
-| def Integer a; def b; a = 1 if b; b = true;       | b         | Boolean   |
-| def Integer a; def b; a = 1 unless b; b = true;   | b         | Boolean   |
-| def Integer a; def b; a = 1 while b; b = true;    | b         | Boolean   |
-| def Integer a; def b; a = 1 until b; b = true;    | b         | Boolean   |
-| def Boolean a; def b = !a;                        | b         | Boolean   |
+| unit                                                      | symbol    | type      |
+| def A = 1;                                                | A         | Integer   |
+| def Integer A = 1;                                        | A         | Integer   |
+| def a = 1;                                                | a         | Integer   |
+| def Integer a;                                            | a         | Integer   |
+| def Integer a = 1;                                        | a         | Integer   |
+| def a; a = 1;                                             | a         | Integer   |
+| def a = 1; def b = a + 1;                                 | b         | Integer   |
+| def b; def a = b; b = 1;                                  | a         | Integer   |
+| def b; def a = b; b = 1 if true;                          | a         | Integer   |
+| def b; def a = b; b = 1 unless true;                      | a         | Integer   |
+| def a = 1.0; def b = a * 1;                               | b         | Float     |
+| def a = ({ def b = 1.0; }); def b = 1;                    | a         | Float     |
+| def a = ({ def b = 1.0; }); def b = 1;                    | b         | Integer   |
+| def b; def a = ({ b; }); b = 1;                           | a         | Integer   |
+| def a; if (a = true) { ; }                                | a         | Boolean   |
+| def a; if (true) { a = 1; }                               | a         | Integer   |
+| def Integer a; def b; a = 1 if b; b = true;               | b         | Boolean   |
+| def Integer a; def b; a = 1 unless b; b = true;           | b         | Boolean   |
+| def Integer a; def b; a = 1 while b; b = true;            | b         | Boolean   |
+| def Integer a; def b; a = 1 until b; b = true;            | b         | Boolean   |
+| def Boolean a; def b = !a;                                | b         | Boolean   |
+| def a; for (a = 0; a < 1; a = a + 1) { ; }                | a         | Integer   |
+| def Boolean a; for (def a = 0; a < 1; a = a + 1) { ; }    | a         | Boolean   |
 
 Scenario: types are attached to expression nodes
 Given an expression <expression>

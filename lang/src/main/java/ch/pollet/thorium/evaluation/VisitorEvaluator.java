@@ -36,26 +36,25 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
     //region Statements
 
+    @Override
+    public Void visitVariableDeclarationStatement(ThoriumParser.VariableDeclarationStatementContext ctx) {
+        Symbol symbol;
 
-     @Override
-     public Void visitVariableDeclarationStatement(ThoriumParser.VariableDeclarationStatementContext ctx) {
-         Symbol symbol;
+        if (context.symbolDefined(ctx.LCFirstIdentifier().getText())) {
+            symbol = context.lookupSymbol(ctx.getText());
+        } else {
+            symbol = new Variable(ctx.LCFirstIdentifier().getText()); // TODO EVAL: should be symbol reference instead?
+            context.insertSymbol(symbol);
+        }
 
-         if (context.symbolDefined(ctx.LCFirstIdentifier().getText())) {
-             symbol = context.lookupSymbol(ctx.getText());
-         } else {
-             symbol = new Variable(ctx.LCFirstIdentifier().getText()); // TODO EVAL: should be symbol reference instead?
-             context.insertSymbol(symbol);
-         }
+        if (ctx.expression() != null) {
+            visit(ctx.expression());
+            symbol.setValue(context.popStack().value());
+            symbol.setType(symbol.value().type());
+        }
 
-         if (ctx.expression()!=null) {
-             visit(ctx.expression());
-             symbol.setValue(context.popStack().value());
-             symbol.setType(symbol.value().type());
-         }
-
-         return null;
-     }
+        return null;
+    }
 
     @Override
     public Void visitConstantDeclarationStatement(ThoriumParser.ConstantDeclarationStatementContext ctx) {
@@ -68,7 +67,7 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
             context.insertSymbol(symbol);
         }
 
-        if (ctx.expression()!=null) {
+        if (ctx.expression() != null) {
             visit(ctx.expression());
             symbol.setValue(context.popStack().value());
             symbol.setType(symbol.value().type());
@@ -304,18 +303,46 @@ public class VisitorEvaluator extends ThoriumBaseVisitor<Void> {
 
         if (ctx.init != null) {
             visit(ctx.init);
-            context.popStack();
+            context.popStack(); // discard, we don't need it
         }
 
         while (ctx.condition == null || isExpressionTrue(ctx.condition)) {
             visit(ctx.statements());
             if (ctx.increment != null) {
                 visit(ctx.increment);
-                context.popStack();
+                context.popStack(); // discard, we don't need it
             }
         }
 
         context = context.destroyAndRestoreParent();
+
+        return null;
+    }
+
+    @Override
+    public Void visitForLoopStatementInitExpression(ThoriumParser.ForLoopStatementInitExpressionContext ctx) {
+        return visit(ctx.expression());
+    }
+
+    // FIXME lots of duplicate between this and visitVariableDeclarationStatement and visitConstantDeclarationStatement
+    @Override
+    public Void visitForLoopStatementInitVariableDeclaration(ThoriumParser.ForLoopStatementInitVariableDeclarationContext ctx) {
+        Symbol symbol;
+
+        if (context.symbolDefined(ctx.LCFirstIdentifier().getText())) {
+            symbol = context.lookupSymbol(ctx.getText());
+        } else {
+            symbol = new Variable(ctx.LCFirstIdentifier().getText()); // TODO EVAL: should be symbol reference instead?
+            context.insertSymbol(symbol);
+        }
+
+        if (ctx.expression() != null) {
+            visit(ctx.expression());
+            symbol.setValue(context.popStack().value());
+            symbol.setType(symbol.value().type());
+
+            context.pushStack(symbol.value());
+        }
 
         return null;
     }

@@ -26,6 +26,9 @@ Examples:
 | a = 0; a = a + 1 until a >= 5;                                | a         | 5         | Integer                   |                   |
 | a = 0; while (a < 3) { a = a + 1; }                           | a         | 3         | Integer                   |                   |
 | b = 0; a = 0; for (b = 0; b < 3; b = b + 1) { a = a + 1; }    | a         | 3         | Integer                   |                   |
+| b = 0; a = 0; for (b = 1; b < 3; b = b + 1) { a = a + 1; }    | a         | 2         | Integer                   |                   |
+| a = 0; for (def b = 2; b < 3; b = b + 1) { a = a + 1; }       | a         | 1         | Integer                   | b                 |
+| a = (for (i = 0; i < 10; i = i + 1) { i; });                  | a         | 10        | Integer                   |                   |
 | def a;                                                        | a         |           | Void                      |                   |
 | def Integer a;                                                | a         |           | Void                      |                   |
 | def a = 1;                                                    | a         | 1         | Integer                   |                   |

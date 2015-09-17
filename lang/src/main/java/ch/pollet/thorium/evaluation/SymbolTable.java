@@ -46,6 +46,14 @@ public class SymbolTable<T> {
         table.symbols.put(name, symbol);
     }
 
+    public void putInCurrentScope(String name, T symbol) {
+        symbols.put(name, symbol);
+    }
+
+    public SymbolTable<T> wrap() {
+        return new SymbolTable<>(this);
+    }
+
     public SymbolTable<T> unwrap() {
         if (parent == null) {
             throw new IllegalStateException("Called unwrap on root symbol table.");
