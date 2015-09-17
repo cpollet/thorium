@@ -22,7 +22,7 @@ import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.execution.ExecutionContext;
 import ch.pollet.thorium.execution.SymbolTable;
 import ch.pollet.thorium.execution.ExecutionVisitor;
-import ch.pollet.thorium.values.Symbol;
+import ch.pollet.thorium.execution.values.Symbol;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;

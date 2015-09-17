@@ -25,7 +25,7 @@ import ch.pollet.thorium.execution.SymbolTable;
 import ch.pollet.thorium.execution.ExecutionVisitor;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import ch.pollet.thorium.values.DirectValue;
-import ch.pollet.thorium.values.Symbol;
+import ch.pollet.thorium.execution.values.Symbol;
 import ch.pollet.thorium.values.Value;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;

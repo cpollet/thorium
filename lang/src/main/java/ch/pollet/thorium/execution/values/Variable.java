@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.values;
+package ch.pollet.thorium.execution.values;
 
 import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.values.DirectValue;
 
 /**
  * @author Christophe Pollet

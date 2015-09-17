@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.values;
 
+import ch.pollet.thorium.execution.values.Symbol;
 import ch.pollet.thorium.types.Type;
 import org.junit.Test;
 import org.junit.runner.RunWith;
