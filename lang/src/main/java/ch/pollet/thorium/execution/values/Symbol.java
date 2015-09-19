@@ -56,9 +56,9 @@ public abstract class Symbol implements Value {
                 return new Variable(name);
             case CONSTANT:
                 return new Constant(name);
+            default:
+                throw new IllegalArgumentException();
         }
-
-        throw new IllegalArgumentException();
     }
 
     @Override

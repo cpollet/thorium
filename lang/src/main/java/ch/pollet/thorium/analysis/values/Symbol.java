@@ -74,9 +74,9 @@ public class Symbol {
                 return new Symbol(name, token, type);
             case CONSTANT:
                 return new ConstantSymbol(name, token, type);
+            default:
+                throw new IllegalArgumentException();
         }
-
-        throw new IllegalArgumentException();
     }
 
     @Override

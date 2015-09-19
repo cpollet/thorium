@@ -47,7 +47,7 @@ import java.util.Set;
  * @todo nullable (if for/while/if conditions -> forbidden)
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
-    private final static Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
 
     private final List<String> ruleNames;
 
@@ -148,7 +148,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             findNodeTypes(ctx, ctx.expressionStatement());
         } else if (ctx.variableOrConstantDeclarationStatement() != null) {
             findNodeTypes(ctx, ctx.variableOrConstantDeclarationStatement());
-        } else if (ctx.getText().equals(";")) {
+        } else if (";".equals(ctx.getText())) {
             types.put(ctx, asSet(Type.VOID));
         } else {
             throw new IllegalStateException();
@@ -592,7 +592,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         logContextInformation(parent);
     }
 
-    private Set<Type> asSet(Type... types) {
+    private static Set<Type> asSet(Type... types) {
         return new HashSet<>(Arrays.asList(types));
     }
 
@@ -606,6 +606,6 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             methodName = stackTraceElements[i++].getMethodName();
         }
 
-        // LOG.info("-> [" + methodName + "] " + ctx.toString(ruleNames) + " " + ctx.toStringTree(ruleNames) + ": " + types.get(ctx));
+        LOG.debug("-> [" + methodName + "] " + ctx.toString(ruleNames) + " " + ctx.toStringTree(ruleNames) + ": " + types.get(ctx));
     }
 }

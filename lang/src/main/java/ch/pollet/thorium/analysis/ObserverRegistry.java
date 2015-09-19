@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @author Christophe Pollet
  */
 public class ObserverRegistry<T> {
-    private final static Logger LOG = LoggerFactory.getLogger(ObserverRegistry.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ObserverRegistry.class);
 
     private final Map<T, List<ParserRuleContext>> observers = new IdentityHashMap<>();
 
@@ -80,7 +80,7 @@ public class ObserverRegistry<T> {
     }
 
     private void log(String prefix, ParserRuleContext observer, T observable) {
-        // LOG.info(prefix + " " + observer.getClass().getSimpleName() + observer.toString() + "@" + System.identityHashCode(observer) + ": " + observer.getText() + " for " + observable.toString());
+        LOG.debug(prefix + " " + observer.getClass().getSimpleName() + observer.toString() + "@" + System.identityHashCode(observer) + ": " + observer.getText() + " for " + observable.toString());
     }
 
 }

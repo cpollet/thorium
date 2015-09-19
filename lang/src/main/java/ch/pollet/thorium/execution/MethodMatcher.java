@@ -16,8 +16,8 @@
 
 package ch.pollet.thorium.execution;
 
-import ch.pollet.thorium.utils.CollectionUtils;
 import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.utils.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,9 +42,16 @@ public class MethodMatcher {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MethodMatcher)) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof MethodMatcher)) {
+            return false;
+        }
+
         MethodMatcher that = (MethodMatcher) o;
+
         return Objects.equals(name, that.name) &&
                 Objects.equals(parameterTypes, that.parameterTypes);
     }

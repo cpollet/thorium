@@ -6,9 +6,9 @@
         </layout>
     </appender>
 
-    <logger name="ch.pollet" level="DEBUG"/>
+    <logger name="ch.pollet" level="info"/>
 
-    <root level="INFO">
+    <root level="info">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

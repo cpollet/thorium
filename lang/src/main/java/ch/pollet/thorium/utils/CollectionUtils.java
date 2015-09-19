@@ -23,6 +23,10 @@ import java.util.Collection;
  * @author Christophe Pollet
  */
 public class CollectionUtils {
+    private CollectionUtils() {
+        // nothing
+    }
+
     public static String concat(Object... objects) {
         return concat(Arrays.asList(objects));
     }
