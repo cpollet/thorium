@@ -21,7 +21,6 @@ import ch.pollet.thorium.values.Value;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Stack;
 
 /**
  * @author Christophe Pollet
@@ -74,7 +73,7 @@ public class ExecutionContext {
         return symbolsTable.get(name);
     }
 
-    public boolean symbolDefined(String name){
+    public boolean symbolDefined(String name) {
         return symbolsTable.isDefined(name);
     }
 
