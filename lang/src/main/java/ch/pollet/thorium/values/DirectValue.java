@@ -28,10 +28,12 @@ import java.util.Objects;
 public class DirectValue implements Value {
     public static final DirectValue VOID = new DirectValue();
 
-    private static final Map<Object, DirectValue> valuesCache = new HashMap<Object, DirectValue>() {{
-        put(Boolean.TRUE, new DirectValue(true));
-        put(Boolean.FALSE, new DirectValue(false));
-    }};
+    private static final Map<Object, DirectValue> valuesCache = new HashMap<Object, DirectValue>();
+
+    static {
+        valuesCache.put(Boolean.TRUE, new DirectValue(true));
+        valuesCache.put(Boolean.FALSE, new DirectValue(false));
+    }
 
     private Boolean booleanValue;
     private Double floatValue;
@@ -112,11 +114,12 @@ public class DirectValue implements Value {
 
     @Override
     public boolean hasValue() {
-        return this != VOID && (
-                (type == Type.BOOLEAN && booleanValue != null) ||
-                (type == Type.INTEGER && integerValue != null) ||
-                (type == Type.FLOAT && floatValue != null)
-        );
+        boolean notVoid = this != VOID;
+        boolean booleanWithValue = type == Type.BOOLEAN && booleanValue != null;
+        boolean integerWithValue = type == Type.INTEGER && integerValue != null;
+        boolean floatWithValue = type == Type.FLOAT && floatValue != null;
+
+        return notVoid && (booleanWithValue || integerWithValue || floatWithValue);
     }
 
     @Override
@@ -157,9 +160,16 @@ public class DirectValue implements Value {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DirectValue)) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof DirectValue)) {
+            return false;
+        }
+
         DirectValue that = (DirectValue) o;
+
         return Objects.equals(booleanValue, that.booleanValue) &&
                 Objects.equals(floatValue, that.floatValue) &&
                 Objects.equals(integerValue, that.integerValue) &&

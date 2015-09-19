@@ -30,11 +30,13 @@ import java.util.Map;
 public class BooleanType extends BaseType {
     static final BooleanType INSTANCE = new BooleanType();
 
-    private static final Map<MethodMatcher, Method> symbolTable = new HashMap<MethodMatcher, Method>() {{
-        put(new MethodMatcher("+", BooleanType.INSTANCE), new Method(BooleanType.INSTANCE, BooleanType::or));
-        put(new MethodMatcher("*", BooleanType.INSTANCE), new Method(BooleanType.INSTANCE, BooleanType::and));
-        put(new MethodMatcher("!"), new Method(BooleanType.INSTANCE, BooleanType::not));
-    }};
+    private static final Map<MethodMatcher, Method> symbolTable = new HashMap<>();
+
+    static {
+        symbolTable.put(new MethodMatcher("+", BooleanType.INSTANCE), new Method(BooleanType.INSTANCE, BooleanType::or));
+        symbolTable.put(new MethodMatcher("*", BooleanType.INSTANCE), new Method(BooleanType.INSTANCE, BooleanType::and));
+        symbolTable.put(new MethodMatcher("!"), new Method(BooleanType.INSTANCE, BooleanType::not));
+    }
 
     private BooleanType() {
         // nothing

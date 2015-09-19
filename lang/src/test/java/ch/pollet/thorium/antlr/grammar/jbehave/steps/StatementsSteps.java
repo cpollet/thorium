@@ -25,6 +25,7 @@ import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 
 import java.util.EmptyStackException;
+import java.util.NoSuchElementException;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -67,7 +68,7 @@ public class StatementsSteps extends BaseSteps {
 
         try {
             storyContext.executionContext.popStack();
-        } catch (EmptyStackException e) {
+        } catch (EmptyStackException | NoSuchElementException e) {
             expectedException = e;
         }
 

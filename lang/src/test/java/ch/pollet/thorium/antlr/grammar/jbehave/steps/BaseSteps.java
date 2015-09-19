@@ -21,11 +21,11 @@ import ch.pollet.thorium.ThrowingErrorListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.antlr.grammar.ParserBuilder;
 import ch.pollet.thorium.execution.ExecutionContext;
-import ch.pollet.thorium.execution.SymbolTable;
 import ch.pollet.thorium.execution.ExecutionVisitor;
+import ch.pollet.thorium.execution.SymbolTable;
+import ch.pollet.thorium.execution.values.Symbol;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import ch.pollet.thorium.values.DirectValue;
-import ch.pollet.thorium.execution.values.Symbol;
 import ch.pollet.thorium.values.Value;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
@@ -34,6 +34,7 @@ import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 
 import java.util.EmptyStackException;
+import java.util.NoSuchElementException;
 import java.util.Stack;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -141,7 +142,7 @@ public abstract class BaseSteps {
 
         storyContext.exception = null;
         storyContext.exceptionExpected = false;
-        storyContext.exceptionsExpected=0;
+        storyContext.exceptionsExpected = 0;
     }
 
     @SuppressWarnings("unchecked")
@@ -158,7 +159,7 @@ public abstract class BaseSteps {
 
         storyContext.exception = null;
         storyContext.exceptionExpected = false;
-        storyContext.exceptionsExpected=0;
+        storyContext.exceptionsExpected = 0;
     }
 
     @SuppressWarnings("unchecked")
@@ -174,7 +175,7 @@ public abstract class BaseSteps {
 
         storyContext.exception = null;
         storyContext.exceptionExpected = false;
-        storyContext.exceptionsExpected=0;
+        storyContext.exceptionsExpected = 0;
     }
 
     @Then("no exceptions were thrown")
@@ -193,7 +194,7 @@ public abstract class BaseSteps {
             while (true) {
                 stack.push(storyContext.executionContext.popStack());
             }
-        } catch (EmptyStackException e) {
+        } catch (EmptyStackException | NoSuchElementException e) {
             assertThat(stack.size()).isEqualTo(expectedCount);
             while (!stack.empty()) {
                 storyContext.executionContext.pushStack(stack.pop());

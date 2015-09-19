@@ -19,6 +19,8 @@ package ch.pollet.thorium.execution;
 import ch.pollet.thorium.execution.values.Symbol;
 import ch.pollet.thorium.values.Value;
 
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Stack;
 
 /**
@@ -27,17 +29,17 @@ import java.util.Stack;
 public class ExecutionContext {
     private final ExecutionContext parentContext;
     private final SymbolTable<Symbol> symbolsTable;
-    private final Stack<Value> stack;
+    private final Deque<Value> stack;
     public Value lastStatementValue;
 
     private ExecutionContext() {
-        this.stack = new Stack<>();
+        this.stack = new LinkedList<>();
         this.symbolsTable = new SymbolTable<>();
         this.parentContext = null;
     }
 
     private ExecutionContext(ExecutionContext parentContext) {
-        this.stack = new Stack<>();
+        this.stack = new LinkedList<>();
         this.symbolsTable = new SymbolTable<>(parentContext.symbolsTable);
         this.parentContext = parentContext;
     }

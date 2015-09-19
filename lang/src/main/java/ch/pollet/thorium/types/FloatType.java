@@ -30,20 +30,22 @@ import java.util.Map;
 public class FloatType extends BaseType {
     static final FloatType INSTANCE = new FloatType();
 
-    private static final Map<MethodMatcher, Method> symbolTable = new HashMap<MethodMatcher, Method>() {{
-        put(new MethodMatcher("+", FloatType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::plusFloat));
-        put(new MethodMatcher("+", IntegerType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::plusInteger));
-        put(new MethodMatcher("*", FloatType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::timesFloat));
-        put(new MethodMatcher("*", IntegerType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::timesInteger));
-        put(new MethodMatcher("<", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanFloat));
-        put(new MethodMatcher("<", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanInteger));
-        put(new MethodMatcher("<=", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanOrEqualToFloat));
-        put(new MethodMatcher("<=", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanOrEqualToInteger));
-        put(new MethodMatcher(">", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::biggerThanFloat));
-        put(new MethodMatcher(">", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::biggerThanInteger));
-        put(new MethodMatcher(">=", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::biggerThanOrEqualToFloat));
-        put(new MethodMatcher(">=", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::biggerThanOrEqualToInteger));
-    }};
+    private static final Map<MethodMatcher, Method> symbolTable = new HashMap<>();
+
+    static {
+        symbolTable.put(new MethodMatcher("+", FloatType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::plusFloat));
+        symbolTable.put(new MethodMatcher("+", IntegerType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::plusInteger));
+        symbolTable.put(new MethodMatcher("*", FloatType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::timesFloat));
+        symbolTable.put(new MethodMatcher("*", IntegerType.INSTANCE), new Method(FloatType.INSTANCE, FloatType::timesInteger));
+        symbolTable.put(new MethodMatcher("<", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanFloat));
+        symbolTable.put(new MethodMatcher("<", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanInteger));
+        symbolTable.put(new MethodMatcher("<=", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanOrEqualToFloat));
+        symbolTable.put(new MethodMatcher("<=", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::lessThanOrEqualToInteger));
+        symbolTable.put(new MethodMatcher(">", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::biggerThanFloat));
+        symbolTable.put(new MethodMatcher(">", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::biggerThanInteger));
+        symbolTable.put(new MethodMatcher(">=", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::biggerThanOrEqualToFloat));
+        symbolTable.put(new MethodMatcher(">=", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, FloatType::biggerThanOrEqualToInteger));
+    }
 
     private FloatType() {
         // nothing
