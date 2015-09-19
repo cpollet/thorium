@@ -47,7 +47,7 @@ public class Thorium {
 
         executionVisitor.visit(tree);
 
-        System.out.println(executionContext.lastStatementValue);
+        System.out.println(executionContext.getLastStatementValue());
         System.out.println();
     }
 }

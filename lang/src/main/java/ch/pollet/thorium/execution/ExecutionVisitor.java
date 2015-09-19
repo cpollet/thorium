@@ -19,10 +19,10 @@ package ch.pollet.thorium.execution;
 import ch.pollet.thorium.antlr.ThoriumBaseVisitor;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.execution.values.Constant;
-import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.execution.values.Symbol;
-import ch.pollet.thorium.values.Value;
 import ch.pollet.thorium.execution.values.Variable;
+import ch.pollet.thorium.values.DirectValue;
+import ch.pollet.thorium.values.Value;
 
 /**
  * @author Christophe Pollet
@@ -81,7 +81,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
     @Override
     public Void visitUnconditionalStatement(ThoriumParser.UnconditionalStatementContext ctx) {
         super.visitUnconditionalStatement(ctx);
-        context.lastStatementValue = context.popStack();
+        context.setLastStatementValue(context.popStack());
 
         return null;
     }
@@ -105,9 +105,9 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
     public Void visitConditionalIfStatement(ThoriumParser.ConditionalIfStatementContext ctx) {
         if (isExpressionTrue(ctx.expression(1))) {
             visit(ctx.expression(0));
-            context.lastStatementValue = context.popStack();
+            context.setLastStatementValue(context.popStack());
         } else {
-            context.lastStatementValue = DirectValue.build();
+            context.setLastStatementValue(DirectValue.build());
         }
 
         return null;
@@ -125,9 +125,9 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
     public Void visitConditionalUnlessStatement(ThoriumParser.ConditionalUnlessStatementContext ctx) {
         if (!isExpressionTrue(ctx.expression(1))) {
             visit(ctx.expression(0));
-            context.lastStatementValue = context.popStack();
+            context.setLastStatementValue(context.popStack());
         } else {
-            context.lastStatementValue = DirectValue.build();
+            context.setLastStatementValue(DirectValue.build());
         }
 
         return null;
@@ -135,11 +135,11 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitRepeatedWhileStatement(ThoriumParser.RepeatedWhileStatementContext ctx) {
-        context.lastStatementValue = DirectValue.build();
+        context.setLastStatementValue(DirectValue.build());
 
         while (isExpressionTrue(ctx.expression(1))) {
             visit(ctx.expression(0));
-            context.lastStatementValue = context.popStack();
+            context.setLastStatementValue(context.popStack());
         }
 
         return null;
@@ -147,11 +147,11 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitRepeatedUntilStatement(ThoriumParser.RepeatedUntilStatementContext ctx) {
-        context.lastStatementValue = DirectValue.build();
+        context.setLastStatementValue(DirectValue.build());
 
         while (!isExpressionTrue(ctx.expression(1))) {
             visit(ctx.expression(0));
-            context.lastStatementValue = context.popStack();
+            context.setLastStatementValue(context.popStack());
         }
 
         return null;
@@ -238,7 +238,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
     @Override
     public Void visitBlockExpression(ThoriumParser.BlockExpressionContext ctx) {
         visitBlock(ctx.block());
-        context.pushStack(context.lastStatementValue);
+        context.pushStack(context.getLastStatementValue());
 
         return null;
     }
@@ -264,7 +264,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
         } else if (ctx.elseStatement() != null) {
             visitElseStatement(ctx.elseStatement());
         } else {
-            context.lastStatementValue = DirectValue.build();
+            context.setLastStatementValue(DirectValue.build());
         }
     }
 

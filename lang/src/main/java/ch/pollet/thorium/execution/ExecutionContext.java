@@ -30,7 +30,7 @@ public class ExecutionContext {
     private final ExecutionContext parentContext;
     private final SymbolTable<Symbol> symbolsTable;
     private final Deque<Value> stack;
-    public Value lastStatementValue;
+    private Value lastStatementValue;
 
     private ExecutionContext() {
         this.stack = new LinkedList<>();
@@ -76,5 +76,13 @@ public class ExecutionContext {
 
     public boolean symbolDefined(String name){
         return symbolsTable.isDefined(name);
+    }
+
+    public Value getLastStatementValue() {
+        return lastStatementValue;
+    }
+
+    public void setLastStatementValue(Value lastStatementValue) {
+        this.lastStatementValue = lastStatementValue;
     }
 }
