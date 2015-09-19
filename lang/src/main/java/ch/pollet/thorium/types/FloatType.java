@@ -76,7 +76,7 @@ public class FloatType extends BaseType {
             );
         }
 
-        return DirectValue.build(Type.FLOAT);
+        return DirectValue.build(Types.FLOAT);
     }
 
     private static Value plusInteger(Value... values) {
@@ -89,7 +89,7 @@ public class FloatType extends BaseType {
             );
         }
 
-        return DirectValue.build(Type.FLOAT);
+        return DirectValue.build(Types.FLOAT);
     }
 
     private static Value timesFloat(Value... values) {
@@ -106,7 +106,7 @@ public class FloatType extends BaseType {
             );
         }
 
-        return DirectValue.build(Type.FLOAT);
+        return DirectValue.build(Types.FLOAT);
     }
 
     private static boolean isFloatZero(Value value) {
@@ -127,7 +127,7 @@ public class FloatType extends BaseType {
             );
         }
 
-        return DirectValue.build(Type.FLOAT);
+        return DirectValue.build(Types.FLOAT);
     }
 
     private static boolean isIntegerZero(Value value) {
@@ -139,7 +139,7 @@ public class FloatType extends BaseType {
         Value right = values[1];
 
         if (!left.hasValue() || !right.hasValue()) {
-            return DirectValue.build(Type.BOOLEAN);
+            return DirectValue.build(Types.BOOLEAN);
         }
 
         if (Double.compare(floatValue(left), floatValue(right)) < 0) {
@@ -154,7 +154,7 @@ public class FloatType extends BaseType {
         Value right = values[1];
 
         if (!left.hasValue() || !right.hasValue()) {
-            return DirectValue.build(Type.BOOLEAN);
+            return DirectValue.build(Types.BOOLEAN);
         }
 
         if (Double.compare(floatValue(left), integerValue(right).doubleValue()) < 0) {
@@ -169,7 +169,7 @@ public class FloatType extends BaseType {
         Value right = values[1];
 
         if (!left.hasValue() || !right.hasValue()) {
-            return DirectValue.build(Type.BOOLEAN);
+            return DirectValue.build(Types.BOOLEAN);
         }
 
         if (Double.compare(floatValue(left), floatValue(right)) <= 0) {
@@ -184,7 +184,7 @@ public class FloatType extends BaseType {
         Value right = values[1];
 
         if (!left.hasValue() || !right.hasValue()) {
-            return DirectValue.build(Type.BOOLEAN);
+            return DirectValue.build(Types.BOOLEAN);
         }
 
         if (Double.compare(floatValue(left), integerValue(right).doubleValue()) <= 0) {

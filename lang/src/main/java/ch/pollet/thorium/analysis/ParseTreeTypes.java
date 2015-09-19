@@ -17,6 +17,7 @@
 package ch.pollet.thorium.analysis;
 
 import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.types.Types;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
@@ -43,7 +44,7 @@ public class ParseTreeTypes {
 
         annotations.forEach((parseTree, types) -> {
             if (types.size() != 1) {
-                result.put(parseTree, Type.VOID);
+                result.put(parseTree, Types.VOID);
             } else {
                 result.put(parseTree, types.iterator().next());
             }

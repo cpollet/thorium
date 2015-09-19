@@ -18,6 +18,7 @@ package ch.pollet.thorium.values;
 
 import ch.pollet.thorium.execution.values.Symbol;
 import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.types.Types;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,7 +45,7 @@ public class TestSymbol {
     @Test
     public void toStringWithType() {
         // GIVEN
-        Symbol symbol = new SymbolForTests("name", Type.INTEGER);
+        Symbol symbol = new SymbolForTests("name", Types.INTEGER);
 
         // WHEN
         String string = symbol.toString();

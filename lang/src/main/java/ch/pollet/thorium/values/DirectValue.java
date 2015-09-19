@@ -17,6 +17,7 @@
 package ch.pollet.thorium.values;
 
 import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.types.Types;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class DirectValue implements Value {
     private final Type type;
 
     private DirectValue() {
-        this.type = Type.VOID;
+        this.type = Types.VOID;
     }
 
     private DirectValue(Type type) {
@@ -50,17 +51,17 @@ public class DirectValue implements Value {
     }
 
     private DirectValue(Boolean booleanValue) {
-        this.type = Type.BOOLEAN;
+        this.type = Types.BOOLEAN;
         this.booleanValue = booleanValue;
     }
 
     private DirectValue(Long integerValue) {
-        this.type = Type.INTEGER;
+        this.type = Types.INTEGER;
         this.integerValue = integerValue;
     }
 
     private DirectValue(Double floatValue) {
-        this.type = Type.FLOAT;
+        this.type = Types.FLOAT;
         this.floatValue = floatValue;
     }
 
@@ -115,9 +116,9 @@ public class DirectValue implements Value {
     @Override
     public boolean hasValue() {
         boolean notVoid = this != VOID;
-        boolean booleanWithValue = type == Type.BOOLEAN && booleanValue != null;
-        boolean integerWithValue = type == Type.INTEGER && integerValue != null;
-        boolean floatWithValue = type == Type.FLOAT && floatValue != null;
+        boolean booleanWithValue = type == Types.BOOLEAN && booleanValue != null;
+        boolean integerWithValue = type == Types.INTEGER && integerValue != null;
+        boolean floatWithValue = type == Types.FLOAT && floatValue != null;
 
         return notVoid && (booleanWithValue || integerWithValue || floatWithValue);
     }

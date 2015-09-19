@@ -74,7 +74,7 @@ public class BooleanType extends BaseType {
             return right;
         }
 
-        return DirectValue.build(Type.BOOLEAN);
+        return DirectValue.build(Types.BOOLEAN);
     }
 
     private static Value and(Value... values) {
@@ -94,14 +94,14 @@ public class BooleanType extends BaseType {
             return right;
         }
 
-        return DirectValue.build(Type.BOOLEAN);
+        return DirectValue.build(Types.BOOLEAN);
     }
 
     public static Value not(Value... values) {
         Value value = values[0];
 
         if (!value.hasValue()) {
-            return DirectValue.build(Type.BOOLEAN);
+            return DirectValue.build(Types.BOOLEAN);
         }
 
         return DirectValue.build(!booleanValue(value));

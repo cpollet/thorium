@@ -17,6 +17,7 @@
 package ch.pollet.thorium.execution.values;
 
 import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.types.Types;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
 
@@ -34,7 +35,7 @@ public abstract class Symbol implements Value {
 
     protected Symbol(String name) {
         this.name = name;
-        this.type = Type.VOID;
+        this.type = Types.VOID;
         this.value = DirectValue.build();
     }
 
@@ -80,7 +81,7 @@ public abstract class Symbol implements Value {
     }
 
     private boolean hasType() {
-        return type != Type.VOID;
+        return type != Types.VOID;
     }
 
     public void setValue(DirectValue value) {

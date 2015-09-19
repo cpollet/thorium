@@ -28,6 +28,7 @@ import ch.pollet.thorium.execution.Method;
 import ch.pollet.thorium.execution.MethodMatcher;
 import ch.pollet.thorium.execution.SymbolTable;
 import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.types.Types;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -81,7 +82,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         Set<Type> possibleTypes = types.get(ctx);
         if (possibleTypes.size() != 1) {
             exceptions.add(InvalidTypeException.ambiguousType(ctx.getStart(), possibleTypes));
-            return Type.VOID;
+            return Types.VOID;
         }
 
         return possibleTypes.iterator().next();
@@ -102,7 +103,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     public void exitCompilationUnit(ThoriumParser.CompilationUnitContext ctx) {
         //noinspection Convert2streamapi
         for (Symbol symbol : symbols) {
-            if (symbol.getType() == Type.VOID) {
+            if (symbol.getType() == Types.VOID) {
                 exceptions.add(InvalidTypeException.typeExpected(symbol.getToken()));
             }
         }
@@ -151,7 +152,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         } else if (ctx.variableOrConstantDeclarationStatement() != null) {
             findNodeTypes(ctx, ctx.variableOrConstantDeclarationStatement());
         } else if (";".equals(ctx.getText())) {
-            types.put(ctx, asSet(Type.VOID));
+            types.put(ctx, asSet(Types.VOID));
         } else {
             throw new IllegalStateException();
         }
@@ -175,20 +176,20 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             symbol.setDefinedAt(ctx);
         }
 
-        if (symbol.getType() == Type.VOID) {
+        if (symbol.getType() == Types.VOID) {
             symbol.setType(symbolType);
         }
 
         types.put(ctx, asSet(symbol.getType()));
 
-        if (symbol.getType() != Type.VOID) {
+        if (symbol.getType() != Types.VOID) {
             nodeObserverRegistry.notifyObservers(ctx, this);
             symbolObserverRegistry.notifyObservers(symbol, this);
         }
     }
 
     private Type findSymbolType(ParserRuleContext ctx, ThoriumParser.TypeContext typeCtx, ThoriumParser.ExpressionContext expressionCtx) {
-        Type symbolType = Type.VOID;
+        Type symbolType = Types.VOID;
 
         if (typeCtx != null) {
             symbolType = getNodeType(typeCtx);
@@ -198,7 +199,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         if (expressionCtx != null) {
             expressionType = getNodeType(expressionCtx);
 
-            if (expressionType != Type.VOID) {
+            if (expressionType != Types.VOID) {
                 if (!Type.isAssignableFrom(symbolType, expressionType)) {
                     exceptions.add(InvalidTypeException.notCompatible(expressionCtx.getStart(), expressionType, symbolType));
                 } else {
@@ -206,7 +207,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
                 }
             }
 
-            if (symbolType == Type.VOID) {
+            if (symbolType == Types.VOID) {
                 nodeObserverRegistry.registerObserver(ctx, expressionCtx);
             }
         }
@@ -242,12 +243,12 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     @Override
     public void exitIfStatement(ThoriumParser.IfStatementContext ctx) {
         Type conditionType = getNodeType(ctx.expression());
-        if (conditionType != Type.BOOLEAN) {
-            exceptions.add(InvalidTypeException.invalidType(ctx.expression().getStart(), Type.BOOLEAN, conditionType));
+        if (conditionType != Types.BOOLEAN) {
+            exceptions.add(InvalidTypeException.invalidType(ctx.expression().getStart(), Types.BOOLEAN, conditionType));
         }
 
         Set<Type> possibleTypes = getNodeTypes(ctx.statements());
-        if (possibleTypes.contains(Type.VOID)) {
+        if (possibleTypes.contains(Types.VOID)) {
             nodeObserverRegistry.registerObserver(ctx, ctx.statements());
         } else {
             nodeObserverRegistry.notifyObservers(ctx, this);
@@ -255,7 +256,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
         if (ctx.elseStatement() != null) {
             Set<Type> possibleTypesFromFalseBranch = getNodeTypes(ctx.elseStatement());
-            if (possibleTypes.contains(Type.VOID)) {
+            if (possibleTypes.contains(Types.VOID)) {
                 nodeObserverRegistry.registerObserver(ctx, ctx.elseStatement());
             } else {
                 nodeObserverRegistry.notifyObservers(ctx, this);
@@ -301,12 +302,12 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     private void exitLoopStatement(ParserRuleContext ctx, ThoriumParser.StatementsContext stmtsCtx, ThoriumParser.ExpressionContext exprCtx) {
         Type conditionType = getNodeType(exprCtx);
-        if (conditionType != Type.BOOLEAN) {
-            exceptions.add(InvalidTypeException.invalidType(exprCtx.getStart(), Type.BOOLEAN, conditionType));
+        if (conditionType != Types.BOOLEAN) {
+            exceptions.add(InvalidTypeException.invalidType(exprCtx.getStart(), Types.BOOLEAN, conditionType));
         }
 
         Set<Type> possibleTypes = getNodeTypes(stmtsCtx);
-        if (possibleTypes.contains(Type.VOID)) {
+        if (possibleTypes.contains(Types.VOID)) {
             nodeObserverRegistry.registerObserver(ctx, stmtsCtx);
         } else {
             nodeObserverRegistry.notifyObservers(ctx, this);
@@ -336,10 +337,10 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
         Type type = getNodeType(conditionCtx);
 
-        if (type == Type.VOID) {
+        if (type == Types.VOID) {
             nodeObserverRegistry.registerObserver(ctx, conditionCtx);
-        } else if (type != Type.BOOLEAN) {
-            exceptions.add(InvalidTypeException.invalidType(conditionCtx.getStart(), Type.BOOLEAN, type));
+        } else if (type != Types.BOOLEAN) {
+            exceptions.add(InvalidTypeException.invalidType(conditionCtx.getStart(), Types.BOOLEAN, type));
         }
     }
 
@@ -371,9 +372,9 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     public void exitNotExpression(ThoriumParser.NotExpressionContext ctx) {
         Type type = getNodeType(ctx.expression());
 
-        if (type == Type.VOID) {
+        if (type == Types.VOID) {
             nodeObserverRegistry.registerObserver(ctx, ctx.expression());
-            types.put(ctx, asSet(Type.VOID));
+            types.put(ctx, asSet(Types.VOID));
         } else {
             Type resultType = inferMethodType(ctx.getStart(), ctx.op.getText(), type);
             types.put(ctx, asSet(resultType));
@@ -392,15 +393,15 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         Type leftType = getNodeType(leftExpr);
         Type rightType = getNodeType(rightExpr);
 
-        if (leftType == Type.VOID) {
+        if (leftType == Types.VOID) {
             nodeObserverRegistry.registerObserver(ctx, leftExpr);
         }
-        if (rightType == Type.VOID) {
+        if (rightType == Types.VOID) {
             nodeObserverRegistry.registerObserver(ctx, rightExpr);
         }
 
-        if (leftType == Type.VOID || rightType == Type.VOID) {
-            types.put(ctx, asSet(Type.VOID));
+        if (leftType == Types.VOID || rightType == Types.VOID) {
+            types.put(ctx, asSet(Types.VOID));
         } else {
             Type resultType = inferMethodType(ctx.getStart(), operator, leftType, rightType);
             types.put(ctx, asSet(resultType));
@@ -415,7 +416,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
         if (method == null) {
             exceptions.add(InvalidSymbolException.methodNotFound(token, methodName, leftType, parametersTypes));
-            return Type.VOID;
+            return Types.VOID;
         }
 
         return method.getType();
@@ -445,26 +446,26 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
         if (!symbol.isWritable()) {
             exceptions.add(InvalidAssignmentException.build(ctx.start));
-            types.put(ctx, asSet(Type.VOID));
+            types.put(ctx, asSet(Types.VOID));
             return;
         }
 
         symbol.lock();
 
-        if (rightType != Type.VOID) {
-            if (leftType == Type.VOID) {
+        if (rightType != Types.VOID) {
+            if (leftType == Types.VOID) {
                 symbol.setType(rightType);
                 symbolObserverRegistry.notifyObservers(symbol, this);
             } else if (!Type.isAssignableFrom(leftType, rightType)) {
                 exceptions.add(InvalidTypeException.notCompatible(ctx.getStart(), rightType, leftType));
-                types.put(ctx, asSet(Type.VOID));
+                types.put(ctx, asSet(Types.VOID));
                 return;
             }
 
             types.put(ctx, asSet(rightType));
             nodeObserverRegistry.notifyObservers(ctx, this);
         } else {
-            types.put(ctx, asSet(Type.VOID));
+            types.put(ctx, asSet(Types.VOID));
             nodeObserverRegistry.registerObserver(ctx, ctx.expression());
         }
 
@@ -477,7 +478,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
         if (possibleTypes.size() > 1) {
             exceptions.add(InvalidTypeException.ambiguousType(ctx.getStart(), possibleTypes));
-            types.put(ctx, asSet(Type.VOID));
+            types.put(ctx, asSet(Types.VOID));
             return;
         }
 
@@ -490,19 +491,19 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitBooleanLiteral(ThoriumParser.BooleanLiteralContext ctx) {
-        types.put(ctx, asSet(Type.BOOLEAN));
+        types.put(ctx, asSet(Types.BOOLEAN));
         logContextInformation(ctx);
     }
 
     @Override
     public void exitIntegerLiteral(ThoriumParser.IntegerLiteralContext ctx) {
-        types.put(ctx, asSet(Type.INTEGER));
+        types.put(ctx, asSet(Types.INTEGER));
         logContextInformation(ctx);
     }
 
     @Override
     public void exitFloatLiteral(ThoriumParser.FloatLiteralContext ctx) {
-        types.put(ctx, asSet(Type.FLOAT));
+        types.put(ctx, asSet(Types.FLOAT));
         logContextInformation(ctx);
     }
 
@@ -519,13 +520,13 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     private void exitVariableOrConstantName(ParserRuleContext ctx, String name, Symbol.SymbolKind kind) {
         if (!currentSymbolTable.isDefined(name)) {
             exceptions.add(InvalidSymbolException.identifierNotFound(ctx.getStart(), name));
-            registerSymbol(kind, name, Type.VOID, ctx);
+            registerSymbol(kind, name, Types.VOID, ctx);
         }
 
         Symbol symbol = currentSymbolTable.get(name);
         types.put(ctx, asSet(symbol.getType()));
 
-        if (symbol.getType() == Type.VOID) {
+        if (symbol.getType() == Types.VOID) {
             symbolObserverRegistry.registerObserver(ctx, symbol);
         } else {
             nodeObserverRegistry.notifyObservers(ctx, this);
@@ -545,13 +546,13 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     public void exitType(ThoriumParser.TypeContext ctx) {
         switch (ctx.UCFirstIdentifier().getText()) {
             case "Integer":
-                types.put(ctx, asSet(Type.INTEGER));
+                types.put(ctx, asSet(Types.INTEGER));
                 break;
             case "Float":
-                types.put(ctx, asSet(Type.FLOAT));
+                types.put(ctx, asSet(Types.FLOAT));
                 break;
             case "Boolean":
-                types.put(ctx, asSet(Type.BOOLEAN));
+                types.put(ctx, asSet(Types.BOOLEAN));
                 break;
             default:
                 throw new IllegalStateException("Invalid type");
@@ -560,7 +561,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     /**
      * Finds the type of the parent node from the child node. Assigns the child node's type to the parent node. If the
-     * child node has a Type.VOID type, then the parent registers itself as an observer of the child node's type
+     * child node has a Types.VOID type, then the parent registers itself as an observer of the child node's type
      * changes.
      *
      * @param parent the node for which we want to determine the type
@@ -571,7 +572,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
         types.put(parent, asSet(childType));
 
-        if (childType == Type.VOID) {
+        if (childType == Types.VOID) {
             nodeObserverRegistry.registerObserver(parent, child);
         } else {
             nodeObserverRegistry.notifyObservers(parent, this);
@@ -585,7 +586,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
         types.put(parent, childTypes);
 
-        if (childTypes.contains(Type.VOID)) {
+        if (childTypes.contains(Types.VOID)) {
             nodeObserverRegistry.registerObserver(parent, child);
         } else {
             nodeObserverRegistry.notifyObservers(parent, this);

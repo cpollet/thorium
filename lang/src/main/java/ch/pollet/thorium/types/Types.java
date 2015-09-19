@@ -16,23 +16,16 @@
 
 package ch.pollet.thorium.types;
 
-import ch.pollet.thorium.execution.Method;
-import ch.pollet.thorium.execution.MethodMatcher;
-
 /**
  * @author Christophe Pollet
  */
-public interface Type {
-    int ID_VOID = 0;
-    int ID_BOOLEAN = 1;
-    int ID_INTEGER = 2;
-    int ID_FLOAT = 3;
-
-    int id();
-
-    static boolean isAssignableFrom(Type target, Type source) {
-        return target == null || target == Types.VOID || target.equals(source);
+public class Types {
+    private Types() {
+        // nothing
     }
 
-    Method lookupMethod(MethodMatcher matcher);
+    public static Type INTEGER = IntegerType.INSTANCE;
+    public static Type FLOAT = FloatType.INSTANCE;
+    public static Type BOOLEAN = BooleanType.INSTANCE;
+    public static Type VOID = VoidType.INSTANCE;
 }

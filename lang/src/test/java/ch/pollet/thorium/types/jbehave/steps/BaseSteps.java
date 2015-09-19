@@ -19,6 +19,7 @@ package ch.pollet.thorium.types.jbehave.steps;
 import ch.pollet.thorium.execution.Method;
 import ch.pollet.thorium.execution.MethodMatcher;
 import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.types.Types;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
 import org.jbehave.core.annotations.Given;
@@ -94,11 +95,11 @@ public abstract class BaseSteps {
             case "false":
                 return DirectValue.build(false);
             case "Boolean":
-                return DirectValue.build(Type.BOOLEAN);
+                return DirectValue.build(Types.BOOLEAN);
             case "Integer":
-                return DirectValue.build(Type.INTEGER);
+                return DirectValue.build(Types.INTEGER);
             case "Float":
-                return DirectValue.build(Type.FLOAT);
+                return DirectValue.build(Types.FLOAT);
         }
 
         try {
