@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.analysis;
 
+import ch.pollet.thorium.ParseTreeSymbolTables;
 import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.analysis.exceptions.InvalidAssignmentException;
 import ch.pollet.thorium.analysis.exceptions.InvalidSymbolException;
@@ -53,9 +54,10 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     private final ParseTreeTypes types = new ParseTreeTypes();
 
-    private SymbolTable<Symbol> currentSymbolSymbolTable;
+    private final ParseTreeSymbolTables symbolTables = new ParseTreeSymbolTables();
+    private SymbolTable<Symbol> currentSymbolTable;
+
     private List<Symbol> symbols = new LinkedList<>();
-    private ParseTreeProperty<SymbolTable<Symbol>> contextScope = new ParseTreeProperty<>();
 
     private final ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
     private final ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
@@ -64,7 +66,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     public SemanticAnalysisListener(Parser parser, SymbolTable<Symbol> baseScope) {
         this.ruleNames = Arrays.asList(parser.getRuleNames());
-        this.currentSymbolSymbolTable = baseScope;
+        this.currentSymbolTable = baseScope;
     }
 
     public List<ThoriumException> getExceptions() {
@@ -91,8 +93,8 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
-        if (contextScope.get(ctx) == null) {
-            contextScope.put(ctx, currentSymbolSymbolTable);
+        if (symbolTables.get(ctx) == null) {
+            symbolTables.put(ctx, currentSymbolTable);
         }
     }
 
@@ -110,7 +112,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void enterBlock(ThoriumParser.BlockContext ctx) {
-        currentSymbolSymbolTable = currentSymbolSymbolTable.wrap();
+        currentSymbolTable = currentSymbolTable.wrap();
     }
 
     @Override
@@ -127,7 +129,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             throw new IllegalStateException("Unhandled block type");
         }
 
-        currentSymbolSymbolTable = currentSymbolSymbolTable.unwrap();
+        currentSymbolTable = currentSymbolTable.unwrap();
     }
 
     @Override
@@ -213,7 +215,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     private Symbol registerSymbol(Symbol.SymbolKind kind, String name, Type type, ParserRuleContext ctx) {
-        SymbolTable<Symbol> ctxOriginalScope = contextScope.get(ctx);
+        SymbolTable<Symbol> ctxOriginalScope = symbolTables.get(ctx);
 
         if (!ctxOriginalScope.isDefinedInCurrentScope(name)) {
             Symbol symbol = Symbol.create(name, kind, type, ctx.getStart());
@@ -228,7 +230,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     public void exitConstantDeclarationStatement(ThoriumParser.ConstantDeclarationStatementContext ctx) {
         registerVariableOrConstant(ctx, Symbol.SymbolKind.CONSTANT, ctx.UCIdentifier().getText(), ctx.type(), ctx.expression());
 
-        currentSymbolSymbolTable.get(ctx.UCIdentifier().getText()).lock();
+        currentSymbolTable.get(ctx.UCIdentifier().getText()).lock();
 
         logContextInformation(ctx);
     }
@@ -439,7 +441,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         Type leftType = getNodeType(ctx.identifier());
         Type rightType = getNodeType(ctx.expression());
 
-        Symbol symbol = currentSymbolSymbolTable.get(ctx.identifier().getText());
+        Symbol symbol = currentSymbolTable.get(ctx.identifier().getText());
 
         if (!symbol.isWritable()) {
             exceptions.add(InvalidAssignmentException.build(ctx.start));
@@ -515,12 +517,12 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     private void exitVariableOrConstantName(ParserRuleContext ctx, String name, Symbol.SymbolKind kind) {
-        if (!currentSymbolSymbolTable.isDefined(name)) {
+        if (!currentSymbolTable.isDefined(name)) {
             exceptions.add(InvalidSymbolException.identifierNotFound(ctx.getStart(), name));
             registerSymbol(kind, name, Type.VOID, ctx);
         }
 
-        Symbol symbol = currentSymbolSymbolTable.get(name);
+        Symbol symbol = currentSymbolTable.get(name);
         types.put(ctx, asSet(symbol.getType()));
 
         if (symbol.getType() == Type.VOID) {

@@ -28,7 +28,7 @@ import java.util.Set;
  * @author Christophe Pollet
  */
 public class ParseTreeTypes {
-    protected Map<ParseTree, Set<Type>> annotations = new IdentityHashMap<ParseTree, Set<Type>>();
+    protected Map<ParseTree, Set<Type>> annotations = new IdentityHashMap<>();
 
     public Set<Type> get(ParseTree node) {
         return annotations.get(node);
