@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium;
+package ch.pollet.thorium.data;
 
-import ch.pollet.thorium.analysis.MethodSignature;
-import ch.pollet.thorium.analysis.MethodSignatureBuilder;
 import ch.pollet.thorium.execution.Operator;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.utils.CollectionUtils;

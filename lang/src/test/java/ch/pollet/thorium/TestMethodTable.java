@@ -16,7 +16,8 @@
 
 package ch.pollet.thorium;
 
-import ch.pollet.thorium.analysis.MethodSignature;
+import ch.pollet.thorium.data.MethodSignature;
+import ch.pollet.thorium.data.MethodTable;
 import ch.pollet.thorium.execution.Operator;
 import ch.pollet.thorium.types.Types;
 import org.fest.assertions.Fail;
