@@ -19,7 +19,6 @@ package ch.pollet.thorium.analysis;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.utils.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,11 +31,11 @@ public class MethodSignature {
     private final Type returnType;
     private final List<Type> parameterTypes;
 
-    public MethodSignature(String name, Type targetType, Type returnType, Type... parameterTypes) {
+    public MethodSignature(String name, Type targetType, Type returnType, List<Type> parameterTypes) {
         this.name = name;
         this.targetType = targetType;
         this.returnType = returnType;
-        this.parameterTypes = Arrays.asList(parameterTypes);
+        this.parameterTypes = parameterTypes;
     }
 
     public String getName() {

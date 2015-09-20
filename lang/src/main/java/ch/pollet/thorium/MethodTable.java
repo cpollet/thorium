@@ -20,6 +20,7 @@ import ch.pollet.thorium.analysis.MethodSignature;
 import ch.pollet.thorium.analysis.MethodSignatureBuilder;
 import ch.pollet.thorium.execution.Operator;
 import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,9 +34,11 @@ import java.util.Map;
  */
 public class MethodTable {
     private Map<String, Map<MethodSignature, Operator>> methodTable;
+    private Map<String, MethodSignature> cache;
 
     public MethodTable() {
         this.methodTable = new HashMap<>();
+        this.cache = new HashMap<>();
     }
 
     public void put(String name, Operator operator, Type targetType, Type returnType, Type... parameterTypes) {
@@ -43,12 +46,19 @@ public class MethodTable {
             methodTable.put(name, new HashMap<>());
         }
 
-        methodTable.get(name).put(MethodSignatureBuilder.method(name)
-                        .withReturnType(returnType)
-                        .withTargetType(targetType)
-                        .withParameterTypes(parameterTypes)
-                        .build(),
-                operator);
+        MethodSignature methodSignature = MethodSignatureBuilder.method(name)
+                .withReturnType(returnType)
+                .withTargetType(targetType)
+                .withParameterTypes(parameterTypes)
+                .build();
+
+        methodTable.get(name).put(methodSignature, operator);
+
+        cache.put(getCacheKey(name, targetType, parameterTypes), methodSignature);
+    }
+
+    private String getCacheKey(String name, Type targetType, Type... parameterTypes) {
+        return targetType.toString() + "." + name + "(" + CollectionUtils.concat(parameterTypes) + ")";
     }
 
     public Operator get(MethodSignature methodSignature) {
@@ -56,6 +66,11 @@ public class MethodTable {
     }
 
     public MethodSignature lookupMethod(String name, Type targetType, Type... parameterTypes) {
+        String cacheKey = getCacheKey(name, targetType, parameterTypes);
+        if (cache.containsKey(cacheKey)) {
+            return cache.get(cacheKey);
+        }
+
         Map<MethodSignature, Operator> methods = methodTable.get(name);
         Map<MethodSignature, Integer> scores = new HashMap<>(methods.size());
 
@@ -63,16 +78,20 @@ public class MethodTable {
             scores.put(methodSignature, score(methodSignature, targetType, parameterTypes));
         }
 
-        return getMatch(scores);
+        MethodSignature signature = getMatch(scores);
+
+        cache.put(cacheKey, signature);
+
+        return signature;
     }
 
     /**
      * Returns the scope of a MethodSignature against targetType and parameterTypes. The score is the distance between
      * the method signature (target and formal parameters) and the required target and actual parameters.
-     *
+     * <p>
      * Each type transformation adds 1 to the final score. For instance, having Integer? in formal parameter and
      * Integer as actual parameter type adds 1 to the score.
-     *
+     * <p>
      * The lower the best, but a score of -1 means the method signature is not compatible.
      */
     private int score(MethodSignature signature, Type targetType, Type... parameterTypes) {

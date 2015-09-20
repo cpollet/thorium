@@ -18,11 +18,14 @@ package ch.pollet.thorium.analysis;
 
 import ch.pollet.thorium.types.Type;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class MethodSignatureBuilder {
     private final String name;
     private Type targetType;
     private Type returnType;
-    private Type[] parameterTypes;
+    private List<Type> parameterTypes;
 
     public static MethodSignatureBuilder method(String name) {
         return new MethodSignatureBuilder(name);
@@ -43,7 +46,7 @@ public class MethodSignatureBuilder {
     }
 
     public MethodSignatureBuilder withParameterTypes(Type... parameterTypes) {
-        this.parameterTypes = parameterTypes;
+        this.parameterTypes = Arrays.asList(parameterTypes);
         return this;
     }
 
