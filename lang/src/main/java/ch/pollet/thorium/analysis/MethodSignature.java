@@ -57,13 +57,19 @@ public class MethodSignature {
 
     @Override
     public String toString() {
-        return name + "(" + CollectionUtils.concat(parameterTypes, ", ") + "):" + returnType.toString();
+        return name + "(" + CollectionUtils.concat(parameterTypes, ", ") + ") : " + returnType.toString();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MethodSignature)) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof MethodSignature)) {
+            return false;
+        }
+
         MethodSignature that = (MethodSignature) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(targetType, that.targetType) &&

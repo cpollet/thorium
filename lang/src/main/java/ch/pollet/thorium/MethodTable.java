@@ -38,7 +38,7 @@ public class MethodTable {
         this.methodTable = new HashMap<>();
     }
 
-    public void put(Operator operator, String name, Type targetType, Type returnType, Type... parameterTypes) {
+    public void put(String name, Operator operator, Type targetType, Type returnType, Type... parameterTypes) {
         if (methodTable.get(name) == null) {
             methodTable.put(name, new HashMap<>());
         }
@@ -63,25 +63,18 @@ public class MethodTable {
             scores.put(methodSignature, score(methodSignature, targetType, parameterTypes));
         }
 
-        List<MethodSignature> potentialMatches = new ArrayList<>();
-        int minScore = Integer.MAX_VALUE;
-        for (MethodSignature methodSignature : scores.keySet()) {
-            int currentScore = scores.get(methodSignature);
-            if (currentScore < minScore) {
-                potentialMatches.clear();
-                potentialMatches.add(methodSignature);
-            }
-        }
-
-        if (potentialMatches.size() == 0) {
-            throw new IllegalStateException("Method not found.");
-        } else if (potentialMatches.size() > 1) {
-            throw new IllegalStateException("Too many potential matches (" + potentialMatches.size() + ").");
-        }
-
-        return potentialMatches.get(0);
+        return getMatch(scores);
     }
 
+    /**
+     * Returns the scope of a MethodSignature against targetType and parameterTypes. The score is the distance between
+     * the method signature (target and formal parameters) and the required target and actual parameters.
+     *
+     * Each type transformation adds 1 to the final score. For instance, having Integer? in formal parameter and
+     * Integer as actual parameter type adds 1 to the score.
+     *
+     * The lower the best, but a score of -1 means the method signature is not compatible.
+     */
     private int score(MethodSignature signature, Type targetType, Type... parameterTypes) {
         int targetTypeScore = typeScore(signature.getTargetType(), targetType);
 
@@ -93,25 +86,55 @@ public class MethodTable {
             return -1;
         }
 
-        Iterator<Type> destination = signature.getParameterTypes().iterator();
-        Iterator<Type> source = Arrays.asList(parameterTypes).iterator();
+        Iterator<Type> destinations = signature.getParameterTypes().iterator();
+        Iterator<Type> sources = Arrays.asList(parameterTypes).iterator();
 
         int parameterTypesScore = 0;
-        while (destination.hasNext() && source.hasNext()) {
-            Type destinationType = destination.next();
-            Type sourceType = source.next();
+        while (destinations.hasNext() && sources.hasNext()) {
+            Type destination = destinations.next();
+            Type source = sources.next();
 
-            parameterTypesScore += typeScore(destinationType, sourceType);
+            parameterTypesScore += typeScore(destination, source);
         }
 
         return targetTypeScore + parameterTypesScore;
     }
 
     private int typeScore(Type destination, Type source) {
-        if (source == destination) {
+        if (destination == source) {
             return 0;
+        } else if (destination.nonNullable() == source) {
+            return 1;
         }
 
         return -1;
+    }
+
+    /**
+     * Returns the signature with the lowest positive score.
+     */
+    private MethodSignature getMatch(Map<MethodSignature, Integer> scores) {
+        List<MethodSignature> potentialMatches = new ArrayList<>();
+        int minScore = Integer.MAX_VALUE;
+
+        for (Map.Entry<MethodSignature, Integer> entry : scores.entrySet()) {
+            int currentScore = entry.getValue();
+
+            if (currentScore > -1 && currentScore < minScore) {
+                minScore = currentScore;
+                potentialMatches.clear();
+                potentialMatches.add(entry.getKey());
+            } else if (currentScore == minScore) {
+                potentialMatches.add(entry.getKey());
+            }
+        }
+
+        if (potentialMatches.isEmpty()) {
+            throw new IllegalStateException("Method not found.");
+        } else if (potentialMatches.size() > 1) {
+            throw new IllegalStateException("Too many potential matches (" + potentialMatches.size() + ").");
+        }
+
+        return potentialMatches.get(0);
     }
 }
