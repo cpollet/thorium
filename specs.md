@@ -67,6 +67,18 @@ Thorium supports standard control structures: ```if```, ```for```, ```while```. 
     instance = (new)? Class(parameters);
     instance = Class.new(parameters);
 
+# Method
+    public +(Integer): Integer {
+    }
+    public +(Integer?): Integer? {
+    }
+    public +?(Integer?): Integer? {
+    }
+    
+    Integer  +  Integer
+    Integer  +  Integer?
+    Integer? +? Integer  // same as Integer? .? + Integer
+    Integer? +? Integer? // same as Integer? .? + Integer?
 
 # Method call
 ## non-nullable expression
@@ -162,6 +174,26 @@ Using ```=>``` operator:
     List<Integer> => ListOfInteger;
     AAndB => A & B;
     AOrB => A | B;
+
+# With keyword
+Work in progress...
+
+    with (e : expression) {
+        .method1();
+        .method2(args);
+        other.method(e);
+        other.method(.method3());
+    }
+
+is a syntaxic sugar for
+
+    {
+        def e = expression;
+        e.method1();
+        e.method2(args);
+        other.method(e);
+        other.method(w.method3());
+    }
 
 # Visibility
 
