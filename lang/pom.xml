@@ -86,8 +86,6 @@
                 <configuration>
                     <excludes>
                         <exclude>ch/pollet/thorium/antlr/*</exclude>
-                        <exclude>ch/pollet/thorium/Thorium.*</exclude>
-                        <exclude>**/ListenerEvaluator.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
