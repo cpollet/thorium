@@ -98,7 +98,7 @@ public class MethodTable {
      * <p>
      * The lower the best, but a score of -1 means the method signature is not compatible.
      */
-    private int score(MethodSignature signature, Type targetType, Type... parameterTypes) {
+    private static int score(MethodSignature signature, Type targetType, Type... parameterTypes) {
         int targetTypeScore = typeScore(signature.getTargetType(), targetType);
 
         if (targetTypeScore < 0) {
