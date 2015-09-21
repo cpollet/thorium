@@ -550,7 +550,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitType(ThoriumParser.TypeContext ctx) {
-        Type.Nullable nullable = Type.Nullable.get(ctx.nullable != null);
+        Type.Nullable nullable = ctx.nullable != null ? Type.Nullable.YES : Type.Nullable.NO;
 
         switch (ctx.UCFirstIdentifier().getText()) {
             case "Integer":

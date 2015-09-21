@@ -27,12 +27,12 @@ public class MethodSignatureBuilder {
     private Type returnType;
     private List<Type> parameterTypes;
 
-    public static MethodSignatureBuilder method(String name) {
-        return new MethodSignatureBuilder(name);
-    }
-
     private MethodSignatureBuilder(String name){
         this.name = name;
+    }
+
+    public static MethodSignatureBuilder method(String name) {
+        return new MethodSignatureBuilder(name);
     }
 
     public MethodSignatureBuilder withTargetType(Type targetType) {

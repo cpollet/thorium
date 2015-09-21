@@ -50,8 +50,8 @@ public class BooleanType extends BaseType {
     }
 
     @Override
-    public int id() {
-        return ID_BOOLEAN;
+    public Id id() {
+        return Id.BOOLEAN;
     }
 
     @Override

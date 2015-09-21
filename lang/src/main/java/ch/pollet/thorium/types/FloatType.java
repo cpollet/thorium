@@ -71,8 +71,8 @@ public class FloatType extends BaseType {
     }
 
     @Override
-    public int id() {
-        return ID_FLOAT;
+    public Id id() {
+        return Id.FLOAT;
     }
 
     @Override

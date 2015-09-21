@@ -71,8 +71,8 @@ public class IntegerType extends BaseType {
     }
 
     @Override
-    public int id() {
-        return ID_INTEGER;
+    public Id id() {
+        return Id.INTEGER;
     }
 
     @Override

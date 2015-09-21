@@ -20,10 +20,6 @@ package ch.pollet.thorium.types;
  * @author Christophe Pollet
  */
 public class Types {
-    private Types() {
-        // nothing
-    }
-
     public static final Type NULLABLE_INTEGER = IntegerType.NULLABLE;
     public static final Type INTEGER = IntegerType.NON_NULLABLE;
 
@@ -35,6 +31,10 @@ public class Types {
 
     public static final Type NULLABLE_VOID = VoidType.NULLABLE;
     public static final Type VOID = VoidType.NON_NULLABLE;
+
+    private Types() {
+        // nothing
+    }
 
     public static Type get(Type type, Type.Nullable nullable) {
         switch (nullable) {

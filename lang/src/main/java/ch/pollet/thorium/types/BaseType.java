@@ -32,7 +32,7 @@ public abstract class BaseType implements Type {
 
     @Override
     public boolean isNullable() {
-        return nullable.isNullable();
+        return nullable == Nullable.YES;
     }
 
     @Override
@@ -61,6 +61,6 @@ public abstract class BaseType implements Type {
 
     @Override
     public String toString() {
-        return nullable.isNullable() ? "?" : "";
+        return nullable == Nullable.YES ? "?" : "";
     }
 }

@@ -100,13 +100,13 @@ public class DirectValue implements Value {
 
     public Object internalValue() {
         switch (type.id()) {
-            case Type.ID_BOOLEAN:
+            case BOOLEAN:
                 return booleanValue;
-            case Type.ID_INTEGER:
+            case INTEGER:
                 return integerValue;
-            case Type.ID_FLOAT:
+            case FLOAT:
                 return floatValue;
-            case Type.ID_VOID:
+            case VOID:
                 return null;
             default:
                 throw new IllegalStateException(type.id() + " is not a valid type id");
@@ -146,13 +146,13 @@ public class DirectValue implements Value {
     @Override
     public String toString() {
         switch (type.id()) {
-            case Type.ID_BOOLEAN:
+            case BOOLEAN:
                 return type.toString() + "(" + booleanValue + ")";
-            case Type.ID_INTEGER:
+            case INTEGER:
                 return type.toString() + "(" + integerValue + ")";
-            case Type.ID_FLOAT:
+            case FLOAT:
                 return type.toString() + "(" + floatValue + ")";
-            case Type.ID_VOID:
+            case VOID:
                 return type.toString();
             default:
                 throw new IllegalStateException(type.id() + " is not a valid type id");

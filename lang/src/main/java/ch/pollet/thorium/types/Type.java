@@ -22,27 +22,15 @@ import ch.pollet.thorium.data.Method;
  * @author Christophe Pollet
  */
 public interface Type {
-    int ID_VOID = 0;
-    int ID_BOOLEAN = 1;
-    int ID_INTEGER = 2;
-    int ID_FLOAT = 3;
+    enum Id {
+        VOID,
+        BOOLEAN,
+        INTEGER,
+        FLOAT,
+    }
 
     enum Nullable {
-        YES(true), NO(false), ANY(true);
-
-        private final boolean nullable;
-
-        Nullable(boolean nullable) {
-            this.nullable = nullable;
-        }
-
-        public boolean isNullable() {
-            return nullable;
-        }
-
-        public static Nullable get(boolean nullable) {
-            return nullable ? YES : NO;
-        }
+        YES, NO
     }
 
     static boolean isAssignableTo(Type destination, Type source) {
@@ -61,7 +49,7 @@ public interface Type {
         return source.isAssignableTo(destination);
     }
 
-    int id();
+    Id id();
 
     boolean isNullable();
 

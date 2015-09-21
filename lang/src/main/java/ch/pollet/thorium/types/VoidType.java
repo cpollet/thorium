@@ -36,8 +36,8 @@ public class VoidType extends BaseType {
     }
 
     @Override
-    public int id() {
-        return ID_VOID;
+    public Id id() {
+        return Id.VOID;
     }
 
     @Override

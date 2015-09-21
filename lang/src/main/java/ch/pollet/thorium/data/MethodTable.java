@@ -27,22 +27,23 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Christophe Pollet
  */
 public class MethodTable {
-    private Map<String, Map<MethodSignature, MethodBody>> methodTable;
+    private Map<String, Map<MethodSignature, MethodBody>> table;
     private Map<String, Method> cache;
 
     public MethodTable() {
-        this.methodTable = new HashMap<>();
+        this.table = new HashMap<>();
         this.cache = new HashMap<>();
     }
 
     public void put(String name, MethodBody methodBody, Type targetType, Type returnType, Type... parameterTypes) {
-        if (methodTable.get(name) == null) {
-            methodTable.put(name, new HashMap<>());
+        if (table.get(name) == null) {
+            table.put(name, new HashMap<>());
         }
 
         MethodSignature methodSignature = MethodSignatureBuilder.method(name)
@@ -51,7 +52,7 @@ public class MethodTable {
                 .withParameterTypes(parameterTypes)
                 .build();
 
-        methodTable.get(name).put(methodSignature, methodBody);
+        table.get(name).put(methodSignature, methodBody);
 
         cache.put(getCacheKey(name, targetType, parameterTypes), new Method(methodSignature, methodBody));
     }
@@ -68,7 +69,7 @@ public class MethodTable {
             return cache.get(cacheKey);
         }
 
-        Map<MethodSignature, MethodBody> methods = methodTable.get(name);
+        Map<MethodSignature, MethodBody> methods = table.get(name);
 
         if (methods == null) {
             methods = Collections.emptyMap();
@@ -81,7 +82,7 @@ public class MethodTable {
         }
 
         MethodSignature signature = getMatch(scores);
-        Method method = new Method(signature, methodTable.get(name).get(signature));
+        Method method = new Method(signature, table.get(name).get(signature));
 
         cache.put(cacheKey, method);
 
@@ -128,7 +129,7 @@ public class MethodTable {
         return targetTypeScore + parameterTypesScore;
     }
 
-    private int typeScore(Type destination, Type source) {
+    private static int typeScore(Type destination, Type source) {
         if (destination == source) {
             return 0;
         } else if (destination.nonNullable() == source) {
@@ -141,7 +142,7 @@ public class MethodTable {
     /**
      * Returns the signature with the lowest positive score.
      */
-    private MethodSignature getMatch(Map<MethodSignature, Integer> scores) {
+    private static MethodSignature getMatch(Map<MethodSignature, Integer> scores) {
         List<MethodSignature> potentialMatches = new ArrayList<>();
         int minScore = Integer.MAX_VALUE;
 
@@ -158,9 +159,13 @@ public class MethodTable {
         }
 
         if (potentialMatches.isEmpty()) {
-            throw new MethodNotFoundException("Method not found.", potentialMatches);
+            throw new MethodNotFoundException("Method not found.", Collections.emptyList());
         } else if (potentialMatches.size() > 1) {
-            throw new MethodNotFoundException("Too many potential matches (" + potentialMatches.size() + ").", potentialMatches);
+            List<String> signatures = potentialMatches.stream()
+                    .map(MethodSignature::toString)
+                    .collect(Collectors.toList());
+
+            throw new MethodNotFoundException("Too many potential matches (" + potentialMatches.size() + ").", signatures);
         }
 
         return potentialMatches.get(0);

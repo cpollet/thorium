@@ -22,10 +22,14 @@ import java.util.List;
  * @author Christophe Pollet
  */
 public class MethodNotFoundException extends RuntimeException {
-    public List<MethodSignature> potentialMatches;
+    private final List<String> potentialMatches;
 
-    public MethodNotFoundException(String message, List<MethodSignature> potentialMatches) {
+    public MethodNotFoundException(String message, List<String> potentialMatches) {
         super(message);
         this.potentialMatches = potentialMatches;
+    }
+
+    public List<String> getPotentialMatches() {
+        return potentialMatches;
     }
 }
