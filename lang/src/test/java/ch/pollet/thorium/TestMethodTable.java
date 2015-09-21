@@ -16,9 +16,9 @@
 
 package ch.pollet.thorium;
 
-import ch.pollet.thorium.data.Method2;
+import ch.pollet.thorium.data.Method;
 import ch.pollet.thorium.data.MethodTable;
-import ch.pollet.thorium.execution.Operator;
+import ch.pollet.thorium.execution.MethodBody;
 import ch.pollet.thorium.types.Types;
 import org.fest.assertions.Fail;
 import org.junit.Before;
@@ -31,7 +31,7 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 public class TestMethodTable {
     private MethodTable methodTable;
-    private Operator[] operators = {
+    private MethodBody[] methodBodies = {
             values -> null, values -> null, values -> null, values -> null, values -> null,
             values -> null, values -> null, values -> null, values -> null, values -> null,
     };
@@ -41,31 +41,31 @@ public class TestMethodTable {
         methodTable = new MethodTable();
 
         // method Void.name() : Void
-        methodTable.put("name", operators[0], Types.VOID, Types.VOID);
+        methodTable.put("name", methodBodies[0], Types.VOID, Types.VOID);
 
         // method Void.name(Void) : Void
-        methodTable.put("name", operators[1], Types.VOID, Types.VOID, Types.VOID);
+        methodTable.put("name", methodBodies[1], Types.VOID, Types.VOID, Types.VOID);
 
         // method Void.name(Void?) : Void
-        methodTable.put("name", operators[2], Types.VOID, Types.VOID, Types.NULLABLE_VOID);
+        methodTable.put("name", methodBodies[2], Types.VOID, Types.VOID, Types.NULLABLE_VOID);
 
         // method Void.name(Void, Void) : Void
-        methodTable.put("name", operators[3], Types.VOID, Types.VOID, Types.VOID, Types.VOID);
+        methodTable.put("name", methodBodies[3], Types.VOID, Types.VOID, Types.VOID, Types.VOID);
 
         // method Void.name(Void, Void?) : Void
-        methodTable.put("name", operators[4], Types.VOID, Types.VOID, Types.VOID, Types.NULLABLE_VOID);
+        methodTable.put("name", methodBodies[4], Types.VOID, Types.VOID, Types.VOID, Types.NULLABLE_VOID);
 
         // method Void.name(Integer?) : Void
-        methodTable.put("name", operators[5], Types.VOID, Types.VOID, Types.NULLABLE_INTEGER);
+        methodTable.put("name", methodBodies[5], Types.VOID, Types.VOID, Types.NULLABLE_INTEGER);
 
         // method Void.name(Float, Float?) : Void
-        methodTable.put("name", operators[6], Types.VOID, Types.VOID, Types.FLOAT, Types.NULLABLE_FLOAT);
+        methodTable.put("name", methodBodies[6], Types.VOID, Types.VOID, Types.FLOAT, Types.NULLABLE_FLOAT);
 
         // method Void.name(Float?, Float) : Void
-        methodTable.put("name", operators[7], Types.VOID, Types.VOID, Types.NULLABLE_FLOAT, Types.FLOAT);
+        methodTable.put("name", methodBodies[7], Types.VOID, Types.VOID, Types.NULLABLE_FLOAT, Types.FLOAT);
 
         // method Void.name(Void, Float?, Float) : Void
-        methodTable.put("name", operators[8], Types.VOID, Types.VOID, Types.VOID, Types.NULLABLE_FLOAT, Types.FLOAT);
+        methodTable.put("name", methodBodies[8], Types.VOID, Types.VOID, Types.VOID, Types.NULLABLE_FLOAT, Types.FLOAT);
     }
 
     @Test
@@ -75,10 +75,10 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name()
-        Method2 method = methodTable.lookupMethod("name", Types.VOID);
+        Method method = methodTable.lookupMethod("name", Types.VOID);
 
-        assertThat(method.getOperator())
-                .isSameAs(operators[0]);
+        assertThat(method.getMethodBody())
+                .isSameAs(methodBodies[0]);
     }
 
     @Test
@@ -88,10 +88,10 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void)
-        Method2 method = methodTable.lookupMethod("name", Types.VOID, Types.VOID);
+        Method method = methodTable.lookupMethod("name", Types.VOID, Types.VOID);
 
-        assertThat(method.getOperator())
-                .isSameAs(operators[1]);
+        assertThat(method.getMethodBody())
+                .isSameAs(methodBodies[1]);
     }
 
     @Test
@@ -101,10 +101,10 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void)
-        Method2 method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.FLOAT, Types.FLOAT);
+        Method method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.FLOAT, Types.FLOAT);
 
-        assertThat(method.getOperator())
-                .isSameAs(operators[8]);
+        assertThat(method.getMethodBody())
+                .isSameAs(methodBodies[8]);
     }
 
     @Test
@@ -114,10 +114,10 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void, Void)
-        Method2 method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.VOID);
+        Method method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.VOID);
 
-        assertThat(method.getOperator())
-                .isSameAs(operators[3]);
+        assertThat(method.getMethodBody())
+                .isSameAs(methodBodies[3]);
     }
 
     @Test
@@ -127,10 +127,10 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void, Void?)
-        Method2 method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.NULLABLE_VOID);
+        Method method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.NULLABLE_VOID);
 
-        assertThat(method.getOperator())
-                .isSameAs(operators[4]);
+        assertThat(method.getMethodBody())
+                .isSameAs(methodBodies[4]);
     }
 
     @Test
@@ -140,10 +140,10 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Integer)
-        Method2 method = methodTable.lookupMethod("name", Types.VOID, Types.INTEGER);
+        Method method = methodTable.lookupMethod("name", Types.VOID, Types.INTEGER);
 
-        assertThat(method.getOperator())
-                .isSameAs(operators[5]);
+        assertThat(method.getMethodBody())
+                .isSameAs(methodBodies[5]);
     }
 
     @Test

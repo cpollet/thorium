@@ -16,7 +16,7 @@
 
 package ch.pollet.thorium.types;
 
-import ch.pollet.thorium.data.Method2;
+import ch.pollet.thorium.data.Method;
 import ch.pollet.thorium.data.MethodTable;
 import ch.pollet.thorium.values.Value;
 
@@ -41,7 +41,7 @@ public abstract class BaseType implements Type {
     }
 
     @Override
-    public Method2 lookupMethod(String name, Type... parametersType) {
+    public Method lookupMethod(String name, Type... parametersType) {
         return methodTable().lookupMethod(name, this, parametersType);
     }
 

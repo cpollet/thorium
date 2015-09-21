@@ -16,8 +16,7 @@
 
 package ch.pollet.thorium.types;
 
-import ch.pollet.thorium.data.Method2;
-import ch.pollet.thorium.data.MethodTable;
+import ch.pollet.thorium.data.Method;
 
 /**
  * @author Christophe Pollet
@@ -68,7 +67,7 @@ public interface Type {
 
     boolean isAssignableTo(Type target);
 
-    Method2 lookupMethod(String name, Type... parametersType);
+    Method lookupMethod(String name, Type... parametersType);
 
     Type nullable();
 

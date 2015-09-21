@@ -16,7 +16,7 @@
 
 package ch.pollet.thorium.types.jbehave.steps;
 
-import ch.pollet.thorium.data.Method2;
+import ch.pollet.thorium.data.Method;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.types.Types;
 import ch.pollet.thorium.values.DirectValue;
@@ -35,7 +35,7 @@ public abstract class BaseSteps {
     private Value left;
     private Value right;
     private String methodName;
-    private Method2 method;
+    private Method method;
     private Value result;
     private Class<? extends Exception> expectedExceptionType;
     private Exception exception;
@@ -80,7 +80,7 @@ public abstract class BaseSteps {
 
     @When("evaluate")
     public void evaluate() {
-        result = method.getOperator().apply(left, right);
+        result = method.getMethodBody().apply(left, right);
     }
 
     @Then("the result is <result>")

@@ -16,7 +16,7 @@
 
 package ch.pollet.thorium.types;
 
-import ch.pollet.thorium.data.Method2;
+import ch.pollet.thorium.data.Method;
 import ch.pollet.thorium.data.MethodNotFoundException;
 import ch.pollet.thorium.data.MethodTable;
 
@@ -51,7 +51,7 @@ public class VoidType extends BaseType {
     }
 
     @Override
-    public Method2 lookupMethod(String name, Type... parametersType) {
+    public Method lookupMethod(String name, Type... parametersType) {
         throw new MethodNotFoundException("Method not found.", Collections.emptyList());
     }
 

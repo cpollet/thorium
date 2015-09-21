@@ -16,7 +16,7 @@
 
 package ch.pollet.thorium.data;
 
-import ch.pollet.thorium.execution.Operator;
+import ch.pollet.thorium.execution.MethodBody;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.utils.CollectionUtils;
 
@@ -32,15 +32,15 @@ import java.util.Map;
  * @author Christophe Pollet
  */
 public class MethodTable {
-    private Map<String, Map<MethodSignature, Operator>> methodTable;
-    private Map<String, Method2> cache;
+    private Map<String, Map<MethodSignature, MethodBody>> methodTable;
+    private Map<String, Method> cache;
 
     public MethodTable() {
         this.methodTable = new HashMap<>();
         this.cache = new HashMap<>();
     }
 
-    public void put(String name, Operator operator, Type targetType, Type returnType, Type... parameterTypes) {
+    public void put(String name, MethodBody methodBody, Type targetType, Type returnType, Type... parameterTypes) {
         if (methodTable.get(name) == null) {
             methodTable.put(name, new HashMap<>());
         }
@@ -51,9 +51,9 @@ public class MethodTable {
                 .withParameterTypes(parameterTypes)
                 .build();
 
-        methodTable.get(name).put(methodSignature, operator);
+        methodTable.get(name).put(methodSignature, methodBody);
 
-        cache.put(getCacheKey(name, targetType, parameterTypes), new Method2(methodSignature, operator));
+        cache.put(getCacheKey(name, targetType, parameterTypes), new Method(methodSignature, methodBody));
     }
 
     private String getCacheKey(String name, Type targetType, Type... parameterTypes) {
@@ -61,14 +61,14 @@ public class MethodTable {
     }
 
     // TODO review null/exception handling
-    public Method2 lookupMethod(String name, Type targetType, Type... parameterTypes) {
+    public Method lookupMethod(String name, Type targetType, Type... parameterTypes) {
         String cacheKey = getCacheKey(name, targetType, parameterTypes);
 
         if (cache.containsKey(cacheKey)) {
             return cache.get(cacheKey);
         }
 
-        Map<MethodSignature, Operator> methods = methodTable.get(name);
+        Map<MethodSignature, MethodBody> methods = methodTable.get(name);
 
         if (methods == null) {
             methods = Collections.emptyMap();
@@ -81,7 +81,7 @@ public class MethodTable {
         }
 
         MethodSignature signature = getMatch(scores);
-        Method2 method = new Method2(signature, methodTable.get(name).get(signature));
+        Method method = new Method(signature, methodTable.get(name).get(signature));
 
         cache.put(cacheKey, method);
 

@@ -24,7 +24,7 @@ import ch.pollet.thorium.analysis.exceptions.InvalidTypeException;
 import ch.pollet.thorium.analysis.values.Symbol;
 import ch.pollet.thorium.antlr.ThoriumBaseListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
-import ch.pollet.thorium.data.Method2;
+import ch.pollet.thorium.data.Method;
 import ch.pollet.thorium.data.MethodNotFoundException;
 import ch.pollet.thorium.execution.SymbolTable;
 import ch.pollet.thorium.types.Type;
@@ -414,7 +414,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     private Type inferMethodType(Token token, String methodName, Type leftType, Type... parametersTypes) {
-        Method2 method;
+        Method method;
         try {
             method = leftType.lookupMethod(methodName, parametersTypes);
         } catch (MethodNotFoundException e) {

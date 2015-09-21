@@ -14,14 +14,27 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.execution;
+package ch.pollet.thorium.data;
 
-import ch.pollet.thorium.values.Value;
+import ch.pollet.thorium.execution.MethodBody;
 
 /**
  * @author Christophe Pollet
  */
-@FunctionalInterface
-public interface Operator {// FIXME rename
-    Value apply(Value... values);
+public class Method {
+    private final MethodSignature methodSignature;
+    private final MethodBody methodBody;
+
+    public Method(MethodSignature methodSignature, MethodBody methodBody) {
+        this.methodSignature = methodSignature;
+        this.methodBody = methodBody;
+    }
+
+    public MethodSignature getMethodSignature() {
+        return methodSignature;
+    }
+
+    public MethodBody getMethodBody() {
+        return methodBody;
+    }
 }
