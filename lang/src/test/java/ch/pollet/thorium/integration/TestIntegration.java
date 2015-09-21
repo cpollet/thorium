@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium;
+package ch.pollet.thorium.integration;
 
 import ch.pollet.thorium.analysis.SemanticAnalyser;
 import ch.pollet.thorium.antlr.ThoriumLexer;

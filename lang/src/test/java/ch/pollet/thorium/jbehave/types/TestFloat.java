@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.antlr.grammar.jbehave;
+package ch.pollet.thorium.jbehave.types;
 
-import ch.pollet.thorium.antlr.grammar.jbehave.steps.ExpressionsSteps;
-import ch.pollet.thorium.antlr.grammar.jbehave.steps.StatementsSteps;
 import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
-import ch.pollet.thorium.jbehave.JBehaveStoryContext;
+import ch.pollet.thorium.jbehave.types.steps.FloatSteps;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Christophe Pollet
  */
-public class TestExpressions extends JBehaveBaseTestClass {
+public class TestFloat extends JBehaveBaseTestClass {
     @Override
     public List<Object> stepsDefinitions() {
-        JBehaveStoryContext storyContext = new JBehaveStoryContext();
-        return Arrays.asList(
-                new ExpressionsSteps(storyContext),
-                new StatementsSteps(storyContext)
-        );
+        return Collections.singletonList(new FloatSteps());
     }
 }

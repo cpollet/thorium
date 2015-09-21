@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.types.jbehave.steps;
+package ch.pollet.thorium.jbehave.types;
+
+import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
+import ch.pollet.thorium.jbehave.types.steps.IntegerSteps;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Christophe Pollet
  */
-public class BooleanSteps extends BaseSteps {
+public class TestInteger extends JBehaveBaseTestClass {
+    @Override
+    public List<Object> stepsDefinitions() {
+        return Collections.singletonList(new IntegerSteps());
+    }
 }

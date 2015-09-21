@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.analysis.jbehave.steps;
+package ch.pollet.thorium.jbehave.analysis.steps;
 
 import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.analysis.SemanticAnalyser;
 import ch.pollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import ch.pollet.thorium.analysis.values.Symbol;
-import ch.pollet.thorium.antlr.grammar.jbehave.steps.BaseSteps;
+import ch.pollet.thorium.jbehave.grammar.steps.BaseSteps;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;

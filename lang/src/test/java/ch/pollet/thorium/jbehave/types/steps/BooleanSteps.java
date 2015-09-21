@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.types.jbehave.steps;
+package ch.pollet.thorium.jbehave.types.steps;
 
 /**
  * @author Christophe Pollet
  */
-public class FloatSteps extends BaseSteps {
+public class BooleanSteps extends BaseSteps {
 }

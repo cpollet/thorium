@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.antlr.grammar.jbehave;
+package ch.pollet.thorium.jbehave.analysis;
 
-import ch.pollet.thorium.antlr.grammar.jbehave.steps.ExpressionsSteps;
-import ch.pollet.thorium.antlr.grammar.jbehave.steps.StatementsSteps;
+import ch.pollet.thorium.jbehave.analysis.steps.SemanticAnalysisSteps;
+import ch.pollet.thorium.jbehave.grammar.steps.StatementsSteps;
 import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 
@@ -27,12 +27,12 @@ import java.util.List;
 /**
  * @author Christophe Pollet
  */
-public class TestParser extends JBehaveBaseTestClass {
+public class TestControlStatementsAnalysis extends JBehaveBaseTestClass {
     @Override
     public List<Object> stepsDefinitions() {
         JBehaveStoryContext storyContext = new JBehaveStoryContext();
         return Arrays.asList(
-                new ExpressionsSteps(storyContext),
+                new SemanticAnalysisSteps(storyContext),
                 new StatementsSteps(storyContext)
         );
     }

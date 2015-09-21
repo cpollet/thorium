@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.antlr.grammar.jbehave.steps;
+package ch.pollet.thorium.jbehave.grammar;
 
+import ch.pollet.thorium.jbehave.grammar.steps.ExpressionsSteps;
+import ch.pollet.thorium.jbehave.grammar.steps.StatementsSteps;
+import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
-import org.jbehave.core.annotations.Alias;
-import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Named;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Christophe Pollet
  */
-public class ExpressionsSteps extends BaseSteps {
-    public ExpressionsSteps(JBehaveStoryContext storyContext) {
-        super(storyContext);
-    }
-
-    @Given("an expression <expression>")
-    @Alias("an expression $expression")
-    public void anExpression(@Named("expression") String expression) {
-        init();
-        storyContext.thoriumCode = expression;
-        storyContext.parser = createParser(expression);
-        storyContext.tree = storyContext.parser.expression();
+public class TestStatements extends JBehaveBaseTestClass {
+    @Override
+    public List<Object> stepsDefinitions() {
+        JBehaveStoryContext storyContext = new JBehaveStoryContext();
+        return Arrays.asList(
+                new ExpressionsSteps(storyContext),
+                new StatementsSteps(storyContext)
+        );
     }
 }

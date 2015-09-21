@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.types.jbehave.steps;
+package ch.pollet.thorium.jbehave.types.steps;
 
 /**
  * @author Christophe Pollet

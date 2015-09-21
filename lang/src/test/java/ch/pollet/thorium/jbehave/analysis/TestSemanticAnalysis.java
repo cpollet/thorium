@@ -14,20 +14,28 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.types.jbehave;
+package ch.pollet.thorium.jbehave.analysis;
 
+import ch.pollet.thorium.jbehave.analysis.steps.SemanticAnalysisSteps;
+import ch.pollet.thorium.jbehave.grammar.steps.ExpressionsSteps;
+import ch.pollet.thorium.jbehave.grammar.steps.StatementsSteps;
 import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
-import ch.pollet.thorium.types.jbehave.steps.BooleanSteps;
+import ch.pollet.thorium.jbehave.JBehaveStoryContext;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author Christophe Pollet
  */
-public class TestBoolean extends JBehaveBaseTestClass {
+public class TestSemanticAnalysis extends JBehaveBaseTestClass {
     @Override
     public List<Object> stepsDefinitions() {
-        return Collections.singletonList(new BooleanSteps());
+        JBehaveStoryContext storyContext = new JBehaveStoryContext();
+        return Arrays.asList(
+                new SemanticAnalysisSteps(storyContext),
+                new ExpressionsSteps(storyContext),
+                new StatementsSteps(storyContext)
+        );
     }
 }

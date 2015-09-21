@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.antlr.grammar.jbehave.steps;
+package ch.pollet.thorium.jbehave.grammar.steps;
 
 import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.ThrowingErrorListener;

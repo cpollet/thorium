@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.types.jbehave.steps;
+package ch.pollet.thorium.jbehave.types.steps;
 
 import ch.pollet.thorium.data.method.Method;
 import ch.pollet.thorium.types.Type;

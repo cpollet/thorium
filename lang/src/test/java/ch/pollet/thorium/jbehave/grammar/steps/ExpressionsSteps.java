@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.analysis.jbehave;
+package ch.pollet.thorium.jbehave.grammar.steps;
 
-import ch.pollet.thorium.analysis.jbehave.steps.SemanticAnalysisSteps;
-import ch.pollet.thorium.antlr.grammar.jbehave.steps.StatementsSteps;
-import ch.pollet.thorium.jbehave.JBehaveBaseTestClass;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
-
-import java.util.Arrays;
-import java.util.List;
+import org.jbehave.core.annotations.Alias;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Named;
 
 /**
  * @author Christophe Pollet
  */
-public class TestControlStatementsAnalysis extends JBehaveBaseTestClass {
-    @Override
-    public List<Object> stepsDefinitions() {
-        JBehaveStoryContext storyContext = new JBehaveStoryContext();
-        return Arrays.asList(
-                new SemanticAnalysisSteps(storyContext),
-                new StatementsSteps(storyContext)
-        );
+public class ExpressionsSteps extends BaseSteps {
+    public ExpressionsSteps(JBehaveStoryContext storyContext) {
+        super(storyContext);
+    }
+
+    @Given("an expression <expression>")
+    @Alias("an expression $expression")
+    public void anExpression(@Named("expression") String expression) {
+        init();
+        storyContext.thoriumCode = expression;
+        storyContext.parser = createParser(expression);
+        storyContext.tree = storyContext.parser.expression();
     }
 }
