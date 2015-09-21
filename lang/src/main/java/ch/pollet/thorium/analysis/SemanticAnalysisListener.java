@@ -201,6 +201,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             expressionType = getNodeType(expressionCtx);
 
             if (expressionType != Types.NULLABLE_VOID) {
+
                 if (!Type.isAssignableTo(symbolType, expressionType)) {
                     exceptions.add(InvalidTypeException.notCompatible(expressionCtx.getStart(), expressionType, symbolType));
                 } else if (symbolType == Types.NULLABLE_VOID) {

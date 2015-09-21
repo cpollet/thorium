@@ -60,10 +60,6 @@ public class MethodTable {
         return targetType.toString() + "." + name + "(" + CollectionUtils.concat(parameterTypes) + ")";
     }
 
-    // public Operator get(MethodSignature methodSignature) {
-    //     return methodTable.get(methodSignature.getName()).get(methodSignature);
-    // }
-
     // TODO review null/exception handling
     public Method2 lookupMethod(String name, Type targetType, Type... parameterTypes) {
         String cacheKey = getCacheKey(name, targetType, parameterTypes);

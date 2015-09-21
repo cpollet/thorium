@@ -17,14 +17,8 @@
 package ch.pollet.thorium.types;
 
 import ch.pollet.thorium.data.MethodTable;
-import ch.pollet.thorium.execution.Method;
-import ch.pollet.thorium.execution.MethodMatcher;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Christophe Pollet
@@ -32,8 +26,6 @@ import java.util.Map;
 public class BooleanType extends BaseType {
     static final BooleanType NULLABLE = new BooleanType(Nullable.YES);
     static final BooleanType NON_NULLABLE = new BooleanType(Nullable.NO);
-
-    private static final Map<MethodMatcher, Method> symbolTable = new HashMap<>();
 
     private static final MethodTable methodTable = new MethodTable();
 
@@ -50,11 +42,6 @@ public class BooleanType extends BaseType {
 
     private BooleanType(Nullable nullable) {
         super(nullable);
-    }
-
-    @Override
-    Map<MethodMatcher, Method> symbolTable() {
-        return symbolTable;
     }
 
     @Override

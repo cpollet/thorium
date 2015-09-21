@@ -18,18 +18,18 @@ package ch.pollet.thorium.types;
 
 import ch.pollet.thorium.data.Method2;
 import ch.pollet.thorium.data.MethodNotFoundException;
-import ch.pollet.thorium.execution.Method;
-import ch.pollet.thorium.execution.MethodMatcher;
+import ch.pollet.thorium.data.MethodTable;
 
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * @author Christophe Pollet
  */
 public class VoidType extends BaseType {
     static final VoidType NULLABLE = new VoidType(Nullable.YES);
-    static final VoidType NON_NULLABLE = new VoidType(Nullable.NO); // FIXME remove, void is by definition nullable
+    static final VoidType NON_NULLABLE = new VoidType(Nullable.NO); // TODO remove? void is by definition nullable
+
+    private static final MethodTable methodTable = new MethodTable();
 
     private VoidType(Nullable nullable) {
         super(nullable);
@@ -50,20 +50,14 @@ public class VoidType extends BaseType {
         return NON_NULLABLE;
     }
 
-    @Deprecated
-    @Override
-    public Method lookupMethod(MethodMatcher matcher) {
-        return null;
-    }
-
     @Override
     public Method2 lookupMethod(String name, Type... parametersType) {
         throw new MethodNotFoundException("Method not found.", Collections.emptyList());
     }
 
     @Override
-    Map<MethodMatcher, Method> symbolTable() {
-        return Collections.emptyMap();
+    MethodTable methodTable() {
+        return methodTable;
     }
 
     @Override

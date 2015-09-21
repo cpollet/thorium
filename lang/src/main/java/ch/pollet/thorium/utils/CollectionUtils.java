@@ -27,7 +27,7 @@ public class CollectionUtils {
         // nothing
     }
 
-    public static String concat(Object... objects) {
+    public static <T> String concat(T... objects) {
         return concat(Arrays.asList(objects));
     }
 

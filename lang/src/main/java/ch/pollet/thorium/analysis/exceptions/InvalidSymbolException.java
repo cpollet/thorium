@@ -40,7 +40,7 @@ public class InvalidSymbolException extends ThoriumSemanticException {
     public static ThoriumException identifierNotFound(Token token, String name) {
         return new InvalidSymbolException(formatMessage(IDENTIFIER_NOT_FOUND, location(token), name));
     }
-    
+
     public static ThoriumException alreadyDefined(Token token, String name, Token original) {
         return new InvalidSymbolException(formatMessage(ALREADY_DEFINED, location(token), name, location(original)));
     }

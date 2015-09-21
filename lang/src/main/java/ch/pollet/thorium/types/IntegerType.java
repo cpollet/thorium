@@ -17,13 +17,8 @@
 package ch.pollet.thorium.types;
 
 import ch.pollet.thorium.data.MethodTable;
-import ch.pollet.thorium.execution.Method;
-import ch.pollet.thorium.execution.MethodMatcher;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Christophe Pollet
@@ -31,9 +26,6 @@ import java.util.Map;
 public class IntegerType extends BaseType {
     static final IntegerType NULLABLE = new IntegerType(Nullable.YES);
     static final IntegerType NON_NULLABLE = new IntegerType(Nullable.NO);
-
-    @Deprecated
-    private static final Map<MethodMatcher, Method> symbolTable = new HashMap<>();
 
     private static final MethodTable methodTable = new MethodTable();
 
@@ -76,12 +68,6 @@ public class IntegerType extends BaseType {
     @Override
     public MethodTable methodTable() {
         return methodTable;
-    }
-
-    @Deprecated
-    @Override
-    Map<MethodMatcher, Method> symbolTable() {
-        return symbolTable;
     }
 
     @Override

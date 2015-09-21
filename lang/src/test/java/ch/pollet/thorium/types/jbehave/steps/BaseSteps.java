@@ -67,17 +67,8 @@ public abstract class BaseSteps {
 
     @When("decode method")
     public void decodeMethod() {
-        //try {
-        //    method = left.type().lookupMethod(new MethodMatcher(left.type(), methodName, right.type()));
-        //} catch (Exception e) {
-        //    if (expectedExceptionType != null && e.getClass().equals(expectedExceptionType)) {
-        //        this.exception = e;
-        //    } else {
-        //        throw e;
-        //    }
-        //}
         try {
-        method = left.type().lookupMethod(methodName, right.type());
+            method = left.type().lookupMethod(methodName, right.type());
         } catch (Exception e) {
             if (expectedExceptionType != null && e.getClass().equals(expectedExceptionType)) {
                 this.exception = e;
@@ -120,7 +111,6 @@ public abstract class BaseSteps {
                         .isFalse();
                 break;
         }
-
     }
 
     private Value decodeValue(String value) {
@@ -129,9 +119,9 @@ public abstract class BaseSteps {
                 return DirectValue.build(true);
             case "false":
                 return DirectValue.build(false);
-            case  "Void":
+            case "Void":
                 return DirectValue.build(Types.VOID);
-            case  "Void?":
+            case "Void?":
                 return DirectValue.build(Types.NULLABLE_VOID);
             case "Boolean":
                 return DirectValue.build(Types.BOOLEAN);

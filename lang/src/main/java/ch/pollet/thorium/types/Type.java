@@ -17,9 +17,7 @@
 package ch.pollet.thorium.types;
 
 import ch.pollet.thorium.data.Method2;
-import ch.pollet.thorium.data.MethodSignature;
-import ch.pollet.thorium.execution.Method;
-import ch.pollet.thorium.execution.MethodMatcher;
+import ch.pollet.thorium.data.MethodTable;
 
 /**
  * @author Christophe Pollet
@@ -48,7 +46,6 @@ public interface Type {
         }
     }
 
-    @Deprecated
     static boolean isAssignableTo(Type destination, Type source) {
         if (destination == source) {
             return true;
@@ -70,8 +67,6 @@ public interface Type {
     boolean isNullable();
 
     boolean isAssignableTo(Type target);
-
-    Method lookupMethod(MethodMatcher matcher);
 
     Method2 lookupMethod(String name, Type... parametersType);
 
