@@ -20,7 +20,7 @@ import ch.pollet.thorium.analysis.SemanticAnalyser;
 import ch.pollet.thorium.antlr.ThoriumLexer;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.execution.ExecutionContext;
-import ch.pollet.thorium.execution.SymbolTable;
+import ch.pollet.thorium.data.symbol.SymbolTable;
 import ch.pollet.thorium.execution.ExecutionVisitor;
 import ch.pollet.thorium.execution.values.Symbol;
 import org.antlr.v4.runtime.ANTLRInputStream;

@@ -19,7 +19,7 @@ package ch.pollet.thorium.analysis;
 import ch.pollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import ch.pollet.thorium.analysis.values.Symbol;
 import ch.pollet.thorium.antlr.ThoriumParser;
-import ch.pollet.thorium.execution.SymbolTable;
+import ch.pollet.thorium.data.symbol.SymbolTable;
 import ch.pollet.thorium.types.Type;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;

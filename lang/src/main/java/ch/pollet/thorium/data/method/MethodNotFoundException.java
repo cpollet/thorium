@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.data;
+package ch.pollet.thorium.data.method;
+
+import java.util.List;
 
 /**
  * @author Christophe Pollet
  */
-public class Method {
-    private final MethodSignature methodSignature;
-    private final MethodBody methodBody;
+public class MethodNotFoundException extends RuntimeException {
+    private final List<String> potentialMatches;
 
-    public Method(MethodSignature methodSignature, MethodBody methodBody) {
-        this.methodSignature = methodSignature;
-        this.methodBody = methodBody;
+    public MethodNotFoundException(String message, List<String> potentialMatches) {
+        super(message);
+        this.potentialMatches = potentialMatches;
     }
 
-    public MethodSignature getMethodSignature() {
-        return methodSignature;
-    }
-
-    public MethodBody getMethodBody() {
-        return methodBody;
+    public List<String> getPotentialMatches() {
+        return potentialMatches;
     }
 }

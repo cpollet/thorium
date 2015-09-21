@@ -16,9 +16,9 @@
 
 package ch.pollet.thorium.types;
 
-import ch.pollet.thorium.data.Method;
-import ch.pollet.thorium.data.MethodNotFoundException;
-import ch.pollet.thorium.data.MethodTable;
+import ch.pollet.thorium.data.method.Method;
+import ch.pollet.thorium.data.method.MethodNotFoundException;
+import ch.pollet.thorium.data.method.MethodTable;
 
 import java.util.Collections;
 

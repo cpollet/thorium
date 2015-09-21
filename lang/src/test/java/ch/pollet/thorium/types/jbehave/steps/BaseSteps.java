@@ -16,7 +16,7 @@
 
 package ch.pollet.thorium.types.jbehave.steps;
 
-import ch.pollet.thorium.data.Method;
+import ch.pollet.thorium.data.method.Method;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.types.Types;
 import ch.pollet.thorium.values.DirectValue;

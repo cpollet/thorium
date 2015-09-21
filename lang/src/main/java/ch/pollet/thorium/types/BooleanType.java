@@ -16,7 +16,7 @@
 
 package ch.pollet.thorium.types;
 
-import ch.pollet.thorium.data.MethodTable;
+import ch.pollet.thorium.data.method.MethodTable;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
 

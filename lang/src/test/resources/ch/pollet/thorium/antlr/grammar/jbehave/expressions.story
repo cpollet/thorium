@@ -5,7 +5,7 @@ Then the stack contains <count> elements
 And the result is <result> of type <type>
 
 Examples:
-| expression                                                | result            | type          | count |
+| expression                                                | result            | type      | count |
 | 1 + 1                                                     | 2                 | Integer   | 1     |
 | 1 + 1 + 1                                                 | 3                 | Integer   | 1     |
 | 2 * 2                                                     | 4                 | Integer   | 1     |
@@ -59,6 +59,6 @@ When being executed
 Then the exception <exception> is thrown
 
 Examples:
-| expression    | exception                                         |
-| true + 1      | ch.pollet.thorium.data.MethodNotFoundException    |
-| 1 + true      | ch.pollet.thorium.data.MethodNotFoundException    |
+| expression    | exception                                             |
+| true + 1      | ch.pollet.thorium.data.method.MethodNotFoundException |
+| 1 + true      | ch.pollet.thorium.data.method.MethodNotFoundException |

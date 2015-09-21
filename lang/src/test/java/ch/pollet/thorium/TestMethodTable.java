@@ -16,9 +16,9 @@
 
 package ch.pollet.thorium;
 
-import ch.pollet.thorium.data.Method;
-import ch.pollet.thorium.data.MethodTable;
-import ch.pollet.thorium.data.MethodBody;
+import ch.pollet.thorium.data.method.Method;
+import ch.pollet.thorium.data.method.MethodTable;
+import ch.pollet.thorium.data.method.MethodBody;
 import ch.pollet.thorium.types.Types;
 import org.fest.assertions.Fail;
 import org.junit.Before;

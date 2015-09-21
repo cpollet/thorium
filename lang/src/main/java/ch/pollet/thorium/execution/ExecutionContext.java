@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.execution;
 
+import ch.pollet.thorium.data.symbol.SymbolTable;
 import ch.pollet.thorium.execution.values.Symbol;
 import ch.pollet.thorium.values.Value;
 

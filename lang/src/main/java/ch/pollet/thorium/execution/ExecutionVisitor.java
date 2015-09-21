@@ -18,7 +18,7 @@ package ch.pollet.thorium.execution;
 
 import ch.pollet.thorium.antlr.ThoriumBaseVisitor;
 import ch.pollet.thorium.antlr.ThoriumParser;
-import ch.pollet.thorium.data.Method;
+import ch.pollet.thorium.data.method.Method;
 import ch.pollet.thorium.execution.values.Constant;
 import ch.pollet.thorium.execution.values.Symbol;
 import ch.pollet.thorium.execution.values.Variable;

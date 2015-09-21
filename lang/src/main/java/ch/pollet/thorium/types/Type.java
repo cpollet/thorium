@@ -16,7 +16,7 @@
 
 package ch.pollet.thorium.types;
 
-import ch.pollet.thorium.data.Method;
+import ch.pollet.thorium.data.method.Method;
 
 /**
  * @author Christophe Pollet

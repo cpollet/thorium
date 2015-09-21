@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.data;
-
-import java.util.List;
+package ch.pollet.thorium.data.symbol;
 
 /**
  * @author Christophe Pollet
  */
-public class MethodNotFoundException extends RuntimeException {
-    private final List<String> potentialMatches;
-
-    public MethodNotFoundException(String message, List<String> potentialMatches) {
+public class SymbolNotFoundException extends RuntimeException {
+    public SymbolNotFoundException(String message) {
         super(message);
-        this.potentialMatches = potentialMatches;
-    }
-
-    public List<String> getPotentialMatches() {
-        return potentialMatches;
     }
 }

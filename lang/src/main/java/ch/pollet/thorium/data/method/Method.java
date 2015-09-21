@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.execution;
+package ch.pollet.thorium.data.method;
 
 /**
  * @author Christophe Pollet
  */
-public class SymbolNotFoundException extends RuntimeException {
-    public SymbolNotFoundException(String message) {
-        super(message);
+public class Method {
+    private final MethodSignature methodSignature;
+    private final MethodBody methodBody;
+
+    public Method(MethodSignature methodSignature, MethodBody methodBody) {
+        this.methodSignature = methodSignature;
+        this.methodBody = methodBody;
+    }
+
+    public MethodSignature getMethodSignature() {
+        return methodSignature;
+    }
+
+    public MethodBody getMethodBody() {
+        return methodBody;
     }
 }

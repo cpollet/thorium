@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.data;
+package ch.pollet.thorium.data.method;
 
 import ch.pollet.thorium.types.Type;
 

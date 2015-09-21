@@ -17,7 +17,7 @@
 package ch.pollet.thorium;
 
 import ch.pollet.thorium.analysis.values.Symbol;
-import ch.pollet.thorium.execution.SymbolTable;
+import ch.pollet.thorium.data.symbol.SymbolTable;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.IdentityHashMap;
