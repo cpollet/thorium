@@ -17,6 +17,7 @@
 package ch.pollet.thorium.types;
 
 import ch.pollet.thorium.data.Method;
+import ch.pollet.thorium.data.MethodNotFoundException;
 import ch.pollet.thorium.data.MethodTable;
 import ch.pollet.thorium.values.Value;
 
@@ -41,8 +42,18 @@ public abstract class BaseType implements Type {
     }
 
     @Override
+    public boolean isMethodDefined(String name, Type... parametersType) {
+        try {
+            lookupMethod(name, parametersType);
+            return true;
+        } catch (MethodNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
     public Method lookupMethod(String name, Type... parametersType) {
-        return methodTable().lookupMethod(name, this, parametersType);
+        return methodTable().lookup(name, this, parametersType);
     }
 
     abstract MethodTable methodTable();

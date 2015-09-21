@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.execution;
+package ch.pollet.thorium.data;
 
 import ch.pollet.thorium.values.Value;
 

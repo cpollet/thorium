@@ -55,6 +55,8 @@ public interface Type {
 
     boolean isAssignableTo(Type target);
 
+    boolean isMethodDefined(String name, Type... parametersType);
+
     Method lookupMethod(String name, Type... parametersType);
 
     Type nullable();

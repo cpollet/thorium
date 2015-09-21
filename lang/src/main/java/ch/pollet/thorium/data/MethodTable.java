@@ -16,7 +16,6 @@
 
 package ch.pollet.thorium.data;
 
-import ch.pollet.thorium.execution.MethodBody;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.utils.CollectionUtils;
 
@@ -61,8 +60,7 @@ public class MethodTable {
         return targetType.toString() + "." + name + "(" + CollectionUtils.concat(parameterTypes) + ")";
     }
 
-    // TODO review null/exception handling
-    public Method lookupMethod(String name, Type targetType, Type... parameterTypes) {
+    public Method lookup(String name, Type targetType, Type... parameterTypes) {
         String cacheKey = getCacheKey(name, targetType, parameterTypes);
 
         if (cache.containsKey(cacheKey)) {

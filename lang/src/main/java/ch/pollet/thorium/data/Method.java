@@ -16,8 +16,6 @@
 
 package ch.pollet.thorium.data;
 
-import ch.pollet.thorium.execution.MethodBody;
-
 /**
  * @author Christophe Pollet
  */

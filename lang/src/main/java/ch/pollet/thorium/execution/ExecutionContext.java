@@ -70,7 +70,7 @@ public class ExecutionContext {
     }
 
     public Symbol lookupSymbol(String name) {
-        return symbolsTable.get(name);
+        return symbolsTable.lookup(name);
     }
 
     public boolean symbolDefined(String name) {

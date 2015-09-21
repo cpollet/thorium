@@ -106,7 +106,7 @@ public class SemanticAnalysisSteps extends BaseSteps {
             return;
         }
 
-        Symbol symbol = storyContext.analysisBaseScope.get(symbolName);
+        Symbol symbol = storyContext.analysisBaseScope.lookup(symbolName);
 
         assertThat(symbol)
                 .isNotNull();

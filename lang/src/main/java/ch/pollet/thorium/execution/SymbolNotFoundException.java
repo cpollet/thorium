@@ -14,31 +14,13 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.execution.values;
-
-import ch.pollet.thorium.values.DirectValue;
+package ch.pollet.thorium.execution;
 
 /**
  * @author Christophe Pollet
  */
-// TODO should be deleted and replaced by Variable instead, since semantic checks are already done...
-public class Constant extends Variable {
-
-    public Constant(String name) {
-        super(name);
-    }
-
-    @Override
-    public void setValue(DirectValue value) {
-        if (!isWritable()) {
-            throw new IllegalStateException("Cannot change value of constant " + getName());
-        }
-
-        super.setValue(value);
-    }
-
-    @Override
-    public boolean isWritable() {
-        return !hasValue();
+public class SymbolNotFoundException extends RuntimeException {
+    public SymbolNotFoundException(String message) {
+        super(message);
     }
 }

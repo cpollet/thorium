@@ -25,7 +25,6 @@ import ch.pollet.thorium.analysis.values.Symbol;
 import ch.pollet.thorium.antlr.ThoriumBaseListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.data.Method;
-import ch.pollet.thorium.data.MethodNotFoundException;
 import ch.pollet.thorium.execution.SymbolTable;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.types.Types;
@@ -46,7 +45,6 @@ import java.util.Set;
 
 /**
  * @author Christophe Pollet
- * @todo nullable (if for/while/if conditions -> forbidden)
  * @todo finish tests in semantic_analysis.story
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
@@ -226,14 +224,14 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             ctxOriginalScope.putInCurrentScope(name, symbol);
         }
 
-        return ctxOriginalScope.get(name);
+        return ctxOriginalScope.lookup(name);
     }
 
     @Override
     public void exitConstantDeclarationStatement(ThoriumParser.ConstantDeclarationStatementContext ctx) {
         registerVariableOrConstant(ctx, Symbol.SymbolKind.CONSTANT, ctx.UCIdentifier().getText(), ctx.type(), ctx.expression());
 
-        currentSymbolTable.get(ctx.UCIdentifier().getText()).lock();
+        currentSymbolTable.lookup(ctx.UCIdentifier().getText()).lock();
 
         logContextInformation(ctx);
     }
@@ -245,6 +243,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     @Override
     public void exitIfStatement(ThoriumParser.IfStatementContext ctx) {
         Type conditionType = getNodeType(ctx.expression());
+
         if (conditionType != Types.BOOLEAN) {
             exceptions.add(InvalidTypeException.invalidType(ctx.expression().getStart(), Types.BOOLEAN, conditionType));
         }
@@ -304,6 +303,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     private void exitLoopStatement(ParserRuleContext ctx, ThoriumParser.StatementsContext stmtsCtx, ThoriumParser.ExpressionContext exprCtx) {
         Type conditionType = getNodeType(exprCtx);
+
         if (conditionType != Types.BOOLEAN) {
             exceptions.add(InvalidTypeException.invalidType(exprCtx.getStart(), Types.BOOLEAN, conditionType));
         }
@@ -339,9 +339,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
         Type type = getNodeType(conditionCtx);
 
-        if (type == Types.NULLABLE_VOID) {
-            nodeObserverRegistry.registerObserver(ctx, conditionCtx);
-        } else if (type != Types.BOOLEAN) {
+        if (type != Types.BOOLEAN) {
             exceptions.add(InvalidTypeException.invalidType(conditionCtx.getStart(), Types.BOOLEAN, type));
         }
     }
@@ -414,13 +412,12 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     private Type inferMethodType(Token token, String methodName, Type leftType, Type... parametersTypes) {
-        Method method;
-        try {
-            method = leftType.lookupMethod(methodName, parametersTypes);
-        } catch (MethodNotFoundException e) {
+        if (!leftType.isMethodDefined(methodName, parametersTypes)) {
             exceptions.add(InvalidSymbolException.methodNotFound(token, methodName, leftType, parametersTypes));
             return Types.NULLABLE_VOID;
         }
+
+        Method method = leftType.lookupMethod(methodName, parametersTypes);
 
         return method.getMethodSignature().getReturnType();
     }
@@ -445,7 +442,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         Type leftType = getNodeType(ctx.identifier());
         Type rightType = getNodeType(ctx.expression());
 
-        Symbol symbol = currentSymbolTable.get(ctx.identifier().getText());
+        Symbol symbol = currentSymbolTable.lookup(ctx.identifier().getText());
 
         if (!symbol.isWritable()) {
             exceptions.add(InvalidAssignmentException.build(ctx.start));
@@ -529,7 +526,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             registerSymbol(kind, name, Types.NULLABLE_VOID, ctx);
         }
 
-        Symbol symbol = currentSymbolTable.get(name);
+        Symbol symbol = currentSymbolTable.lookup(name);
         types.put(ctx, asSet(symbol.getType()));
 
         if (symbol.getType() == Types.NULLABLE_VOID) {

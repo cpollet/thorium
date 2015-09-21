@@ -84,11 +84,11 @@ public class SymbolTable<T> {
         return symbols.containsKey(name);
     }
 
-    public T get(String name) {
+    public T lookup(String name) {
         SymbolTable<T> symbolTable = findTableContaining(name);
 
         if (symbolTable == null) {
-            throw new IllegalStateException("Symbol " + name + " is not defined");
+            throw new SymbolNotFoundException("Symbol " + name + " is not defined");
         }
 
         return symbolTable.symbols.get(name);
