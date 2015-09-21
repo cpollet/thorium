@@ -16,7 +16,6 @@
 
 package ch.pollet.thorium.analysis;
 
-import ch.pollet.thorium.ParseTreeSymbolTables;
 import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.analysis.exceptions.InvalidAssignmentException;
 import ch.pollet.thorium.analysis.exceptions.InvalidSymbolException;

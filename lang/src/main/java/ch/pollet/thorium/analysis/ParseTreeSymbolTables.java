@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium;
+package ch.pollet.thorium.analysis;
 
 import ch.pollet.thorium.analysis.values.Symbol;
 import ch.pollet.thorium.data.symbol.SymbolTable;
