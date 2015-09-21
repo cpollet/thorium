@@ -51,17 +51,6 @@ public abstract class Symbol implements Value {
         this.value = DirectValue.build();
     }
 
-    public static Symbol create(SymbolType symbolType, String name) {
-        switch (symbolType) {
-            case VARIABLE:
-                return new Variable(name);
-            case CONSTANT:
-                return new Constant(name);
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
     @Override
     public String getName() {
         return name;

@@ -16,7 +16,6 @@
 
 package ch.pollet.thorium.execution.values;
 
-import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.values.DirectValue;
 
 /**
@@ -26,14 +25,6 @@ public class Constant extends Variable {
 
     public Constant(String name) {
         super(name);
-    }
-
-    public Constant(String name, Type type) {
-        super(name, type);
-    }
-
-    public Constant(String name, DirectValue value) {
-        super(name, value);
     }
 
     @Override

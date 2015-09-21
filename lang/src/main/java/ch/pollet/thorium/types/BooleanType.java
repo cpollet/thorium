@@ -79,14 +79,18 @@ public class BooleanType extends BaseType {
             );
         }
 
-        if (left.hasValue() && (Boolean) (left.value().internalValue())) {
+        if (evaluatesToTrue(left)) {
             return left;
         }
-        if (right.hasValue() && (Boolean) (right.value().internalValue())) {
+        if (evaluatesToTrue(right)) {
             return right;
         }
 
         return DirectValue.build(Types.NULLABLE_BOOLEAN);
+    }
+
+    private static boolean evaluatesToTrue(Value value) {
+        return value.hasValue() && (Boolean) (value.value().internalValue());
     }
 
     private static Value and(Value... values) {
@@ -99,14 +103,18 @@ public class BooleanType extends BaseType {
             );
         }
 
-        if (left.hasValue() && !(Boolean) (left.value().internalValue())) {
+        if (evaluatesToFalse(left)) {
             return left;
         }
-        if (right.hasValue() && !(Boolean) (right.value().internalValue())) {
+        if (evaluatesToFalse(right)) {
             return right;
         }
 
         return DirectValue.build(Types.NULLABLE_BOOLEAN);
+    }
+
+    private static boolean evaluatesToFalse(Value value) {
+        return value.hasValue() && !(Boolean) (value.value().internalValue());
     }
 
     public static Value not(Value... values) {
