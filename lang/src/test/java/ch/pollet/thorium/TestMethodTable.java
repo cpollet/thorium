@@ -16,7 +16,7 @@
 
 package ch.pollet.thorium;
 
-import ch.pollet.thorium.data.MethodSignature;
+import ch.pollet.thorium.data.Method2;
 import ch.pollet.thorium.data.MethodTable;
 import ch.pollet.thorium.execution.Operator;
 import ch.pollet.thorium.types.Types;
@@ -75,9 +75,9 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name()
-        MethodSignature method = methodTable.lookupMethod("name", Types.VOID);
+        Method2 method = methodTable.lookupMethod("name", Types.VOID);
 
-        assertThat(methodTable.get(method))
+        assertThat(method.getOperator())
                 .isSameAs(operators[0]);
     }
 
@@ -88,9 +88,9 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void)
-        MethodSignature method = methodTable.lookupMethod("name", Types.VOID, Types.VOID);
+        Method2 method = methodTable.lookupMethod("name", Types.VOID, Types.VOID);
 
-        assertThat(methodTable.get(method))
+        assertThat(method.getOperator())
                 .isSameAs(operators[1]);
     }
 
@@ -101,9 +101,9 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void)
-        MethodSignature method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.FLOAT, Types.FLOAT);
+        Method2 method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.FLOAT, Types.FLOAT);
 
-        assertThat(methodTable.get(method))
+        assertThat(method.getOperator())
                 .isSameAs(operators[8]);
     }
 
@@ -114,9 +114,9 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void, Void)
-        MethodSignature method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.VOID);
+        Method2 method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.VOID);
 
-        assertThat(methodTable.get(method))
+        assertThat(method.getOperator())
                 .isSameAs(operators[3]);
     }
 
@@ -127,9 +127,9 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void, Void?)
-        MethodSignature method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.NULLABLE_VOID);
+        Method2 method = methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.NULLABLE_VOID);
 
-        assertThat(methodTable.get(method))
+        assertThat(method.getOperator())
                 .isSameAs(operators[4]);
     }
 
@@ -140,9 +140,9 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Integer)
-        MethodSignature method = methodTable.lookupMethod("name", Types.VOID, Types.INTEGER);
+        Method2 method = methodTable.lookupMethod("name", Types.VOID, Types.INTEGER);
 
-        assertThat(methodTable.get(method))
+        assertThat(method.getOperator())
                 .isSameAs(operators[5]);
     }
 
@@ -176,6 +176,24 @@ public class TestMethodTable {
         } catch (Exception e) {
             assertThat(e)
                     .hasMessage("Too many potential matches (2).");
+            return;
+        }
+
+        fail("Exception expected");
+    }
+
+    @Test
+    public void incompatibleParameter() {
+        // GIVEN
+        // @Before
+
+        // WHEN
+        // Void.name()
+        try {
+            methodTable.lookupMethod("name", Types.VOID, Types.VOID, Types.FLOAT, Types.INTEGER);
+        } catch (Exception e) {
+            assertThat(e)
+                    .hasMessage("Method not found.");
             return;
         }
 

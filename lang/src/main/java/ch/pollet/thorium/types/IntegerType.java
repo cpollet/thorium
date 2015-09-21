@@ -16,6 +16,7 @@
 
 package ch.pollet.thorium.types;
 
+import ch.pollet.thorium.data.MethodTable;
 import ch.pollet.thorium.execution.Method;
 import ch.pollet.thorium.execution.MethodMatcher;
 import ch.pollet.thorium.values.DirectValue;
@@ -28,29 +29,56 @@ import java.util.Map;
  * @author Christophe Pollet
  */
 public class IntegerType extends BaseType {
-    static final IntegerType INSTANCE = new IntegerType();
+    static final IntegerType NULLABLE = new IntegerType(Nullable.YES);
+    static final IntegerType NON_NULLABLE = new IntegerType(Nullable.NO);
 
+    @Deprecated
     private static final Map<MethodMatcher, Method> symbolTable = new HashMap<>();
 
+    private static final MethodTable methodTable = new MethodTable();
+
     static {
-        symbolTable.put(new MethodMatcher("+", FloatType.INSTANCE), new Method(FloatType.INSTANCE, IntegerType::plusFloat));
-        symbolTable.put(new MethodMatcher("+", IntegerType.INSTANCE), new Method(IntegerType.INSTANCE, IntegerType::plusInteger));
-        symbolTable.put(new MethodMatcher("*", FloatType.INSTANCE), new Method(FloatType.INSTANCE, IntegerType::timesFloat));
-        symbolTable.put(new MethodMatcher("*", IntegerType.INSTANCE), new Method(IntegerType.INSTANCE, IntegerType::timesInteger));
-        symbolTable.put(new MethodMatcher("<", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::lessThanInteger));
-        symbolTable.put(new MethodMatcher("<", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::lessThanFloat));
-        symbolTable.put(new MethodMatcher("<=", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::lessThanOrEqualToInteger));
-        symbolTable.put(new MethodMatcher("<=", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::lessThanOrEqualToFloat));
-        symbolTable.put(new MethodMatcher(">", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::biggerThanInteger));
-        symbolTable.put(new MethodMatcher(">", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::biggerThanFloat));
-        symbolTable.put(new MethodMatcher(">=", IntegerType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::biggerThanOrEqualToInteger));
-        symbolTable.put(new MethodMatcher(">=", FloatType.INSTANCE), new Method(BooleanType.INSTANCE, IntegerType::biggerThanOrEqualToFloat));
+        methodTable.put("+", IntegerType::plusInteger, IntegerType.NULLABLE, IntegerType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put("+", IntegerType::plusInteger, IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+
+        methodTable.put("*", IntegerType::timesInteger, IntegerType.NULLABLE, IntegerType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put("*", IntegerType::timesInteger, IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+
+        methodTable.put("+", IntegerType::plusFloat, IntegerType.NULLABLE, FloatType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put("+", IntegerType::plusFloat, IntegerType.NON_NULLABLE, FloatType.NON_NULLABLE, FloatType.NON_NULLABLE);
+
+        methodTable.put("*", IntegerType::timesFloat, IntegerType.NULLABLE, FloatType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put("*", IntegerType::timesFloat, IntegerType.NON_NULLABLE, FloatType.NON_NULLABLE, FloatType.NON_NULLABLE);
+
+        methodTable.put("<", IntegerType::lessThanInteger, IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put("<", IntegerType::lessThanInteger, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+        methodTable.put("<=", IntegerType::lessThanOrEqualToInteger, IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put("<=", IntegerType::lessThanOrEqualToInteger, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+        methodTable.put(">", IntegerType::biggerThanInteger, IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put(">", IntegerType::biggerThanInteger, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+        methodTable.put(">=", IntegerType::biggerThanOrEqualToInteger, IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put(">=", IntegerType::biggerThanOrEqualToInteger, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+
+        methodTable.put("<", IntegerType::lessThanFloat, IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put("<", IntegerType::lessThanFloat, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
+        methodTable.put("<=", IntegerType::lessThanOrEqualToFloat, IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put("<=", IntegerType::lessThanOrEqualToFloat, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
+        methodTable.put(">", IntegerType::biggerThanFloat, IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put(">", IntegerType::biggerThanFloat, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
+        methodTable.put(">=", IntegerType::biggerThanOrEqualToFloat, IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put(">=", IntegerType::biggerThanOrEqualToFloat, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
     }
 
-    private IntegerType() {
-        // nothing
+    private IntegerType(Nullable nullable) {
+        super(nullable);
     }
 
+    @Override
+    public MethodTable methodTable() {
+        return methodTable;
+    }
+
+    @Deprecated
     @Override
     Map<MethodMatcher, Method> symbolTable() {
         return symbolTable;
@@ -62,8 +90,18 @@ public class IntegerType extends BaseType {
     }
 
     @Override
+    public Type nullable() {
+        return NULLABLE;
+    }
+
+    @Override
+    public Type nonNullable() {
+        return NON_NULLABLE;
+    }
+
+    @Override
     public String toString() {
-        return "Integer";
+        return "Integer" + super.toString();
     }
 
     private static Value plusFloat(Value... values) {
@@ -76,7 +114,7 @@ public class IntegerType extends BaseType {
             );
         }
 
-        return DirectValue.build(Types.FLOAT);
+        return DirectValue.build(Types.NULLABLE_FLOAT);
     }
 
     private static Value plusInteger(Value... values) {
@@ -90,7 +128,7 @@ public class IntegerType extends BaseType {
             );
         }
 
-        return DirectValue.build(Types.INTEGER);
+        return DirectValue.build(Types.NULLABLE_INTEGER);
     }
 
     private static Value timesFloat(Value... values) {
@@ -107,7 +145,7 @@ public class IntegerType extends BaseType {
             );
         }
 
-        return DirectValue.build(Types.FLOAT);
+        return DirectValue.build(Types.NULLABLE_FLOAT);
     }
 
     private static boolean isFloatZero(Value value) {
@@ -128,7 +166,7 @@ public class IntegerType extends BaseType {
             );
         }
 
-        return DirectValue.build(Types.INTEGER);
+        return DirectValue.build(Types.NULLABLE_INTEGER);
     }
 
     private static boolean isIntegerZero(Value value) {
@@ -140,7 +178,7 @@ public class IntegerType extends BaseType {
         Value right = values[1];
 
         if (!left.hasValue() || !right.hasValue()) {
-            return DirectValue.build(Types.BOOLEAN);
+            return DirectValue.build(Types.NULLABLE_BOOLEAN);
         }
 
         if (Long.compare(integerValue(left), integerValue(right)) < 0) {
@@ -155,7 +193,7 @@ public class IntegerType extends BaseType {
         Value right = values[1];
 
         if (!left.hasValue() || !right.hasValue()) {
-            return DirectValue.build(Types.BOOLEAN);
+            return DirectValue.build(Types.NULLABLE_BOOLEAN);
         }
 
         if (Double.compare(integerValue(left).doubleValue(), floatValue(right)) < 0) {
@@ -170,7 +208,7 @@ public class IntegerType extends BaseType {
         Value right = values[1];
 
         if (!left.hasValue() || !right.hasValue()) {
-            return DirectValue.build(Types.BOOLEAN);
+            return DirectValue.build(Types.NULLABLE_BOOLEAN);
         }
 
         if (Long.compare(integerValue(left), integerValue(right)) <= 0) {
@@ -185,7 +223,7 @@ public class IntegerType extends BaseType {
         Value right = values[1];
 
         if (!left.hasValue() || !right.hasValue()) {
-            return DirectValue.build(Types.BOOLEAN);
+            return DirectValue.build(Types.NULLABLE_BOOLEAN);
         }
 
         if (Double.compare(integerValue(left).doubleValue(), floatValue(right)) <= 0) {

@@ -35,7 +35,7 @@ public abstract class Symbol implements Value {
 
     protected Symbol(String name) {
         this.name = name;
-        this.type = Types.VOID;
+        this.type = Types.NULLABLE_VOID;
         this.value = DirectValue.build();
     }
 
@@ -81,7 +81,7 @@ public abstract class Symbol implements Value {
     }
 
     private boolean hasType() {
-        return type != Types.VOID;
+        return type != Types.NULLABLE_VOID;
     }
 
     public void setValue(DirectValue value) {

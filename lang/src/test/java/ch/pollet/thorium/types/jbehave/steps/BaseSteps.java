@@ -16,8 +16,7 @@
 
 package ch.pollet.thorium.types.jbehave.steps;
 
-import ch.pollet.thorium.execution.Method;
-import ch.pollet.thorium.execution.MethodMatcher;
+import ch.pollet.thorium.data.Method2;
 import ch.pollet.thorium.types.Type;
 import ch.pollet.thorium.types.Types;
 import ch.pollet.thorium.values.DirectValue;
@@ -36,10 +35,12 @@ public abstract class BaseSteps {
     private Value left;
     private Value right;
     private String methodName;
-    private Method method;
+    private Method2 method;
     private Value result;
     private Class<? extends Exception> expectedExceptionType;
     private Exception exception;
+    private Value targetValue;
+    private Value sourceValue;
 
     @Given("method is <left> <method> <right>")
     public void methodDefinition(@Named("left") String left, @Named("method") String method, @Named("right") String right) {
@@ -54,10 +55,29 @@ public abstract class BaseSteps {
         this.expectedExceptionType = (Class<? extends Exception>) Class.forName(exception);
     }
 
+    @Given("target type <target>")
+    public void targetTypeIs(@Named("target") String target) {
+        this.targetValue = decodeValue(target);
+    }
+
+    @When("verify compatibility with source type <source>")
+    public void verifyCompatibilityWith(@Named("source") String source) {
+        this.sourceValue = decodeValue(source);
+    }
+
     @When("decode method")
     public void decodeMethod() {
+        //try {
+        //    method = left.type().lookupMethod(new MethodMatcher(left.type(), methodName, right.type()));
+        //} catch (Exception e) {
+        //    if (expectedExceptionType != null && e.getClass().equals(expectedExceptionType)) {
+        //        this.exception = e;
+        //    } else {
+        //        throw e;
+        //    }
+        //}
         try {
-            method = left.type().lookupMethod(new MethodMatcher(methodName, right.type()));
+        method = left.type().lookupMethod(methodName, right.type());
         } catch (Exception e) {
             if (expectedExceptionType != null && e.getClass().equals(expectedExceptionType)) {
                 this.exception = e;
@@ -69,7 +89,7 @@ public abstract class BaseSteps {
 
     @When("evaluate")
     public void evaluate() {
-        result = method.apply(left, right);
+        result = method.getOperator().apply(left, right);
     }
 
     @Then("the result is <result>")
@@ -79,7 +99,7 @@ public abstract class BaseSteps {
 
     @Then("the result type is <type>")
     public void assertResultType(@Named("type") String type) {
-        assertThat(method.getType().toString())
+        assertThat(method.getMethodSignature().getReturnType().toString())
                 .isEqualTo(type);
     }
 
@@ -88,18 +108,43 @@ public abstract class BaseSteps {
         assertThat(method).isNull();
     }
 
+    @Then("target and source types are <compatible>")
+    public void assertCompatibility(@Named("compatible") String compatible) {
+        switch (compatible) {
+            case "yes":
+                assertThat(Type.isAssignableTo(targetValue.type(), sourceValue.type()))
+                        .isTrue();
+                break;
+            default:
+                assertThat(Type.isAssignableTo(targetValue.type(), sourceValue.type()))
+                        .isFalse();
+                break;
+        }
+
+    }
+
     private Value decodeValue(String value) {
         switch (value) {
             case "true":
                 return DirectValue.build(true);
             case "false":
                 return DirectValue.build(false);
+            case  "Void":
+                return DirectValue.build(Types.VOID);
+            case  "Void?":
+                return DirectValue.build(Types.NULLABLE_VOID);
             case "Boolean":
                 return DirectValue.build(Types.BOOLEAN);
+            case "Boolean?":
+                return DirectValue.build(Types.NULLABLE_BOOLEAN);
             case "Integer":
                 return DirectValue.build(Types.INTEGER);
+            case "Integer?":
+                return DirectValue.build(Types.NULLABLE_INTEGER);
             case "Float":
                 return DirectValue.build(Types.FLOAT);
+            case "Float?":
+                return DirectValue.build(Types.NULLABLE_FLOAT);
         }
 
         try {

@@ -39,19 +39,19 @@ public class TestSymbol {
         String string = symbol.toString();
 
         // THEN
-        assertThat(string).isEqualTo("Symbol(name: Void)");
+        assertThat(string).isEqualTo("Symbol(name: Void?)");
     }
 
     @Test
     public void toStringWithType() {
         // GIVEN
-        Symbol symbol = new SymbolForTests("name", Types.INTEGER);
+        Symbol symbol = new SymbolForTests("name", Types.NULLABLE_INTEGER);
 
         // WHEN
         String string = symbol.toString();
 
         // THEN
-        assertThat(string).isEqualTo("Symbol(name: Integer)");
+        assertThat(string).isEqualTo("Symbol(name: Integer?)");
     }
 
     @Test

@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.execution;
+package ch.pollet.thorium.data;
 
-import ch.pollet.thorium.types.Type;
-import ch.pollet.thorium.values.Value;
+import ch.pollet.thorium.execution.Operator;
 
 /**
  * @author Christophe Pollet
  */
-@Deprecated
-public class Method {
-    private final Type type;
-    private final Operator op;
+// TODO rename to Method
+public class Method2 {
+    private final MethodSignature methodSignature;
+    private final Operator operator;
 
-    public Method(Type type, Operator op) {
-        this.type = type;
-        this.op = op;
+    public Method2(MethodSignature methodSignature, Operator operator) {
+        this.methodSignature = methodSignature;
+        this.operator = operator;
     }
 
-    public Type getType() {
-        return type;
+    public MethodSignature getMethodSignature() {
+        return methodSignature;
     }
 
-    public Value apply(Value... values) {
-        return op.apply(values);
+    // FIXME rename
+    public Operator getOperator() {
+        return operator;
     }
 }

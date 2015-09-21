@@ -16,6 +16,8 @@
 
 package ch.pollet.thorium.types;
 
+import ch.pollet.thorium.data.Method2;
+import ch.pollet.thorium.data.MethodTable;
 import ch.pollet.thorium.execution.Method;
 import ch.pollet.thorium.execution.MethodMatcher;
 import ch.pollet.thorium.values.Value;
@@ -26,6 +28,22 @@ import java.util.Map;
  * @author Christophe Pollet
  */
 public abstract class BaseType implements Type {
+    private Nullable nullable;
+
+    public BaseType(Nullable nullable) {
+        this.nullable = nullable;
+    }
+
+    @Override
+    public boolean isNullable() {
+        return nullable.isNullable();
+    }
+
+    @Override
+    public boolean isAssignableTo(Type target) {
+        return id() == target.id() && (target.isNullable() || !isNullable());
+    }
+
     @Override
     public Method lookupMethod(MethodMatcher matcher) {
         if (symbolTable().containsKey(matcher)) {
@@ -35,7 +53,18 @@ public abstract class BaseType implements Type {
         return null;
     }
 
+    @Override
+    public Method2 lookupMethod(String name, Type... parametersType) {
+        return methodTable().lookupMethod(name, this, parametersType);
+    }
+
+    @Deprecated
     abstract Map<MethodMatcher, Method> symbolTable();
+
+    // FIXME extract to interface, make abstract
+    public MethodTable methodTable() {
+        return null;
+    }
 
     protected static Long integerValue(Value value) {
         return (Long) value.value().internalValue();
@@ -47,5 +76,10 @@ public abstract class BaseType implements Type {
 
     protected static Boolean booleanValue(Value value) {
         return (Boolean) value.value().internalValue();
+    }
+
+    @Override
+    public String toString() {
+        return nullable.isNullable() ? "?" : "";
     }
 }

@@ -29,8 +29,8 @@ Examples:
 | b = 0; a = 0; for (b = 1; b < 3; b = b + 1) { a = a + 1; }    | a         | 2         | Integer                   |                   |
 | a = 0; for (def b = 2; b < 3; b = b + 1) { a = a + 1; }       | a         | 1         | Integer                   | b                 |
 | a = (for (i = 0; i < 10; i = i + 1) { i; });                  | a         | 10        | Integer                   |                   |
-| def a;                                                        | a         |           | Void                      |                   |
-| def Integer a;                                                | a         |           | Void                      |                   |
+| def a;                                                        | a         |           | Void?                     |                   |
+| def Integer? a;                                               | a         |           | Void?                     |                   |
 | def a = 1;                                                    | a         | 1         | Integer                   |                   |
 | def A = 1;                                                    | A         | 1         | Integer                   |                   |
 
@@ -51,6 +51,6 @@ Examples:
 | a = 1; { a * 2; }             | 2         | Integer   |
 | a = 1; b = 2;                 | 2         | Integer   |
 | 1 + 1 if true;                | 2         | Integer   |
-| 1 + 1 if false;               | N/A       | Void      |
+| 1 + 1 if false;               |           | Void      |
 | !true;                        | false     | Boolean   |
 | !false;                       | true      | Boolean   |

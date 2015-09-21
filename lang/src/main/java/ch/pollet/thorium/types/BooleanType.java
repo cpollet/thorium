@@ -16,10 +16,12 @@
 
 package ch.pollet.thorium.types;
 
+import ch.pollet.thorium.data.MethodTable;
 import ch.pollet.thorium.execution.Method;
 import ch.pollet.thorium.execution.MethodMatcher;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,18 +30,26 @@ import java.util.Map;
  * @author Christophe Pollet
  */
 public class BooleanType extends BaseType {
-    static final BooleanType INSTANCE = new BooleanType();
+    static final BooleanType NULLABLE = new BooleanType(Nullable.YES);
+    static final BooleanType NON_NULLABLE = new BooleanType(Nullable.NO);
 
     private static final Map<MethodMatcher, Method> symbolTable = new HashMap<>();
 
+    private static final MethodTable methodTable = new MethodTable();
+
     static {
-        symbolTable.put(new MethodMatcher("+", BooleanType.INSTANCE), new Method(BooleanType.INSTANCE, BooleanType::or));
-        symbolTable.put(new MethodMatcher("*", BooleanType.INSTANCE), new Method(BooleanType.INSTANCE, BooleanType::and));
-        symbolTable.put(new MethodMatcher("!"), new Method(BooleanType.INSTANCE, BooleanType::not));
+        methodTable.put("+", BooleanType::or, BooleanType.NULLABLE, BooleanType.NULLABLE, BooleanType.NULLABLE);
+        methodTable.put("+", BooleanType::or, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE);
+
+        methodTable.put("*", BooleanType::and, BooleanType.NULLABLE, BooleanType.NULLABLE, BooleanType.NULLABLE);
+        methodTable.put("*", BooleanType::and, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE);
+
+        methodTable.put("!", BooleanType::not, BooleanType.NULLABLE, BooleanType.NULLABLE);
+        methodTable.put("!", BooleanType::not, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE);
     }
 
-    private BooleanType() {
-        // nothing
+    private BooleanType(Nullable nullable) {
+        super(nullable);
     }
 
     @Override
@@ -48,13 +58,28 @@ public class BooleanType extends BaseType {
     }
 
     @Override
+    public MethodTable methodTable() {
+        return methodTable;
+    }
+
+    @Override
     public int id() {
         return ID_BOOLEAN;
     }
 
     @Override
+    public Type nullable() {
+        return NULLABLE;
+    }
+
+    @Override
+    public Type nonNullable() {
+        return NON_NULLABLE;
+    }
+
+    @Override
     public String toString() {
-        return "Boolean";
+        return "Boolean" + super.toString();
     }
 
     private static Value or(Value... values) {
@@ -74,7 +99,7 @@ public class BooleanType extends BaseType {
             return right;
         }
 
-        return DirectValue.build(Types.BOOLEAN);
+        return DirectValue.build(Types.NULLABLE_BOOLEAN);
     }
 
     private static Value and(Value... values) {
@@ -94,14 +119,14 @@ public class BooleanType extends BaseType {
             return right;
         }
 
-        return DirectValue.build(Types.BOOLEAN);
+        return DirectValue.build(Types.NULLABLE_BOOLEAN);
     }
 
     public static Value not(Value... values) {
         Value value = values[0];
 
         if (!value.hasValue()) {
-            return DirectValue.build(Types.BOOLEAN);
+            return DirectValue.build(Types.NULLABLE_BOOLEAN);
         }
 
         return DirectValue.build(!booleanValue(value));

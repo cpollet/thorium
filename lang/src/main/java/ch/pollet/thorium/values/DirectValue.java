@@ -43,7 +43,7 @@ public class DirectValue implements Value {
     private final Type type;
 
     private DirectValue() {
-        this.type = Types.VOID;
+        this.type = Types.NULLABLE_VOID;
     }
 
     private DirectValue(Type type) {
@@ -116,9 +116,9 @@ public class DirectValue implements Value {
     @Override
     public boolean hasValue() {
         boolean notVoid = this != VOID;
-        boolean booleanWithValue = type == Types.BOOLEAN && booleanValue != null;
-        boolean integerWithValue = type == Types.INTEGER && integerValue != null;
-        boolean floatWithValue = type == Types.FLOAT && floatValue != null;
+        boolean booleanWithValue = type == Types.BOOLEAN || (type == Types.NULLABLE_BOOLEAN && booleanValue != null);
+        boolean integerWithValue = type == Types.INTEGER || (type == Types.NULLABLE_INTEGER && integerValue != null);
+        boolean floatWithValue = type == Types.FLOAT || (type == Types.NULLABLE_FLOAT && floatValue != null);
 
         return notVoid && (booleanWithValue || integerWithValue || floatWithValue);
     }

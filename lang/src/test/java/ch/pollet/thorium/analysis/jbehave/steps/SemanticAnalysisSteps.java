@@ -102,6 +102,10 @@ public class SemanticAnalysisSteps extends BaseSteps {
     @Then("the symbol <symbol> is of type <type>")
     @Alias("the symbol $symbol is of type $type")
     public void assertSymbolIsOfType(@Named("symbol") String symbolName, @Named("type") String type) {
+        if (symbolName.isEmpty()) {
+            return;
+        }
+
         Symbol symbol = storyContext.analysisBaseScope.get(symbolName);
 
         assertThat(symbol)
@@ -133,6 +137,6 @@ public class SemanticAnalysisSteps extends BaseSteps {
 
         storyContext.exception = null;
         storyContext.exceptionExpected = false;
-        storyContext.exceptionsExpected=0;
+        storyContext.exceptionsExpected = 0;
     }
 }

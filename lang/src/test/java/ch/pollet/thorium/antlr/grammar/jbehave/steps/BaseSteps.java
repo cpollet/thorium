@@ -20,11 +20,13 @@ import ch.pollet.thorium.ThoriumException;
 import ch.pollet.thorium.ThrowingErrorListener;
 import ch.pollet.thorium.antlr.ThoriumParser;
 import ch.pollet.thorium.antlr.grammar.ParserBuilder;
+import ch.pollet.thorium.data.MethodNotFoundException;
 import ch.pollet.thorium.execution.ExecutionContext;
 import ch.pollet.thorium.execution.ExecutionVisitor;
 import ch.pollet.thorium.execution.SymbolTable;
 import ch.pollet.thorium.execution.values.Symbol;
 import ch.pollet.thorium.jbehave.JBehaveStoryContext;
+import ch.pollet.thorium.types.Types;
 import ch.pollet.thorium.values.DirectValue;
 import ch.pollet.thorium.values.Value;
 import org.jbehave.core.annotations.Alias;
@@ -61,7 +63,7 @@ public abstract class BaseSteps {
 
         try {
             executionVisitor.visit(storyContext.tree);
-        } catch (ThoriumException | IllegalStateException | AssertionError e) {
+        } catch (ThoriumException | IllegalStateException | AssertionError | MethodNotFoundException e) {
             if (storyContext.exceptionExpected && storyContext.exception == null) {
                 storyContext.exception = e;
             } else {
@@ -218,8 +220,12 @@ public abstract class BaseSteps {
         switch (type) {
             case "Integer":
                 return DirectValue.build(Long.parseLong(value));
+            case "Integer?":
+                return DirectValue.build(Types.NULLABLE_INTEGER);
             case "Float":
                 return DirectValue.build(Double.parseDouble(value));
+            case "Float?":
+                return DirectValue.build(Types.NULLABLE_FLOAT);
             case "Boolean":
                 switch (value) {
                     case "true":
@@ -229,8 +235,12 @@ public abstract class BaseSteps {
                     default:
                         throw new IllegalArgumentException("[" + value + "] is not a valid Boolean value");
                 }
+            case "Boolean?":
+                return DirectValue.build(Types.NULLABLE_BOOLEAN);
             case "Void":
                 return DirectValue.build();
+            case "Void?":
+                return DirectValue.build(Types.NULLABLE_VOID);
         }
 
         throw new IllegalArgumentException("[" + type + "] is not a valid type");

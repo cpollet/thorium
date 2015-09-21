@@ -59,6 +59,6 @@ When being executed
 Then the exception <exception> is thrown
 
 Examples:
-| expression    | exception                         |
-| true + 1      | java.lang.IllegalStateException   |
-| 1 + true      | java.lang.IllegalStateException   |
+| expression    | exception                                         |
+| true + 1      | ch.pollet.thorium.data.MethodNotFoundException    |
+| 1 + true      | ch.pollet.thorium.data.MethodNotFoundException    |

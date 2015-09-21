@@ -17,6 +17,7 @@
 package ch.pollet.thorium.execution;
 
 import ch.pollet.thorium.types.Type;
+import ch.pollet.thorium.types.Types;
 import ch.pollet.thorium.utils.CollectionUtils;
 
 import java.util.Arrays;
@@ -26,11 +27,20 @@ import java.util.Objects;
 /**
  * @author Christophe Pollet
  */
+@Deprecated
 public class MethodMatcher {
     private final String name;
     private final List<Type> parameterTypes;
+    private final Type targetType;
+
+    public MethodMatcher(Type targetType, String name, Type... parameterTypes) {
+        this.targetType = targetType;
+        this.name = name;
+        this.parameterTypes = Arrays.asList(parameterTypes);
+    }
 
     public MethodMatcher(String name, Type... parameterTypes) {
+        this.targetType = Types.NULLABLE_VOID;
         this.name = name;
         this.parameterTypes = Arrays.asList(parameterTypes);
     }
@@ -41,7 +51,8 @@ public class MethodMatcher {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean
+    equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -52,12 +63,13 @@ public class MethodMatcher {
 
         MethodMatcher that = (MethodMatcher) o;
 
-        return Objects.equals(name, that.name) &&
+        return Objects.equals(targetType, that.targetType) &&
+                Objects.equals(name, that.name) &&
                 Objects.equals(parameterTypes, that.parameterTypes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, parameterTypes);
+        return Objects.hash(targetType, name, parameterTypes);
     }
 }

@@ -22,6 +22,7 @@ import ch.pollet.thorium.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +33,7 @@ import java.util.Map;
  */
 public class MethodTable {
     private Map<String, Map<MethodSignature, Operator>> methodTable;
-    private Map<String, MethodSignature> cache;
+    private Map<String, Method2> cache;
 
     public MethodTable() {
         this.methodTable = new HashMap<>();
@@ -52,24 +53,31 @@ public class MethodTable {
 
         methodTable.get(name).put(methodSignature, operator);
 
-        cache.put(getCacheKey(name, targetType, parameterTypes), methodSignature);
+        cache.put(getCacheKey(name, targetType, parameterTypes), new Method2(methodSignature, operator));
     }
 
     private String getCacheKey(String name, Type targetType, Type... parameterTypes) {
         return targetType.toString() + "." + name + "(" + CollectionUtils.concat(parameterTypes) + ")";
     }
 
-    public Operator get(MethodSignature methodSignature) {
-        return methodTable.get(methodSignature.getName()).get(methodSignature);
-    }
+    // public Operator get(MethodSignature methodSignature) {
+    //     return methodTable.get(methodSignature.getName()).get(methodSignature);
+    // }
 
-    public MethodSignature lookupMethod(String name, Type targetType, Type... parameterTypes) {
+    // TODO review null/exception handling
+    public Method2 lookupMethod(String name, Type targetType, Type... parameterTypes) {
         String cacheKey = getCacheKey(name, targetType, parameterTypes);
+
         if (cache.containsKey(cacheKey)) {
             return cache.get(cacheKey);
         }
 
         Map<MethodSignature, Operator> methods = methodTable.get(name);
+
+        if (methods == null) {
+            methods = Collections.emptyMap();
+        }
+
         Map<MethodSignature, Integer> scores = new HashMap<>(methods.size());
 
         for (MethodSignature methodSignature : methods.keySet()) {
@@ -77,10 +85,11 @@ public class MethodTable {
         }
 
         MethodSignature signature = getMatch(scores);
+        Method2 method = new Method2(signature, methodTable.get(name).get(signature));
 
-        cache.put(cacheKey, signature);
+        cache.put(cacheKey, method);
 
-        return signature;
+        return method;
     }
 
     /**
@@ -111,7 +120,13 @@ public class MethodTable {
             Type destination = destinations.next();
             Type source = sources.next();
 
-            parameterTypesScore += typeScore(destination, source);
+            int score = typeScore(destination, source);
+
+            if (score < 0) {
+                return -1;
+            }
+
+            parameterTypesScore += score;
         }
 
         return targetTypeScore + parameterTypesScore;
@@ -147,9 +162,9 @@ public class MethodTable {
         }
 
         if (potentialMatches.isEmpty()) {
-            throw new IllegalStateException("Method not found.");
+            throw new MethodNotFoundException("Method not found.", potentialMatches);
         } else if (potentialMatches.size() > 1) {
-            throw new IllegalStateException("Too many potential matches (" + potentialMatches.size() + ").");
+            throw new MethodNotFoundException("Too many potential matches (" + potentialMatches.size() + ").", potentialMatches);
         }
 
         return potentialMatches.get(0);

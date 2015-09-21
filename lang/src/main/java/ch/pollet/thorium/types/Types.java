@@ -24,8 +24,26 @@ public class Types {
         // nothing
     }
 
-    public static Type INTEGER = IntegerType.INSTANCE;
-    public static Type FLOAT = FloatType.INSTANCE;
-    public static Type BOOLEAN = BooleanType.INSTANCE;
-    public static Type VOID = VoidType.INSTANCE;
+    public static final Type NULLABLE_INTEGER = IntegerType.NULLABLE;
+    public static final Type INTEGER = IntegerType.NON_NULLABLE;
+
+    public static final Type NULLABLE_FLOAT = FloatType.NULLABLE;
+    public static final Type FLOAT = FloatType.NON_NULLABLE;
+
+    public static final Type NULLABLE_BOOLEAN = BooleanType.NULLABLE;
+    public static final Type BOOLEAN = BooleanType.NON_NULLABLE;
+
+    public static final Type NULLABLE_VOID = VoidType.NULLABLE;
+    public static final Type VOID = VoidType.NON_NULLABLE;
+
+    public static Type get(Type type, Type.Nullable nullable) {
+        switch (nullable) {
+            case YES:
+                return type.nullable();
+            case NO:
+                return type.nonNullable();
+            default:
+                throw new IllegalArgumentException(nullable + " is not a valid argument. Expected: YES or NO");
+        }
+    }
 }

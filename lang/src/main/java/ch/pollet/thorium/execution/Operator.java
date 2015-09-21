@@ -22,6 +22,6 @@ import ch.pollet.thorium.values.Value;
  * @author Christophe Pollet
  */
 @FunctionalInterface
-public interface Operator {
+public interface Operator {// FIXME rename
     Value apply(Value... values);
 }

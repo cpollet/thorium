@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
-package ch.pollet.thorium.execution;
+package ch.pollet.thorium.data;
 
-import ch.pollet.thorium.types.Type;
-import ch.pollet.thorium.values.Value;
+import java.util.List;
 
 /**
  * @author Christophe Pollet
  */
-@Deprecated
-public class Method {
-    private final Type type;
-    private final Operator op;
+public class MethodNotFoundException extends RuntimeException {
+    public List<MethodSignature> potentialMatches;
 
-    public Method(Type type, Operator op) {
-        this.type = type;
-        this.op = op;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public Value apply(Value... values) {
-        return op.apply(values);
+    public MethodNotFoundException(String message, List<MethodSignature> potentialMatches) {
+        super(message);
+        this.potentialMatches = potentialMatches;
     }
 }

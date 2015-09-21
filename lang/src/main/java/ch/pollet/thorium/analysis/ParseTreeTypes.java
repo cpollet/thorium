@@ -44,7 +44,7 @@ public class ParseTreeTypes {
 
         annotations.forEach((parseTree, types) -> {
             if (types.size() != 1) {
-                result.put(parseTree, Types.VOID);
+                result.put(parseTree, Types.NULLABLE_VOID);
             } else {
                 result.put(parseTree, types.iterator().next());
             }
