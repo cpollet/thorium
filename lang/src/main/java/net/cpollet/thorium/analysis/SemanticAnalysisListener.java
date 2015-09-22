@@ -37,14 +37,16 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Christophe Pollet
- * @todo finish tests in semantic_analysis.story
+ * @todo fixme a cannot be declared in two different if branches... test already commented in semantic_analysis.story
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
     private static final Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
@@ -257,27 +259,50 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             exceptions.add(InvalidTypeException.invalidType(ctx.expression().getStart(), Types.BOOLEAN, conditionType));
         }
 
-        Set<Type> possibleTypes = getNodeTypes(ctx.statements());
-        if (possibleTypes.contains(Types.NULLABLE_VOID)) {
+        Set<Type> leftBranchTypes = getNodeTypes(ctx.statements());
+        if (leftBranchTypes.contains(Types.NULLABLE_VOID)) {
             nodeObserverRegistry.registerObserver(ctx, ctx.statements());
         } else {
             nodeObserverRegistry.notifyObservers(ctx, this);
         }
 
+        Set<Type> rightBranchTypes = Collections.emptySet();
         if (ctx.elseStatement() != null) {
-            Set<Type> possibleTypesFromFalseBranch = getNodeTypes(ctx.elseStatement());
-            if (possibleTypes.contains(Types.NULLABLE_VOID)) {
+            rightBranchTypes = getNodeTypes(ctx.elseStatement());
+            if (leftBranchTypes.contains(Types.NULLABLE_VOID)) {
                 nodeObserverRegistry.registerObserver(ctx, ctx.elseStatement());
             } else {
                 nodeObserverRegistry.notifyObservers(ctx, this);
             }
-
-            possibleTypes.addAll(possibleTypesFromFalseBranch);
         }
+
+        // Compute the intersection and remove from each branch the common types
+        Set<Type> bothBranchTypes = intersect(leftBranchTypes, rightBranchTypes);
+        leftBranchTypes.removeAll(bothBranchTypes);
+        rightBranchTypes.removeAll(bothBranchTypes);
+
+        // Types appearing on left or right branches are nullable, as we are unsure about the branch's execution
+        leftBranchTypes = leftBranchTypes.stream().map(Type::nullable).collect(Collectors.toSet());
+        rightBranchTypes = rightBranchTypes.stream().map(Type::nullable).collect(Collectors.toSet());
+
+        Set<Type> possibleTypes = new HashSet<>(bothBranchTypes.size() + leftBranchTypes.size() + rightBranchTypes.size());
+        possibleTypes.addAll(leftBranchTypes);
+        possibleTypes.addAll(rightBranchTypes);
+        possibleTypes.addAll(bothBranchTypes);
 
         types.put(ctx, possibleTypes);
 
         logContextInformation(ctx);
+    }
+
+    private <T> Set<T> intersect(Set<T> left, Set<T> right) {
+        if (left.size() == 0 || right.size() == 0) {
+            return Collections.emptySet();
+        }
+
+        Set<T> result = new HashSet<>(left);
+        result.retainAll(right);
+        return result;
     }
 
     @Override
@@ -324,6 +349,9 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             nodeObserverRegistry.notifyObservers(ctx, this);
         }
 
+        // we are not sure a loop will be executed once, so types are always nullable...
+        possibleTypes = possibleTypes.stream().map(Type::nullable).collect(Collectors.toSet());
+
         types.put(ctx, possibleTypes);
 
         logContextInformation(ctx);
@@ -345,6 +373,10 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     private void conditionalOrRepeatedStatement(ParserRuleContext ctx, ThoriumParser.ExpressionContext expressionCtx, ThoriumParser.ExpressionContext conditionCtx) {
         findNodeType(ctx, expressionCtx);
+
+        // conditional statements are always nullable, as we are not sure they will actually by executed and thus that
+        // they will return an actual non-null value...
+        types.put(ctx, asSet(getNodeType(ctx).nullable()));
 
         Type type = getNodeType(conditionCtx);
 
