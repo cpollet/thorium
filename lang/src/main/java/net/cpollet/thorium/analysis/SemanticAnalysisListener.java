@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author Christophe Pollet
- * @todo a variable cannot be declared in two different if branches... test already commented in semantic_analysis.story
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
     private static final Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
@@ -251,6 +250,12 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     //region If Statement
 
+
+    @Override
+    public void enterIfStatement(ThoriumParser.IfStatementContext ctx) {
+        currentSymbolTable = currentSymbolTable.wrap();
+    }
+
     @Override
     public void exitIfStatement(ThoriumParser.IfStatementContext ctx) {
         Type conditionType = getNodeType(ctx.expression());
@@ -292,6 +297,8 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
         types.put(ctx, possibleTypes);
 
+        currentSymbolTable = currentSymbolTable.unwrap();
+
         logContextInformation(ctx);
     }
 
@@ -306,6 +313,11 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     @Override
+    public void enterElseStatement(ThoriumParser.ElseStatementContext ctx) {
+        currentSymbolTable = currentSymbolTable.wrap();
+    }
+
+    @Override
     public void exitElseStatement(ThoriumParser.ElseStatementContext ctx) {
         if (ctx.statements() != null) {
             findNodeTypes(ctx, ctx.statements());
@@ -314,6 +326,8 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         } else {
             throw new IllegalArgumentException();
         }
+
+        currentSymbolTable = currentSymbolTable.unwrap();
     }
 
     //endregion
