@@ -21,9 +21,9 @@ import net.pollet.thorium.ThrowingErrorListener;
 import net.pollet.thorium.antlr.ThoriumParser;
 import net.pollet.thorium.antlr.grammar.ParserBuilder;
 import net.pollet.thorium.data.method.MethodNotFoundException;
+import net.pollet.thorium.data.symbol.SymbolTable;
 import net.pollet.thorium.execution.ExecutionContext;
 import net.pollet.thorium.execution.ExecutionVisitor;
-import net.pollet.thorium.data.symbol.SymbolTable;
 import net.pollet.thorium.execution.values.Symbol;
 import net.pollet.thorium.jbehave.JBehaveStoryContext;
 import net.pollet.thorium.types.Types;
@@ -136,6 +136,10 @@ public abstract class BaseSteps {
     @Then("the exception <exception> is thrown")
     @Alias("the exception $exception$ is thrown")
     public void exceptionIsThrown(@Named("exception") String exception) throws ClassNotFoundException {
+        if (exception.startsWith(".")) {
+            exception = "net.pollet.thorium" + exception;
+        }
+
         assertThat(storyContext.exception)
                 .overridingErrorMessage("Expected exception not thrown")
                 .isNotNull();
@@ -151,6 +155,10 @@ public abstract class BaseSteps {
     @Then(value = "the exception <exception> is thrown with message matching <message>", priority = 2)
     @Alias("the exception $exception is thrown with message matching $message")
     public void exceptionIsThrownWithMessageMatching(@Named("exception") String exception, @Named("message") String message) throws ClassNotFoundException {
+        if (exception.startsWith(".")) {
+            exception = "net.pollet.thorium" + exception;
+        }
+
         assertThat(storyContext.exception)
                 .overridingErrorMessage("Expected exception not thrown")
                 .isNotNull();

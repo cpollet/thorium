@@ -166,6 +166,16 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     private void registerVariableOrConstant(ParserRuleContext ctx, Symbol.SymbolKind symbolKind, String name, ThoriumParser.TypeContext typeCtx, ThoriumParser.ExpressionContext expressionCtx) {
         Type symbolType = findSymbolType(ctx, typeCtx, expressionCtx);
 
+        if (symbolKind == Symbol.SymbolKind.CONSTANT && symbolType.isNullable()) {
+            exceptions.add(InvalidTypeException.invalidType(ctx.getStart(), symbolType.nonNullable(), symbolType.nullable()));
+            symbolType = symbolType.nonNullable();
+        }
+
+        if (!symbolType.isNullable() && expressionCtx==null) {
+            exceptions.add(InvalidTypeException.invalidType(ctx.getStart(), symbolType.nullable(), symbolType.nonNullable()));
+            symbolType = symbolType.nullable();
+        }
+
         Symbol symbol = registerSymbol(symbolKind, name, symbolType, ctx);
 
         if (symbol.getDefinedAt() != null && symbol.getDefinedAt() != ctx) {

@@ -59,6 +59,6 @@ When being executed
 Then the exception <exception> is thrown
 
 Examples:
-| expression    | exception                                                 |
-| true + 1      | net.pollet.thorium.data.method.MethodNotFoundException    |
-| 1 + true      | net.pollet.thorium.data.method.MethodNotFoundException    |
+| expression    | exception                             |
+| true + 1      | .data.method.MethodNotFoundException  |
+| 1 + true      | .data.method.MethodNotFoundException  |

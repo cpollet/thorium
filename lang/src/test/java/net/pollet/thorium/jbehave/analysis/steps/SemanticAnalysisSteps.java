@@ -20,8 +20,8 @@ import net.pollet.thorium.ThoriumException;
 import net.pollet.thorium.analysis.SemanticAnalyser;
 import net.pollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.pollet.thorium.analysis.values.Symbol;
-import net.pollet.thorium.jbehave.grammar.steps.BaseSteps;
 import net.pollet.thorium.jbehave.JBehaveStoryContext;
+import net.pollet.thorium.jbehave.grammar.steps.BaseSteps;
 import org.fest.assertions.Assertions;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
@@ -127,6 +127,10 @@ public class SemanticAnalysisSteps extends BaseSteps {
 
         assertThat(exception.getCauses())
                 .hasSize(storyContext.exceptionsExpected);
+
+        if (exceptionClass.startsWith(".")) {
+            exceptionClass = "net.pollet.thorium" + exceptionClass;
+        }
 
         Assertions.assertThat(exception.getCauses().get(i))
                 .isNotNull()
