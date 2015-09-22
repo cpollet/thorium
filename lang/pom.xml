@@ -85,7 +85,7 @@
                 <version>0.7.5.201505241946</version>
                 <configuration>
                     <excludes>
-                        <exclude>ch/pollet/thorium/antlr/*</exclude>
+                        <exclude>net/cpollet/thorium/antlr/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
