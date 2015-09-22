@@ -19,9 +19,6 @@ package net.cpollet.thorium.execution;
 import net.cpollet.thorium.data.symbol.SymbolTable;
 import net.cpollet.thorium.execution.values.Symbol;
 import net.cpollet.thorium.values.Value;
-import net.cpollet.thorium.data.symbol.SymbolTable;
-import net.cpollet.thorium.execution.values.Symbol;
-import net.cpollet.thorium.values.Value;
 
 import java.util.Deque;
 import java.util.LinkedList;

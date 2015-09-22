@@ -17,7 +17,6 @@
 package net.cpollet.thorium.analysis.values;
 
 import net.cpollet.thorium.types.Type;
-import net.cpollet.thorium.types.Type;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 

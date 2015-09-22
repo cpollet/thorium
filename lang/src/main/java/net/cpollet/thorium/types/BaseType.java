@@ -20,10 +20,6 @@ import net.cpollet.thorium.data.method.Method;
 import net.cpollet.thorium.data.method.MethodNotFoundException;
 import net.cpollet.thorium.data.method.MethodTable;
 import net.cpollet.thorium.values.Value;
-import net.cpollet.thorium.data.method.Method;
-import net.cpollet.thorium.data.method.MethodNotFoundException;
-import net.cpollet.thorium.data.method.MethodTable;
-import net.cpollet.thorium.values.Value;
 
 /**
  * @author Christophe Pollet

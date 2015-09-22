@@ -17,7 +17,6 @@
 package net.cpollet.thorium.execution.values;
 
 import net.cpollet.thorium.values.DirectValue;
-import net.cpollet.thorium.values.DirectValue;
 
 /**
  * @author Christophe Pollet

@@ -18,8 +18,6 @@ package net.cpollet.thorium.data.method;
 
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.utils.CollectionUtils;
-import net.cpollet.thorium.types.Type;
-import net.cpollet.thorium.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

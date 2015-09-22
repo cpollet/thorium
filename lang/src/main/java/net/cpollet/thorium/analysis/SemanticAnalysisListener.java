@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Christophe Pollet
- * @todo fixme a cannot be declared in two different if branches... test already commented in semantic_analysis.story
+ * @todo a variable cannot be declared in two different if branches... test already commented in semantic_analysis.story
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
     private static final Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
@@ -295,8 +295,8 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         logContextInformation(ctx);
     }
 
-    private <T> Set<T> intersect(Set<T> left, Set<T> right) {
-        if (left.size() == 0 || right.size() == 0) {
+    private static <T> Set<T> intersect(Set<T> left, Set<T> right) {
+        if (left.isEmpty() || right.isEmpty()) {
             return Collections.emptySet();
         }
 

@@ -19,8 +19,6 @@ package net.cpollet.thorium.analysis.exceptions;
 import net.cpollet.thorium.ThoriumException;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.utils.CollectionUtils;
-import net.cpollet.thorium.types.Type;
-import net.cpollet.thorium.utils.CollectionUtils;
 import org.antlr.v4.runtime.Token;
 
 import java.util.Collection;
