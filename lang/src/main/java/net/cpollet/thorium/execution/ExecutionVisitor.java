@@ -19,7 +19,6 @@ package net.cpollet.thorium.execution;
 import net.cpollet.thorium.antlr.ThoriumBaseVisitor;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.method.Method;
-import net.cpollet.thorium.execution.values.Constant;
 import net.cpollet.thorium.execution.values.Symbol;
 import net.cpollet.thorium.execution.values.Variable;
 import net.cpollet.thorium.values.DirectValue;
@@ -39,31 +38,21 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitVariableDeclarationStatement(ThoriumParser.VariableDeclarationStatementContext ctx) {
-        createSymbol(ctx.LCFirstIdentifier().getText(), Symbol.SymbolType.VARIABLE, ctx.expression());
+        createSymbol(ctx.LCFirstIdentifier().getText(), ctx.expression());
 
         return null;
     }
 
     @Override
     public Void visitConstantDeclarationStatement(ThoriumParser.ConstantDeclarationStatementContext ctx) {
-        createSymbol(ctx.UCIdentifier().getText(), Symbol.SymbolType.CONSTANT, ctx.expression());
+        createSymbol(ctx.UCIdentifier().getText(), ctx.expression());
 
         return null;
     }
 
-    private Symbol createSymbol(String identifier, Symbol.SymbolType type, ThoriumParser.ExpressionContext exprCtx) {
+    private Symbol createSymbol(String identifier, ThoriumParser.ExpressionContext exprCtx) {
         if (!context.symbolDefined(identifier)) {
-            Symbol symbol;
-            switch (type) {
-                case CONSTANT:
-                    symbol = new Constant(identifier); // TODO EVAL: should be symbol reference instead?
-                    break;
-                case VARIABLE:
-                    symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead?
-                    break;
-                default:
-                    throw new IllegalStateException("SymbolType not handled");
-            }
+            Symbol symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead?
 
             context.insertSymbol(symbol);
 
@@ -320,7 +309,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitForLoopStatementInitVariableDeclaration(ThoriumParser.ForLoopStatementInitVariableDeclarationContext ctx) {
-        Symbol symbol = createSymbol(ctx.LCFirstIdentifier().getText(), Symbol.SymbolType.VARIABLE, ctx.expression());
+        Symbol symbol = createSymbol(ctx.LCFirstIdentifier().getText(), ctx.expression());
         context.pushStack(symbol.value());
 
         return null;
@@ -353,7 +342,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitVariableName(ThoriumParser.VariableNameContext ctx) {
-        Symbol symbol = createSymbol(ctx.LCFirstIdentifier().getText(), Symbol.SymbolType.VARIABLE, null);
+        Symbol symbol = createSymbol(ctx.LCFirstIdentifier().getText(), null);
 
         context.pushStack(symbol);
 
@@ -362,7 +351,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitConstantName(ThoriumParser.ConstantNameContext ctx) {
-        Symbol symbol = createSymbol(ctx.UCIdentifier().getText(), Symbol.SymbolType.CONSTANT, null);
+        Symbol symbol = createSymbol(ctx.UCIdentifier().getText(), null);
 
         context.pushStack(symbol);
 
