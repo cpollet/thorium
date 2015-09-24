@@ -26,6 +26,9 @@ import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
@@ -68,7 +71,7 @@ public abstract class BaseSteps {
     @When("decode method")
     public void decodeMethod() {
         try {
-            method = left.type().lookupMethod(methodName, right.type());
+            method = left.type().lookupMethod(methodName, Collections.singletonList(right.type()));
         } catch (Exception e) {
             if (expectedExceptionType != null && e.getClass().equals(expectedExceptionType)) {
                 this.exception = e;

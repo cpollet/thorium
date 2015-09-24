@@ -40,7 +40,19 @@ public class MethodTable {
         this.cache = new HashMap<>();
     }
 
+    public void put(Method method) {
+        put(method.getMethodSignature().getName(),
+                method.getMethodBody(),
+                method.getMethodSignature().getTargetType(),
+                method.getMethodSignature().getReturnType(),
+                method.getMethodSignature().getParameterTypes());
+    }
+
     public void put(String name, MethodBody methodBody, Type targetType, Type returnType, Type... parameterTypes) {
+        put(name, methodBody, targetType, returnType, Arrays.asList(parameterTypes));
+    }
+
+    public void put(String name, MethodBody methodBody, Type targetType, Type returnType, List<Type> parameterTypes) {
         if (table.get(name) == null) {
             table.put(name, new HashMap<>());
         }
@@ -56,11 +68,12 @@ public class MethodTable {
         cache.put(getCacheKey(name, targetType, parameterTypes), new Method(methodSignature, methodBody));
     }
 
-    private String getCacheKey(String name, Type targetType, Type... parameterTypes) {
+
+    private String getCacheKey(String name, Type targetType, List<Type> parameterTypes) {
         return targetType.toString() + "." + name + "(" + CollectionUtils.concat(parameterTypes) + ")";
     }
 
-    public Method lookup(String name, Type targetType, Type... parameterTypes) {
+    public Method lookup(String name, Type targetType, List<Type> parameterTypes) {
         String cacheKey = getCacheKey(name, targetType, parameterTypes);
 
         if (cache.containsKey(cacheKey)) {
@@ -96,19 +109,19 @@ public class MethodTable {
      * <p>
      * The lower the best, but a score of -1 means the method signature is not compatible.
      */
-    private static int score(MethodSignature signature, Type targetType, Type... parameterTypes) {
+    private static int score(MethodSignature signature, Type targetType, List<Type> parameterTypes) {
         int targetTypeScore = typeScore(signature.getTargetType(), targetType);
 
         if (targetTypeScore < 0) {
             return -1;
         }
 
-        if (signature.getParameterTypes().size() != parameterTypes.length) {
+        if (signature.getParameterTypes().size() != parameterTypes.size()) {
             return -1;
         }
 
         Iterator<Type> destinations = signature.getParameterTypes().iterator();
-        Iterator<Type> sources = Arrays.asList(parameterTypes).iterator();
+        Iterator<Type> sources = parameterTypes.iterator();
 
         int parameterTypesScore = 0;
         while (destinations.hasNext() && sources.hasNext()) {

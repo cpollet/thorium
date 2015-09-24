@@ -25,6 +25,9 @@ import net.cpollet.thorium.execution.values.Variable;
 import net.cpollet.thorium.values.DirectValue;
 import net.cpollet.thorium.values.Value;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 /**
  * @author Christophe Pollet
  */
@@ -164,7 +167,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
         Value right = context.popStack();
         Value left = context.popStack();
 
-        Method method = left.type().lookupMethod(operator, right.type());
+        Method method = left.type().lookupMethod(operator, Collections.singletonList(right.type()));
 
         context.pushStack(method.getMethodBody().apply(left, right));
     }
@@ -196,7 +199,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
     private void evalUnaryOperator(String operator) {
         Value value = context.popStack();
 
-        Method method = value.type().lookupMethod(operator);
+        Method method = value.type().lookupMethod(operator, Collections.emptyList());
 
         context.pushStack(method.getMethodBody().apply(value));
     }

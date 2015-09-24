@@ -18,6 +18,8 @@ package net.cpollet.thorium.types;
 
 import net.cpollet.thorium.data.method.Method;
 
+import java.util.List;
+
 /**
  * @author Christophe Pollet
  */
@@ -55,9 +57,9 @@ public interface Type {
 
     boolean isAssignableTo(Type target);
 
-    boolean isMethodDefined(String name, Type... parametersType);
+    boolean isMethodDefined(String name, List<Type> parametersType);
 
-    Method lookupMethod(String name, Type... parametersType);
+    Method lookupMethod(String name, List<Type> parametersType);
 
     Type nullable();
 

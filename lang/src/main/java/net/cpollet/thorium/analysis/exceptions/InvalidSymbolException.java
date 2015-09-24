@@ -21,6 +21,8 @@ import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.utils.CollectionUtils;
 import org.antlr.v4.runtime.Token;
 
+import java.util.List;
+
 /**
  * @author Christophe Pollet
  */
@@ -33,7 +35,7 @@ public class InvalidSymbolException extends ThoriumSemanticException {
         super(message);
     }
 
-    public static InvalidSymbolException methodNotFound(Token token, String methodName, Type leftType, Type... parametersTypes) {
+    public static InvalidSymbolException methodNotFound(Token token, String methodName, Type leftType, List<Type> parametersTypes) {
         return new InvalidSymbolException(formatMessage(METHOD_NOT_FOUND, location(token), methodName, CollectionUtils.concat(parametersTypes), leftType.toString()));
     }
 

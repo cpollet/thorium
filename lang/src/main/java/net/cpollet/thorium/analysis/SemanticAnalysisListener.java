@@ -466,13 +466,15 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         logContextInformation(ctx);
     }
 
-    private Type inferMethodType(Token token, String methodName, Type leftType, Type... parametersTypes) {
-        if (!leftType.isMethodDefined(methodName, parametersTypes)) {
-            exceptions.add(InvalidSymbolException.methodNotFound(token, methodName, leftType, parametersTypes));
+    private Type inferMethodType(Token token, String methodName, Type leftType, Type... parameterTypes) {
+        List<Type> parameterTypesList = Arrays.asList(parameterTypes);
+
+        if (!leftType.isMethodDefined(methodName, parameterTypesList)) {
+            exceptions.add(InvalidSymbolException.methodNotFound(token, methodName, leftType, parameterTypesList));
             return Types.NULLABLE_VOID;
         }
 
-        Method method = leftType.lookupMethod(methodName, parametersTypes);
+        Method method = leftType.lookupMethod(methodName, parameterTypesList);
 
         return method.getMethodSignature().getReturnType();
     }

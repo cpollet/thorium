@@ -24,6 +24,8 @@ import net.cpollet.thorium.data.method.MultivaluedOperator;
 import net.cpollet.thorium.data.method.NativeMethodBody;
 import net.cpollet.thorium.values.Value;
 
+import java.util.List;
+
 /**
  * @author Christophe Pollet
  */
@@ -45,7 +47,7 @@ public abstract class BaseType implements Type {
     }
 
     @Override
-    public boolean isMethodDefined(String name, Type... parametersType) {
+    public boolean isMethodDefined(String name, List<Type> parametersType) {
         try {
             lookupMethod(name, parametersType);
             return true;
@@ -55,7 +57,7 @@ public abstract class BaseType implements Type {
     }
 
     @Override
-    public Method lookupMethod(String name, Type... parametersType) {
+    public Method lookupMethod(String name, List<Type> parametersType) {
         return methodTable().lookup(name, this, parametersType);
     }
 

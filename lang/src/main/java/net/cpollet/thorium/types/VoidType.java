@@ -21,6 +21,7 @@ import net.cpollet.thorium.data.method.MethodNotFoundException;
 import net.cpollet.thorium.data.method.MethodTable;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Christophe Pollet
@@ -51,7 +52,7 @@ public class VoidType extends BaseType {
     }
 
     @Override
-    public Method lookupMethod(String name, Type... parametersType) {
+    public Method lookupMethod(String name, List<Type> parametersType) {
         throw new MethodNotFoundException("Method not found.", Collections.emptyList());
     }
 

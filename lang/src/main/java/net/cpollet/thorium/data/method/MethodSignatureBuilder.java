@@ -45,8 +45,8 @@ public class MethodSignatureBuilder {
         return this;
     }
 
-    public MethodSignatureBuilder withParameterTypes(Type... parameterTypes) {
-        this.parameterTypes = Arrays.asList(parameterTypes);
+    public MethodSignatureBuilder withParameterTypes(List<Type> parameterTypes) {
+        this.parameterTypes = parameterTypes;
         return this;
     }
 

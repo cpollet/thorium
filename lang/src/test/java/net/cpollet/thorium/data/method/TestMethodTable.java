@@ -21,6 +21,9 @@ import org.fest.assertions.Fail;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
@@ -72,7 +75,7 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name()
-        Method method = methodTable.lookup("name", Types.VOID);
+        Method method = methodTable.lookup("name", Types.VOID, Collections.emptyList());
 
         assertThat(method.getMethodBody())
                 .isSameAs(methodBodies[0]);
@@ -85,7 +88,7 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void)
-        Method method = methodTable.lookup("name", Types.VOID, Types.VOID);
+        Method method = methodTable.lookup("name", Types.VOID, Collections.singletonList(Types.VOID));
 
         assertThat(method.getMethodBody())
                 .isSameAs(methodBodies[1]);
@@ -98,7 +101,7 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void)
-        Method method = methodTable.lookup("name", Types.VOID, Types.VOID, Types.FLOAT, Types.FLOAT);
+        Method method = methodTable.lookup("name", Types.VOID, Arrays.asList(Types.VOID, Types.FLOAT, Types.FLOAT));
 
         assertThat(method.getMethodBody())
                 .isSameAs(methodBodies[8]);
@@ -111,7 +114,7 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void, Void)
-        Method method = methodTable.lookup("name", Types.VOID, Types.VOID, Types.VOID);
+        Method method = methodTable.lookup("name", Types.VOID, Arrays.asList(Types.VOID, Types.VOID));
 
         assertThat(method.getMethodBody())
                 .isSameAs(methodBodies[3]);
@@ -124,7 +127,7 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Void, Void?)
-        Method method = methodTable.lookup("name", Types.VOID, Types.VOID, Types.NULLABLE_VOID);
+        Method method = methodTable.lookup("name", Types.VOID, Arrays.asList(Types.VOID, Types.NULLABLE_VOID));
 
         assertThat(method.getMethodBody())
                 .isSameAs(methodBodies[4]);
@@ -137,7 +140,7 @@ public class TestMethodTable {
 
         // WHEN
         // Void.name(Integer)
-        Method method = methodTable.lookup("name", Types.VOID, Types.INTEGER);
+        Method method = methodTable.lookup("name", Types.VOID, Collections.singletonList(Types.INTEGER));
 
         assertThat(method.getMethodBody())
                 .isSameAs(methodBodies[5]);
@@ -151,7 +154,7 @@ public class TestMethodTable {
         // WHEN
         // Void.name()
         try {
-            methodTable.lookup("name", Types.VOID, Types.BOOLEAN);
+            methodTable.lookup("name", Types.VOID, Collections.singletonList(Types.BOOLEAN));
         } catch (Exception e) {
             assertThat(e)
                     .hasMessage("Method not found.");
@@ -169,7 +172,7 @@ public class TestMethodTable {
         // WHEN
         // Void.name()
         try {
-            methodTable.lookup("name", Types.VOID, Types.FLOAT, Types.FLOAT);
+            methodTable.lookup("name", Types.VOID, Arrays.asList(Types.FLOAT, Types.FLOAT));
         } catch (Exception e) {
             assertThat(e)
                     .hasMessage("Too many potential matches (2).");
@@ -187,7 +190,7 @@ public class TestMethodTable {
         // WHEN
         // Void.name()
         try {
-            methodTable.lookup("name", Types.VOID, Types.VOID, Types.FLOAT, Types.INTEGER);
+            methodTable.lookup("name", Types.VOID, Arrays.asList(Types.VOID, Types.FLOAT, Types.INTEGER));
         } catch (Exception e) {
             assertThat(e)
                     .hasMessage("Method not found.");
