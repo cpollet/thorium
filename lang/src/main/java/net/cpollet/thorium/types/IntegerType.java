@@ -30,35 +30,35 @@ public class IntegerType extends BaseType {
     private static final MethodTable methodTable = new MethodTable();
 
     static {
-        methodTable.put("+", IntegerType::plusInteger, IntegerType.NULLABLE, IntegerType.NULLABLE, IntegerType.NULLABLE);
-        methodTable.put("+", IntegerType::plusInteger, IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+        methodTable.put("+", body(IntegerType::plusInteger), IntegerType.NULLABLE, IntegerType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put("+", body(IntegerType::plusInteger), IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE);
 
-        methodTable.put("*", IntegerType::timesInteger, IntegerType.NULLABLE, IntegerType.NULLABLE, IntegerType.NULLABLE);
-        methodTable.put("*", IntegerType::timesInteger, IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+        methodTable.put("*", body(IntegerType::timesInteger), IntegerType.NULLABLE, IntegerType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put("*", body(IntegerType::timesInteger), IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE, IntegerType.NON_NULLABLE);
 
-        methodTable.put("+", IntegerType::plusFloat, IntegerType.NULLABLE, FloatType.NULLABLE, FloatType.NULLABLE);
-        methodTable.put("+", IntegerType::plusFloat, IntegerType.NON_NULLABLE, FloatType.NON_NULLABLE, FloatType.NON_NULLABLE);
+        methodTable.put("+", body(IntegerType::plusFloat), IntegerType.NULLABLE, FloatType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put("+", body(IntegerType::plusFloat), IntegerType.NON_NULLABLE, FloatType.NON_NULLABLE, FloatType.NON_NULLABLE);
 
-        methodTable.put("*", IntegerType::timesFloat, IntegerType.NULLABLE, FloatType.NULLABLE, FloatType.NULLABLE);
-        methodTable.put("*", IntegerType::timesFloat, IntegerType.NON_NULLABLE, FloatType.NON_NULLABLE, FloatType.NON_NULLABLE);
+        methodTable.put("*", body(IntegerType::timesFloat), IntegerType.NULLABLE, FloatType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put("*", body(IntegerType::timesFloat), IntegerType.NON_NULLABLE, FloatType.NON_NULLABLE, FloatType.NON_NULLABLE);
 
-        methodTable.put("<", IntegerType::lessThanInteger, IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
-        methodTable.put("<", IntegerType::lessThanInteger, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
-        methodTable.put("<=", IntegerType::lessThanOrEqualToInteger, IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
-        methodTable.put("<=", IntegerType::lessThanOrEqualToInteger, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
-        methodTable.put(">", IntegerType::biggerThanInteger, IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
-        methodTable.put(">", IntegerType::biggerThanInteger, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
-        methodTable.put(">=", IntegerType::biggerThanOrEqualToInteger, IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
-        methodTable.put(">=", IntegerType::biggerThanOrEqualToInteger, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+        methodTable.put("<", body(IntegerType::lessThanInteger), IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put("<", body(IntegerType::lessThanInteger), IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+        methodTable.put("<=", body(IntegerType::lessThanOrEqualToInteger), IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put("<=", body(IntegerType::lessThanOrEqualToInteger), IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+        methodTable.put(">", body(IntegerType::biggerThanInteger), IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put(">", body(IntegerType::biggerThanInteger), IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
+        methodTable.put(">=", body(IntegerType::biggerThanOrEqualToInteger), IntegerType.NULLABLE, BooleanType.NULLABLE, IntegerType.NULLABLE);
+        methodTable.put(">=", body(IntegerType::biggerThanOrEqualToInteger), IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, IntegerType.NON_NULLABLE);
 
-        methodTable.put("<", IntegerType::lessThanFloat, IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
-        methodTable.put("<", IntegerType::lessThanFloat, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
-        methodTable.put("<=", IntegerType::lessThanOrEqualToFloat, IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
-        methodTable.put("<=", IntegerType::lessThanOrEqualToFloat, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
-        methodTable.put(">", IntegerType::biggerThanFloat, IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
-        methodTable.put(">", IntegerType::biggerThanFloat, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
-        methodTable.put(">=", IntegerType::biggerThanOrEqualToFloat, IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
-        methodTable.put(">=", IntegerType::biggerThanOrEqualToFloat, IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
+        methodTable.put("<", body(IntegerType::lessThanFloat), IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put("<", body(IntegerType::lessThanFloat), IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
+        methodTable.put("<=", body(IntegerType::lessThanOrEqualToFloat), IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put("<=", body(IntegerType::lessThanOrEqualToFloat), IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
+        methodTable.put(">", body(IntegerType::biggerThanFloat), IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put(">", body(IntegerType::biggerThanFloat), IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
+        methodTable.put(">=", body(IntegerType::biggerThanOrEqualToFloat), IntegerType.NULLABLE, BooleanType.NULLABLE, FloatType.NULLABLE);
+        methodTable.put(">=", body(IntegerType::biggerThanOrEqualToFloat), IntegerType.NON_NULLABLE, BooleanType.NON_NULLABLE, FloatType.NON_NULLABLE);
     }
 
     private IntegerType(Nullable nullable) {

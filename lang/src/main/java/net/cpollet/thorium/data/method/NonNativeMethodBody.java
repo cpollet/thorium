@@ -16,11 +16,21 @@
 
 package net.cpollet.thorium.data.method;
 
+import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.values.Value;
 
 /**
  * @author Christophe Pollet
  */
-public interface MethodBody {
-    Value apply(Value... values);
+public class NonNativeMethodBody implements MethodBody {
+    private final ThoriumParser.StatementsContext statementsContext;
+
+    public NonNativeMethodBody(ThoriumParser.StatementsContext statementsContext) {
+        this.statementsContext = statementsContext;
+    }
+
+    //@Override
+    public Value apply(Value... values) {
+        throw new IllegalStateException("not yet implemented");
+    }
 }

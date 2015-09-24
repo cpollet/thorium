@@ -30,14 +30,14 @@ public class BooleanType extends BaseType {
     private static final MethodTable methodTable = new MethodTable();
 
     static {
-        methodTable.put("+", BooleanType::or, BooleanType.NULLABLE, BooleanType.NULLABLE, BooleanType.NULLABLE);
-        methodTable.put("+", BooleanType::or, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE);
+        methodTable.put("+", body(BooleanType::or), BooleanType.NULLABLE, BooleanType.NULLABLE, BooleanType.NULLABLE);
+        methodTable.put("+", body(BooleanType::or), BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE);
 
-        methodTable.put("*", BooleanType::and, BooleanType.NULLABLE, BooleanType.NULLABLE, BooleanType.NULLABLE);
-        methodTable.put("*", BooleanType::and, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE);
+        methodTable.put("*", body(BooleanType::and), BooleanType.NULLABLE, BooleanType.NULLABLE, BooleanType.NULLABLE);
+        methodTable.put("*", body(BooleanType::and), BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE);
 
-        methodTable.put("!", BooleanType::not, BooleanType.NULLABLE, BooleanType.NULLABLE);
-        methodTable.put("!", BooleanType::not, BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE);
+        methodTable.put("!", body(BooleanType::not), BooleanType.NULLABLE, BooleanType.NULLABLE);
+        methodTable.put("!", body(BooleanType::not), BooleanType.NON_NULLABLE, BooleanType.NON_NULLABLE);
     }
 
     private BooleanType(Nullable nullable) {

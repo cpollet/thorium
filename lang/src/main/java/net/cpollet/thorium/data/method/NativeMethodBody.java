@@ -21,6 +21,15 @@ import net.cpollet.thorium.values.Value;
 /**
  * @author Christophe Pollet
  */
-public interface MethodBody {
-    Value apply(Value... values);
+public class NativeMethodBody implements MethodBody {
+    private final MultivaluedOperator<Value> methodBody;
+
+    public NativeMethodBody(MultivaluedOperator<Value> methodBody) {
+        this.methodBody = methodBody;
+    }
+
+    @Override
+    public Value apply(Value... values) {
+        return methodBody.apply(values);
+    }
 }

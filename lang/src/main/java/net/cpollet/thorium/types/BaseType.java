@@ -17,8 +17,11 @@
 package net.cpollet.thorium.types;
 
 import net.cpollet.thorium.data.method.Method;
+import net.cpollet.thorium.data.method.MethodBody;
 import net.cpollet.thorium.data.method.MethodNotFoundException;
 import net.cpollet.thorium.data.method.MethodTable;
+import net.cpollet.thorium.data.method.MultivaluedOperator;
+import net.cpollet.thorium.data.method.NativeMethodBody;
 import net.cpollet.thorium.values.Value;
 
 /**
@@ -57,6 +60,10 @@ public abstract class BaseType implements Type {
     }
 
     abstract MethodTable methodTable();
+
+    protected static MethodBody body(MultivaluedOperator<Value> operator) {
+        return new NativeMethodBody(operator);
+    }
 
     protected static Long integerValue(Value value) {
         return (Long) value.value().internalValue();

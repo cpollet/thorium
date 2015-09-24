@@ -16,11 +16,10 @@
 
 package net.cpollet.thorium.data.method;
 
-import net.cpollet.thorium.values.Value;
-
 /**
  * @author Christophe Pollet
  */
-public interface MethodBody {
-    Value apply(Value... values);
+@FunctionalInterface
+public interface MultivaluedOperator<T> {
+    T apply(T... values);
 }

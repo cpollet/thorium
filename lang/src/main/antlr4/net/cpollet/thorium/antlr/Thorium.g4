@@ -40,6 +40,7 @@ statement
     : block
     | expressionStatement
     | variableOrConstantDeclarationStatement
+    | methodDefinition
     | ';'
     ;
 
@@ -93,6 +94,16 @@ type
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // EXPRESSIONS
 
+methodDefinition
+    : visibility type? methodName '(' formalParameters? ')' '{' statements '}'
+    ;
+formalParameter
+    : type LCFirstIdentifier
+    ;
+formalParameters
+    : formalParameter ',' formalParameters
+    | formalParameter
+    ;
 // memberDeclaration
 //     : DEF type? name accessors? ('=' expression)? (':' DELEGATE delegate)?
 //     ;
@@ -102,12 +113,12 @@ type
 //     | '{' visibility '}'                                                                # shortAccessorDefinition
 //     ;
 //
-// visibility
-//     : PRIVATE
-//     | PROTECTED
-//     | PACKAGE
-//     | PUBLIC
-//     ;
+visibility
+    : PRIVATE
+    | PROTECTED
+    | PACKAGE
+    | PUBLIC
+    ;
 //
 // delegate
 //     : ALL                                                                               # delegateAll
@@ -115,11 +126,11 @@ type
 //     | ALL BUT methodName (',' methodName)*                                              # delegateAllButList
 //     ;
 //
-// methodName
-//     : LCFirstIdentifier
-//     | LCFirstIdentifierWithMarkSuffix
-//     | SymbolMethodName
-//     ;
+methodName
+    : LCFirstIdentifier
+    | LCFirstIdentifierWithMarkSuffix
+    | SymbolMethodName
+    ;
 
 expression
     : op='!' expression                                                                 # notExpression

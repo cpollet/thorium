@@ -19,6 +19,7 @@ package net.cpollet.thorium.execution;
 import net.cpollet.thorium.antlr.ThoriumBaseVisitor;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.method.Method;
+import net.cpollet.thorium.data.method.NonNativeMethodBody;
 import net.cpollet.thorium.execution.values.Symbol;
 import net.cpollet.thorium.execution.values.Variable;
 import net.cpollet.thorium.values.DirectValue;
@@ -316,6 +317,14 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
     }
 
     //endregion
+
+    @Override
+    public Void visitMethodDefinition(ThoriumParser.MethodDefinitionContext ctx) {
+        new NonNativeMethodBody(ctx.statements());
+
+        return null;
+    }
+
 
     //region Values
 
