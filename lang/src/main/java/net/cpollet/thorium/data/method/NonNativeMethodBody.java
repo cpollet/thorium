@@ -29,7 +29,7 @@ public class NonNativeMethodBody implements MethodBody {
         this.statementsContext = statementsContext;
     }
 
-    //@Override
+    @Override
     public Value apply(Value... values) {
         throw new IllegalStateException("not yet implemented");
     }

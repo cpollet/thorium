@@ -18,7 +18,6 @@ package net.cpollet.thorium.data.method;
 
 import net.cpollet.thorium.types.Type;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MethodSignatureBuilder {
