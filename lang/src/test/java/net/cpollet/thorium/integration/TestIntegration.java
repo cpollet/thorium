@@ -16,11 +16,13 @@
 
 package net.cpollet.thorium.integration;
 
+import net.cpollet.thorium.ThoriumException;
 import net.cpollet.thorium.analysis.SemanticAnalyser;
+import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.antlr.ThoriumLexer;
 import net.cpollet.thorium.antlr.ThoriumParser;
-import net.cpollet.thorium.execution.ExecutionContext;
 import net.cpollet.thorium.data.symbol.SymbolTable;
+import net.cpollet.thorium.execution.ExecutionContext;
 import net.cpollet.thorium.execution.ExecutionVisitor;
 import net.cpollet.thorium.execution.values.Symbol;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -29,6 +31,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -39,6 +43,8 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 @RunWith(BlockJUnit4ClassRunner.class)
 public class TestIntegration {
+    private final static Logger LOG = LoggerFactory.getLogger(TestIntegration.class);
+
     @Test
     public void iterativeFibonacci() throws IOException {
         // GIVEN + WHEN
@@ -72,7 +78,16 @@ public class TestIntegration {
         ParseTree tree = parser.compilationUnit();
 
         SemanticAnalyser semanticAnalyser = new SemanticAnalyser(new SymbolTable<>(), parser, tree);
-        semanticAnalyser.analyze();
+
+        try {
+            semanticAnalyser.analyze();
+        } catch (ThoriumSemanticException e) {
+            for (ThoriumException thoriumException : e.getCauses()) {
+                LOG.error(thoriumException.getMessage());
+            }
+
+            throw new IllegalStateException("Semantic errors occurred.");
+        }
 
         ExecutionContext executionContext = ExecutionContext.createEmpty();
         ExecutionVisitor evaluator = new ExecutionVisitor(executionContext);
