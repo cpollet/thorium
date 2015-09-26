@@ -80,6 +80,10 @@ public class ExecutionContext {
         symbolsTable.put(symbol.getName(), symbol);
     }
 
+    public void insertSymbolInCurrentScope(Symbol symbol) {
+        symbolsTable.putInCurrentScope(symbol.getName(), symbol);
+    }
+
     public Symbol lookupSymbol(String name) {
         return symbolsTable.lookup(name);
     }

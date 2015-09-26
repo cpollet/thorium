@@ -57,6 +57,17 @@ public class TestIntegration {
     }
 
     @Test
+    public void recursiveFibonacci() throws IOException {
+        // GIVEN + WHEN
+        ExecutionContext executionContext = eval("recursive_fibonacci.th");
+
+        // THEN
+        Symbol result = executionContext.lookupSymbol("result");
+        assertThat((Long) (result.value().internalValue()))
+                .isEqualTo(34L);
+    }
+
+    @Test
     public void iterativeFactorial() throws IOException {
         // GIVEN + WHEN
         ExecutionContext executionContext = eval("iterative_factorial.th");

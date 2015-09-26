@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Christophe Pollet
+ * @todo handle variable definition, we currently override parent scope
  */
 public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
     private ExecutionContext context;
@@ -245,7 +246,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
         context = context.wrap();
 
         for (int i = 0; i < parameterValues.size(); i++) {
-            context.insertSymbol(new Variable(signature.getParameterName(i), parameterValues.get(i).value()));
+            context.insertSymbolInCurrentScope(new Variable(signature.getParameterName(i), parameterValues.get(i).value()));
         }
 
         Value returnValue = method.apply(context, parameterValues);
