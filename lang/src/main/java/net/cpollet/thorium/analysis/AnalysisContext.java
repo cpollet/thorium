@@ -63,6 +63,7 @@ public class AnalysisContext {
         return symbolTables.get(ctx);
     }
 
+    // TODO OPTIMIZE don't store if same as parent
     public void storeSymbolTable(ParseTree ctx) {
         if (symbolTables.get(ctx) == null) {
             symbolTables.put(ctx, currentSymbolTable);
