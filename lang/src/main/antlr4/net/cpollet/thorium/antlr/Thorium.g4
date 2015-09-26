@@ -101,8 +101,7 @@ formalParameter
     : type LCFirstIdentifier
     ;
 formalParameters
-    : formalParameter ',' formalParameters
-    | formalParameter
+    : formalParameter (',' formalParameter)*
     ;
 // memberDeclaration
 //     : DEF type? name accessors? ('=' expression)? (':' DELEGATE delegate)?
@@ -145,12 +144,8 @@ expression
     | '(' block ')'                                                                     # blockExpression
     ;
 
-parameter
-    : expression
-    ;
 parameters
-    : expression ',' parameters
-    | parameter
+    : expression (',' expression)*
     ;
 
 literal

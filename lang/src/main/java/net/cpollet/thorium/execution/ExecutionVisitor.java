@@ -257,16 +257,17 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
         return null;
     }
 
-    public List<Value> evalParametersValues(ThoriumParser.ParametersContext parameters) {
+    private List<Value> evalParametersValues(ThoriumParser.ParametersContext parameters) {
+        if (parameters == null || parameters.expression().isEmpty()) {
+            return Collections.emptyList();
+        }
+
         List<Value> values = new LinkedList<>();
 
-        while (parameters != null) {
-            visit(parameters.parameter().expression());
-
+        for (ThoriumParser.ExpressionContext expression : parameters.expression()) {
+            visit(expression);
             Value value = context.popStack();
             values.add(value);
-
-            parameters = parameters.parameters();
         }
 
         return values;
@@ -370,18 +371,16 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
         List<String> formalParametersNames = new LinkedList<>();
         ThoriumParser.FormalParametersContext formalParametersCtx = ctx.formalParameters();
 
-        while (formalParametersCtx != null) {
-            ThoriumParser.FormalParameterContext formalParameterCtx = formalParametersCtx.formalParameter();
-
-            formalParametersTypes.add(decode(formalParameterCtx.type()));
-            formalParametersNames.add(formalParameterCtx.LCFirstIdentifier().getText());
-
-            formalParametersCtx = formalParametersCtx.formalParameters();
+        if (formalParametersCtx != null) {
+            for (ThoriumParser.FormalParameterContext formalParameter : formalParametersCtx.formalParameter()) {
+                formalParametersTypes.add(decode(formalParameter.type()));
+                formalParametersNames.add(formalParameter.LCFirstIdentifier().getText());
+            }
         }
 
         NonNativeMethodBody methodBody = new NonNativeMethodBody(ctx.statements());
 
-        context.insertMethod(ctx.methodName().getText(), methodBody,  Types.VOID,  Types.VOID, formalParametersTypes, formalParametersNames);
+        context.insertMethod(ctx.methodName().getText(), methodBody, Types.VOID, Types.VOID, formalParametersTypes, formalParametersNames);
 
         return null;
     }
