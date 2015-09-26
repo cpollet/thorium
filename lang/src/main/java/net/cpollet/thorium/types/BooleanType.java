@@ -17,6 +17,7 @@
 package net.cpollet.thorium.types;
 
 import net.cpollet.thorium.data.method.MethodTable;
+import net.cpollet.thorium.execution.ExecutionContext;
 import net.cpollet.thorium.values.DirectValue;
 import net.cpollet.thorium.values.Value;
 
@@ -69,7 +70,7 @@ public class BooleanType extends BaseType {
         return "Boolean" + super.toString();
     }
 
-    private static Value or(Value... values) {
+    private static Value or(ExecutionContext executionContext, Value... values) {
         Value left = values[0];
         Value right = values[1];
 
@@ -93,7 +94,7 @@ public class BooleanType extends BaseType {
         return value.hasValue() && (Boolean) (value.value().internalValue());
     }
 
-    private static Value and(Value... values) {
+    private static Value and(ExecutionContext executionContext, Value... values) {
         Value left = values[0];
         Value right = values[1];
 
@@ -117,7 +118,7 @@ public class BooleanType extends BaseType {
         return value.hasValue() && !(Boolean) (value.value().internalValue());
     }
 
-    public static Value not(Value... values) {
+    public static Value not(ExecutionContext executionContext, Value... values) {
         Value value = values[0];
 
         if (!value.hasValue()) {

@@ -17,6 +17,7 @@
 package net.cpollet.thorium.types;
 
 import net.cpollet.thorium.data.method.MethodTable;
+import net.cpollet.thorium.execution.ExecutionContext;
 import net.cpollet.thorium.values.DirectValue;
 import net.cpollet.thorium.values.Value;
 
@@ -90,7 +91,7 @@ public class IntegerType extends BaseType {
         return "Integer" + super.toString();
     }
 
-    private static Value plusFloat(Value... values) {
+    private static Value plusFloat(ExecutionContext executionContext, Value... values) {
         Value left = values[0];
         Value right = values[1];
 
@@ -103,7 +104,7 @@ public class IntegerType extends BaseType {
         return DirectValue.build(Types.NULLABLE_FLOAT);
     }
 
-    private static Value plusInteger(Value... values) {
+    private static Value plusInteger(ExecutionContext executionContext, Value... values) {
         Value left = values[0];
         Value right = values[1];
 
@@ -117,7 +118,7 @@ public class IntegerType extends BaseType {
         return DirectValue.build(Types.NULLABLE_INTEGER);
     }
 
-    private static Value timesFloat(Value... values) {
+    private static Value timesFloat(ExecutionContext executionContext, Value... values) {
         Value left = values[0];
         Value right = values[1];
 
@@ -138,7 +139,7 @@ public class IntegerType extends BaseType {
         return value.hasValue() && value.value().internalValue().equals(0.0);
     }
 
-    private static Value timesInteger(Value... values) {
+    private static Value timesInteger(ExecutionContext executionContext, Value... values) {
         Value left = values[0];
         Value right = values[1];
 
@@ -159,7 +160,7 @@ public class IntegerType extends BaseType {
         return value.hasValue() && value.value().internalValue().equals(0L);
     }
 
-    private static Value lessThanInteger(Value... values) {
+    private static Value lessThanInteger(ExecutionContext executionContext, Value... values) {
         Value left = values[0];
         Value right = values[1];
 
@@ -174,7 +175,7 @@ public class IntegerType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value lessThanFloat(Value... values) {
+    private static Value lessThanFloat(ExecutionContext executionContext, Value... values) {
         Value left = values[0];
         Value right = values[1];
 
@@ -189,7 +190,7 @@ public class IntegerType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value lessThanOrEqualToInteger(Value... values) {
+    private static Value lessThanOrEqualToInteger(ExecutionContext executionContext, Value... values) {
         Value left = values[0];
         Value right = values[1];
 
@@ -204,7 +205,7 @@ public class IntegerType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value lessThanOrEqualToFloat(Value... values) {
+    private static Value lessThanOrEqualToFloat(ExecutionContext executionContext, Value... values) {
         Value left = values[0];
         Value right = values[1];
 
@@ -219,20 +220,20 @@ public class IntegerType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value biggerThanInteger(Value... values) {
-        return BooleanType.not(lessThanOrEqualToInteger(values));
+    private static Value biggerThanInteger(ExecutionContext executionContext, Value... values) {
+        return BooleanType.not(executionContext, lessThanOrEqualToInteger(executionContext, values));
     }
 
-    private static Value biggerThanFloat(Value... values) {
-        return BooleanType.not(lessThanOrEqualToFloat(values));
+    private static Value biggerThanFloat(ExecutionContext executionContext, Value... values) {
+        return BooleanType.not(executionContext, lessThanOrEqualToFloat(executionContext, values));
     }
 
 
-    private static Value biggerThanOrEqualToInteger(Value... values) {
-        return BooleanType.not(lessThanInteger(values));
+    private static Value biggerThanOrEqualToInteger(ExecutionContext executionContext, Value... values) {
+        return BooleanType.not(executionContext, lessThanInteger(executionContext, values));
     }
 
-    private static Value biggerThanOrEqualToFloat(Value... values) {
-        return BooleanType.not(lessThanFloat(values));
+    private static Value biggerThanOrEqualToFloat(ExecutionContext executionContext, Value... values) {
+        return BooleanType.not(executionContext, lessThanFloat(executionContext, values));
     }
 }

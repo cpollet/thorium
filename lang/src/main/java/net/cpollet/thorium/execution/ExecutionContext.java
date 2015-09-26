@@ -16,12 +16,19 @@
 
 package net.cpollet.thorium.execution;
 
+import net.cpollet.thorium.data.method.Method;
+import net.cpollet.thorium.data.method.MethodBody;
+import net.cpollet.thorium.data.method.MethodNotFoundException;
+import net.cpollet.thorium.data.method.MethodTable;
 import net.cpollet.thorium.data.symbol.SymbolTable;
 import net.cpollet.thorium.execution.values.Symbol;
+import net.cpollet.thorium.types.Type;
+import net.cpollet.thorium.types.Types;
 import net.cpollet.thorium.values.Value;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Christophe Pollet
@@ -29,18 +36,21 @@ import java.util.LinkedList;
 public class ExecutionContext {
     private final ExecutionContext parentContext;
     private final SymbolTable<Symbol> symbolsTable;
+    private final MethodTable methodTable;
     private final Deque<Value> stack;
     private Value lastStatementValue;
 
     private ExecutionContext() {
         this.stack = new LinkedList<>();
         this.symbolsTable = new SymbolTable<>();
+        this.methodTable = new MethodTable();
         this.parentContext = null;
     }
 
     private ExecutionContext(ExecutionContext parentContext) {
         this.stack = new LinkedList<>();
         this.symbolsTable = new SymbolTable<>(parentContext.symbolsTable);
+        this.methodTable = parentContext.methodTable;
         this.parentContext = parentContext;
     }
 
@@ -48,11 +58,11 @@ public class ExecutionContext {
         return new ExecutionContext();
     }
 
-    public ExecutionContext createChild() {
+    public ExecutionContext wrap() {
         return new ExecutionContext(this);
     }
 
-    public ExecutionContext destroyAndRestoreParent() {
+    public ExecutionContext unwrap() {
         parentContext.lastStatementValue = lastStatementValue;
 
         return parentContext;
@@ -76,6 +86,28 @@ public class ExecutionContext {
 
     public boolean symbolDefined(String name) {
         return symbolsTable.isDefined(name);
+    }
+
+    public void insertMethod(String name, MethodBody methodBody, Type targetType, Type returnType, List<Type> parameterTypes, List<String> parameterNames) {
+        methodTable.put(name, methodBody, targetType, returnType, parameterTypes, parameterNames);
+    }
+
+    public Method lookupMethod(String name, List<Type> parameterTypes) {
+        if (!methodDefined(name, parameterTypes)) {
+            // TODO SEM implement check in semantic checker
+            throw new IllegalStateException("Method not defined");
+        }
+
+        return methodTable.lookup(name, Types.VOID, parameterTypes);
+    }
+
+    public boolean methodDefined(String name, List<Type> parameterTypes) {
+        try {
+            methodTable.lookup(name, Types.VOID, parameterTypes);
+            return true;
+        } catch (MethodNotFoundException e) {
+            return false;
+        }
     }
 
     public Value getLastStatementValue() {

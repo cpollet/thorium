@@ -40,19 +40,11 @@ public class MethodTable {
         this.cache = new HashMap<>();
     }
 
-    public void put(Method method) {
-        put(method.getMethodSignature().getName(),
-                method.getMethodBody(),
-                method.getMethodSignature().getTargetType(),
-                method.getMethodSignature().getReturnType(),
-                method.getMethodSignature().getParameterTypes());
-    }
-
     public void put(String name, MethodBody methodBody, Type targetType, Type returnType, Type... parameterTypes) {
-        put(name, methodBody, targetType, returnType, Arrays.asList(parameterTypes));
+        put(name, methodBody, targetType, returnType, Arrays.asList(parameterTypes), Collections.emptyList());
     }
 
-    public void put(String name, MethodBody methodBody, Type targetType, Type returnType, List<Type> parameterTypes) {
+    public void put(String name, MethodBody methodBody, Type targetType, Type returnType, List<Type> parameterTypes, List<String> parameterNames) {
         if (table.get(name) == null) {
             table.put(name, new HashMap<>());
         }
@@ -61,6 +53,7 @@ public class MethodTable {
                 .withReturnType(returnType)
                 .withTargetType(targetType)
                 .withParameterTypes(parameterTypes)
+                .withParameterNames(parameterNames)
                 .build();
 
         table.get(name).put(methodSignature, methodBody);

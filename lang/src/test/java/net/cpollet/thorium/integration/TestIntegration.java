@@ -67,6 +67,17 @@ public class TestIntegration {
                 .isEqualTo(3628800L);
     }
 
+    @Test
+    public void recursiveFactorial() throws IOException {
+        // GIVEN + WHEN
+        ExecutionContext executionContext = eval("recursive_factorial.th");
+
+        // THEN
+        Symbol result = executionContext.lookupSymbol("result");
+        assertThat((Long) (result.value().internalValue()))
+                .isEqualTo(3628800L);
+    }
+
     private ExecutionContext eval(String program) throws IOException {
         // GIVEN
         ANTLRInputStream input = new ANTLRInputStream(TestIntegration.class.getClassLoader().getResourceAsStream(program));
@@ -80,7 +91,7 @@ public class TestIntegration {
         SemanticAnalyser semanticAnalyser = new SemanticAnalyser(new SymbolTable<>(), parser, tree);
 
         try {
-            semanticAnalyser.analyze();
+            // semanticAnalyser.analyze();
         } catch (ThoriumSemanticException e) {
             for (ThoriumException thoriumException : e.getCauses()) {
                 LOG.error(thoriumException.getMessage());

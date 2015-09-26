@@ -14,34 +14,29 @@
  * limitations under the License.
  */
 
-package net.cpollet.thorium.data.method;
+package net.cpollet.thorium.execution.data.method;
 
+import net.cpollet.thorium.antlr.ThoriumParser;
+import net.cpollet.thorium.data.method.MethodBody;
 import net.cpollet.thorium.execution.ExecutionContext;
+import net.cpollet.thorium.execution.ExecutionVisitor;
 import net.cpollet.thorium.values.Value;
-
-import java.util.List;
 
 /**
  * @author Christophe Pollet
  */
-public class Method {
-    private final MethodSignature methodSignature;
-    private final MethodBody methodBody;
+public class NonNativeMethodBody implements MethodBody {
+    private final ThoriumParser.StatementsContext statementsContext;
 
-    public Method(MethodSignature methodSignature, MethodBody methodBody) {
-        this.methodSignature = methodSignature;
-        this.methodBody = methodBody;
+    public NonNativeMethodBody(ThoriumParser.StatementsContext statementsContext) {
+        this.statementsContext = statementsContext;
     }
 
-    public MethodSignature getMethodSignature() {
-        return methodSignature;
-    }
-
-    public Value apply(ExecutionContext executionContext, List<Value> values) {
-        return apply(executionContext, values.toArray(new Value[values.size()]));
-    }
-
+    @Override
     public Value apply(ExecutionContext executionContext, Value... values) {
-        return methodBody.apply(executionContext, values);
+        ExecutionVisitor executionVisitor = new ExecutionVisitor(executionContext);
+        executionVisitor.visit(statementsContext);
+
+        return executionContext.getLastStatementValue();
     }
 }

@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package net.cpollet.thorium.data.method;
+package net.cpollet.thorium.execution.data.method;
 
-import net.cpollet.thorium.antlr.ThoriumParser;
+import net.cpollet.thorium.data.method.MethodBody;
+import net.cpollet.thorium.data.method.MultivaluedOperator;
+import net.cpollet.thorium.execution.ExecutionContext;
 import net.cpollet.thorium.values.Value;
 
 /**
  * @author Christophe Pollet
  */
-public class NonNativeMethodBody implements MethodBody {
-    private final ThoriumParser.StatementsContext statementsContext;
+public class NativeMethodBody implements MethodBody {
+    private final MultivaluedOperator<Value> methodBody;
 
-    public NonNativeMethodBody(ThoriumParser.StatementsContext statementsContext) {
-        this.statementsContext = statementsContext;
+    public NativeMethodBody(MultivaluedOperator<Value> methodBody) {
+        this.methodBody = methodBody;
     }
 
     @Override
-    public Value apply(Value... values) {
-        throw new IllegalStateException("not yet implemented");
+    public Value apply(ExecutionContext executionContext, Value... values) {
+        return methodBody.apply(executionContext, values);
     }
 }

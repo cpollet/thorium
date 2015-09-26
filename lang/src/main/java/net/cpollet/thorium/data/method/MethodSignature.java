@@ -30,12 +30,15 @@ public class MethodSignature {
     private final Type targetType;
     private final Type returnType;
     private final List<Type> parameterTypes;
+    private final List<String> parameterNames;
 
-    public MethodSignature(String name, Type targetType, Type returnType, List<Type> parameterTypes) {
+    // TODO DESIGN have parameterTypes and parameterNames in a wrapper object
+    public MethodSignature(String name, Type targetType, Type returnType, List<Type> parameterTypes, List<String> parameterNames) {
         this.name = name;
         this.targetType = targetType;
         this.returnType = returnType;
         this.parameterTypes = parameterTypes;
+        this.parameterNames = parameterNames;
     }
 
     public String getName() {
@@ -52,6 +55,10 @@ public class MethodSignature {
 
     public List<Type> getParameterTypes() {
         return parameterTypes;
+    }
+
+    public String getParameterName(int index) {
+        return parameterNames.get(index);
     }
 
     @Override

@@ -83,7 +83,7 @@ public abstract class BaseSteps {
 
     @When("evaluate")
     public void evaluate() {
-        result = method.getMethodBody().apply(left, right);
+        result = method.apply(null, left, right);
     }
 
     @Then("the result is <result>")

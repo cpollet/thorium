@@ -25,6 +25,7 @@ public class MethodSignatureBuilder {
     private Type targetType;
     private Type returnType;
     private List<Type> parameterTypes;
+    private List<String> parameterNames;
 
     private MethodSignatureBuilder(String name) {
         this.name = name;
@@ -49,7 +50,12 @@ public class MethodSignatureBuilder {
         return this;
     }
 
+    public MethodSignatureBuilder withParameterNames(List<String> parameterNames) {
+        this.parameterNames = parameterNames;
+        return this;
+    }
+
     public MethodSignature build() {
-        return new MethodSignature(name, targetType, returnType, parameterTypes);
+        return new MethodSignature(name, targetType, returnType, parameterTypes, parameterNames);
     }
 }

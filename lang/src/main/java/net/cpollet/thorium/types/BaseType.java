@@ -21,7 +21,7 @@ import net.cpollet.thorium.data.method.MethodBody;
 import net.cpollet.thorium.data.method.MethodNotFoundException;
 import net.cpollet.thorium.data.method.MethodTable;
 import net.cpollet.thorium.data.method.MultivaluedOperator;
-import net.cpollet.thorium.data.method.NativeMethodBody;
+import net.cpollet.thorium.execution.data.method.NativeMethodBody;
 import net.cpollet.thorium.values.Value;
 
 import java.util.List;

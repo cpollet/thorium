@@ -17,6 +17,7 @@
 package net.cpollet.thorium.data.method;
 
 import net.cpollet.thorium.types.Types;
+import net.cpollet.thorium.values.DirectValue;
 import org.fest.assertions.Fail;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +33,16 @@ import static org.fest.assertions.Assertions.assertThat;
 public class TestMethodTable {
     private MethodTable methodTable;
     private MethodBody[] methodBodies = {
-            values -> null, values -> null, values -> null, values -> null, values -> null,
-            values -> null, values -> null, values -> null, values -> null, values -> null,
+            (context, values) -> DirectValue.build(0L),
+            (context, values) -> DirectValue.build(1L),
+            (context, values) -> DirectValue.build(2L),
+            (context, values) -> DirectValue.build(3L),
+            (context, values) -> DirectValue.build(4L),
+            (context, values) -> DirectValue.build(5L),
+            (context, values) -> DirectValue.build(6L),
+            (context, values) -> DirectValue.build(7L),
+            (context, values) -> DirectValue.build(8L),
+            (context, values) -> DirectValue.build(9L),
     };
 
     @Before
@@ -77,8 +86,8 @@ public class TestMethodTable {
         // Void.name()
         Method method = methodTable.lookup("name", Types.VOID, Collections.emptyList());
 
-        assertThat(method.getMethodBody())
-                .isSameAs(methodBodies[0]);
+        assertThat(method.apply(null))
+                .isEqualTo(DirectValue.build(0L));
     }
 
     @Test
@@ -90,8 +99,8 @@ public class TestMethodTable {
         // Void.name(Void)
         Method method = methodTable.lookup("name", Types.VOID, Collections.singletonList(Types.VOID));
 
-        assertThat(method.getMethodBody())
-                .isSameAs(methodBodies[1]);
+        assertThat(method.apply(null))
+                .isEqualTo(DirectValue.build(1L));
     }
 
     @Test
@@ -103,8 +112,8 @@ public class TestMethodTable {
         // Void.name(Void)
         Method method = methodTable.lookup("name", Types.VOID, Arrays.asList(Types.VOID, Types.FLOAT, Types.FLOAT));
 
-        assertThat(method.getMethodBody())
-                .isSameAs(methodBodies[8]);
+        assertThat(method.apply(null))
+                .isEqualTo(DirectValue.build(8L));
     }
 
     @Test
@@ -116,8 +125,8 @@ public class TestMethodTable {
         // Void.name(Void, Void)
         Method method = methodTable.lookup("name", Types.VOID, Arrays.asList(Types.VOID, Types.VOID));
 
-        assertThat(method.getMethodBody())
-                .isSameAs(methodBodies[3]);
+        assertThat(method.apply(null))
+                .isEqualTo(DirectValue.build(3L));
     }
 
     @Test
@@ -129,8 +138,8 @@ public class TestMethodTable {
         // Void.name(Void, Void?)
         Method method = methodTable.lookup("name", Types.VOID, Arrays.asList(Types.VOID, Types.NULLABLE_VOID));
 
-        assertThat(method.getMethodBody())
-                .isSameAs(methodBodies[4]);
+        assertThat(method.apply(null))
+                .isEqualTo(DirectValue.build(4L));
     }
 
     @Test
@@ -142,8 +151,8 @@ public class TestMethodTable {
         // Void.name(Integer)
         Method method = methodTable.lookup("name", Types.VOID, Collections.singletonList(Types.INTEGER));
 
-        assertThat(method.getMethodBody())
-                .isSameAs(methodBodies[5]);
+        assertThat(method.apply(null))
+                .isEqualTo(DirectValue.build(5L));
     }
 
     @Test

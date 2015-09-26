@@ -19,14 +19,19 @@ package net.cpollet.thorium.execution;
 import net.cpollet.thorium.antlr.ThoriumBaseVisitor;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.method.Method;
-import net.cpollet.thorium.data.method.NonNativeMethodBody;
+import net.cpollet.thorium.data.method.MethodSignature;
+import net.cpollet.thorium.execution.data.method.NonNativeMethodBody;
 import net.cpollet.thorium.execution.values.Symbol;
 import net.cpollet.thorium.execution.values.Variable;
+import net.cpollet.thorium.types.Type;
+import net.cpollet.thorium.types.Types;
 import net.cpollet.thorium.values.DirectValue;
 import net.cpollet.thorium.values.Value;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Christophe Pollet
@@ -88,11 +93,11 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
     }
 
     private void visitStatementsInNestedContext(ThoriumParser.StatementsContext ctx) {
-        context = context.createChild();
+        context = context.wrap();
 
         visitStatements(ctx);
 
-        context = context.destroyAndRestoreParent();
+        context = context.unwrap();
     }
 
     @Override
@@ -169,7 +174,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
         Method method = left.type().lookupMethod(operator, Collections.singletonList(right.type()));
 
-        context.pushStack(method.getMethodBody().apply(left, right));
+        context.pushStack(method.apply(context, left, right));
     }
 
     @Override
@@ -201,7 +206,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
         Method method = value.type().lookupMethod(operator, Collections.emptyList());
 
-        context.pushStack(method.getMethodBody().apply(value));
+        context.pushStack(method.apply(context, value));
     }
 
     @Override
@@ -229,17 +234,55 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visitMethodCallExpression(ThoriumParser.MethodCallExpressionContext ctx) {
+        String methodName = ctx.methodName().LCFirstIdentifier().getText();
+        List<Value> parameterValues = evalParametersValues(ctx.parameters());
+
+        Method method = context.lookupMethod(methodName, parameterValues.stream().map(Value::type).collect(Collectors.toList()));
+        MethodSignature signature = method.getMethodSignature();
+
+        context = context.wrap();
+
+        for (int i = 0; i < parameterValues.size(); i++) {
+            context.insertSymbol(new Variable(signature.getParameterName(i), parameterValues.get(i).value()));
+        }
+
+        Value returnValue = method.apply(context, parameterValues);
+
+        context = context.unwrap();
+
+        context.pushStack(returnValue);
+
+        return null;
+    }
+
+    public List<Value> evalParametersValues(ThoriumParser.ParametersContext parameters) {
+        List<Value> values = new LinkedList<>();
+
+        while (parameters != null) {
+            visit(parameters.parameter().expression());
+
+            Value value = context.popStack();
+            values.add(value);
+
+            parameters = parameters.parameters();
+        }
+
+        return values;
+    }
+
     //endregion
 
     //region If Statement
 
     @Override
     public Void visitIfStatement(ThoriumParser.IfStatementContext ctx) {
-        context = context.createChild();
+        context = context.wrap();
 
         visitNestedIfStatement(ctx);
 
-        context = context.destroyAndRestoreParent();
+        context = context.unwrap();
 
         return null;
     }
@@ -273,20 +316,20 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitWhileLoopStatement(ThoriumParser.WhileLoopStatementContext ctx) {
-        context = context.createChild();
+        context = context.wrap();
 
         while (isExpressionTrue(ctx.expression())) {
             visit(ctx.statements());
         }
 
-        context = context.destroyAndRestoreParent();
+        context = context.unwrap();
 
         return null;
     }
 
     @Override
     public Void visitForLoopStatement(ThoriumParser.ForLoopStatementContext ctx) {
-        context = context.createChild();
+        context = context.wrap();
 
         if (ctx.init != null) {
             visit(ctx.init);
@@ -301,7 +344,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
             }
         }
 
-        context = context.destroyAndRestoreParent();
+        context = context.unwrap();
 
         return null;
     }
@@ -323,9 +366,51 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitMethodDefinition(ThoriumParser.MethodDefinitionContext ctx) {
-        new NonNativeMethodBody(ctx.statements());
+        List<Type> formalParametersTypes = new LinkedList<>();
+        List<String> formalParametersNames = new LinkedList<>();
+        ThoriumParser.FormalParametersContext formalParametersCtx = ctx.formalParameters();
+
+        while (formalParametersCtx != null) {
+            ThoriumParser.FormalParameterContext formalParameterCtx = formalParametersCtx.formalParameter();
+
+            formalParametersTypes.add(decode(formalParameterCtx.type()));
+            formalParametersNames.add(formalParameterCtx.LCFirstIdentifier().getText());
+
+            formalParametersCtx = formalParametersCtx.formalParameters();
+        }
+
+        NonNativeMethodBody methodBody = new NonNativeMethodBody(ctx.statements());
+
+        context.insertMethod(ctx.methodName().getText(), methodBody,  Types.VOID,  Types.VOID, formalParametersTypes, formalParametersNames);
 
         return null;
+    }
+
+    // TODO DESIGN probably not the best way of decoding types ;)
+    private static Type decode(ThoriumParser.TypeContext typeCtx) {
+        Type type;
+        switch (typeCtx.UCFirstIdentifier().getText()) {
+            case "Integer":
+                type = Types.INTEGER;
+                break;
+            case "Float":
+                type = Types.FLOAT;
+                break;
+            case "Boolean":
+                type = Types.BOOLEAN;
+                break;
+            case "Void":
+                type = Types.VOID;
+                break;
+            default:
+                throw new IllegalStateException("Type " + typeCtx.UCFirstIdentifier().getText() + " not supported.");
+        }
+
+        if (typeCtx.nullable != null) {
+            type = type.nullable();
+        }
+
+        return type;
     }
 
 
