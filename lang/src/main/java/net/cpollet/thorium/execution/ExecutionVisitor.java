@@ -64,7 +64,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
         if (!context.symbolDefined(identifier)) {
             Symbol symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead?
 
-            context.insertSymbol(symbol);
+            context.updateSymbol(symbol);
 
             if (exprCtx != null) {
                 visit(exprCtx);
@@ -246,7 +246,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
         context = context.wrap();
 
         for (int i = 0; i < parameterValues.size(); i++) {
-            context.insertSymbolInCurrentScope(new Variable(signature.getParameterName(i), parameterValues.get(i).value()));
+            context.insertSymbol(new Variable(signature.getParameterName(i), parameterValues.get(i).value()));
         }
 
         Value returnValue = method.apply(context, parameterValues);

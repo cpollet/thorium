@@ -76,11 +76,11 @@ public class ExecutionContext {
         stack.push(object);
     }
 
-    public void insertSymbol(Symbol symbol) {
+    public void updateSymbol(Symbol symbol) {
         symbolsTable.put(symbol.getName(), symbol);
     }
 
-    public void insertSymbolInCurrentScope(Symbol symbol) {
+    public void insertSymbol(Symbol symbol) {
         symbolsTable.putInCurrentScope(symbol.getName(), symbol);
     }
 
