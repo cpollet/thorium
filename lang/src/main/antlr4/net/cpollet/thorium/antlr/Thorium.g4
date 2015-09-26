@@ -141,7 +141,16 @@ expression
     | '(' expression ')'                                                                # parenthesisExpression
     // | expression ':' expression '?' expression                                       # inlineConditionExpression
     | <assoc=right> identifier '=' expression                                           # assignmentExpression
+    | methodName '(' parameters? ')'                                                    # methodCallExpression
     | '(' block ')'                                                                     # blockExpression
+    ;
+
+parameter
+    : expression
+    ;
+parameters
+    : expression ',' parameters
+    | parameter
     ;
 
 literal
