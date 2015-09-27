@@ -36,7 +36,7 @@ public class SymbolTable<T> {
         this.symbols = new HashMap<>();
     }
 
-    public void put(String name, T symbol) {
+    public void updateOrInsert(String name, T symbol) {
         SymbolTable<T> table = findTableContaining(name);
 
         if (table == null) {
@@ -46,7 +46,7 @@ public class SymbolTable<T> {
         table.symbols.put(name, symbol);
     }
 
-    public void putInCurrentScope(String name, T symbol) {
+    public void insert(String name, T symbol) {
         symbols.put(name, symbol);
     }
 

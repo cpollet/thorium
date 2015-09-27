@@ -220,7 +220,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         if (!ctxOriginalScope.isDefinedInCurrentScope(name)) {
             Symbol symbol = Symbol.create(name, kind, type, ctx.getStart());
             analysisContext.addSymbol(symbol);
-            ctxOriginalScope.putInCurrentScope(name, symbol);
+            ctxOriginalScope.insert(name, symbol);
         }
 
         return ctxOriginalScope.lookup(name);
