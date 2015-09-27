@@ -19,7 +19,6 @@ package net.cpollet.thorium.execution.data.method;
 import net.cpollet.thorium.data.method.MethodBody;
 import net.cpollet.thorium.data.method.MethodEvaluationContext;
 import net.cpollet.thorium.data.method.MultivaluedOperator;
-import net.cpollet.thorium.execution.ExecutionContext;
 import net.cpollet.thorium.values.Value;
 
 /**
