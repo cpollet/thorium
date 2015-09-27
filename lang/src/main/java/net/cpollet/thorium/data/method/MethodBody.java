@@ -16,13 +16,11 @@
 
 package net.cpollet.thorium.data.method;
 
-import net.cpollet.thorium.execution.ExecutionContext;
 import net.cpollet.thorium.values.Value;
 
 /**
  * @author Christophe Pollet
  */
 public interface MethodBody {
-    // TODO DESIGN wrap ExecutionContext and List<Value> in MethodEvaluationContext
-    Value apply(ExecutionContext executionContext, Value... values);
+    Value apply(MethodEvaluationContext evaluationContext);
 }

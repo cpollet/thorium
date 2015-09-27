@@ -16,8 +16,8 @@
 
 package net.cpollet.thorium.types;
 
+import net.cpollet.thorium.data.method.MethodEvaluationContext;
 import net.cpollet.thorium.data.method.MethodTable;
-import net.cpollet.thorium.execution.ExecutionContext;
 import net.cpollet.thorium.values.DirectValue;
 import net.cpollet.thorium.values.Value;
 
@@ -91,9 +91,9 @@ public class IntegerType extends BaseType {
         return "Integer" + super.toString();
     }
 
-    private static Value plusFloat(ExecutionContext executionContext, Value... values) {
-        Value left = values[0];
-        Value right = values[1];
+    private static Value plusFloat(MethodEvaluationContext evaluationContext) {
+        Value left = evaluationContext.getParameter(0);
+        Value right = evaluationContext.getParameter(1);
 
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
@@ -104,9 +104,9 @@ public class IntegerType extends BaseType {
         return DirectValue.build(Types.NULLABLE_FLOAT);
     }
 
-    private static Value plusInteger(ExecutionContext executionContext, Value... values) {
-        Value left = values[0];
-        Value right = values[1];
+    private static Value plusInteger(MethodEvaluationContext evaluationContext) {
+        Value left = evaluationContext.getParameter(0);
+        Value right = evaluationContext.getParameter(1);
 
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
@@ -118,9 +118,9 @@ public class IntegerType extends BaseType {
         return DirectValue.build(Types.NULLABLE_INTEGER);
     }
 
-    private static Value timesFloat(ExecutionContext executionContext, Value... values) {
-        Value left = values[0];
-        Value right = values[1];
+    private static Value timesFloat(MethodEvaluationContext evaluationContext) {
+        Value left = evaluationContext.getParameter(0);
+        Value right = evaluationContext.getParameter(1);
 
         if (isIntegerZero(left) || isFloatZero(right)) {
             return DirectValue.build(0.0);
@@ -139,9 +139,9 @@ public class IntegerType extends BaseType {
         return value.hasValue() && value.value().internalValue().equals(0.0);
     }
 
-    private static Value timesInteger(ExecutionContext executionContext, Value... values) {
-        Value left = values[0];
-        Value right = values[1];
+    private static Value timesInteger(MethodEvaluationContext evaluationContext) {
+        Value left = evaluationContext.getParameter(0);
+        Value right = evaluationContext.getParameter(1);
 
         if (isIntegerZero(left) || isIntegerZero(right)) {
             return DirectValue.build(0L);
@@ -160,9 +160,9 @@ public class IntegerType extends BaseType {
         return value.hasValue() && value.value().internalValue().equals(0L);
     }
 
-    private static Value lessThanInteger(ExecutionContext executionContext, Value... values) {
-        Value left = values[0];
-        Value right = values[1];
+    private static Value lessThanInteger(MethodEvaluationContext evaluationContext) {
+        Value left = evaluationContext.getParameter(0);
+        Value right = evaluationContext.getParameter(1);
 
         if (!left.hasValue() || !right.hasValue()) {
             return DirectValue.build(Types.NULLABLE_BOOLEAN);
@@ -175,9 +175,9 @@ public class IntegerType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value lessThanFloat(ExecutionContext executionContext, Value... values) {
-        Value left = values[0];
-        Value right = values[1];
+    private static Value lessThanFloat(MethodEvaluationContext evaluationContext) {
+        Value left = evaluationContext.getParameter(0);
+        Value right = evaluationContext.getParameter(1);
 
         if (!left.hasValue() || !right.hasValue()) {
             return DirectValue.build(Types.NULLABLE_BOOLEAN);
@@ -190,9 +190,9 @@ public class IntegerType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value lessThanOrEqualToInteger(ExecutionContext executionContext, Value... values) {
-        Value left = values[0];
-        Value right = values[1];
+    private static Value lessThanOrEqualToInteger(MethodEvaluationContext evaluationContext) {
+        Value left = evaluationContext.getParameter(0);
+        Value right = evaluationContext.getParameter(1);
 
         if (!left.hasValue() || !right.hasValue()) {
             return DirectValue.build(Types.NULLABLE_BOOLEAN);
@@ -205,9 +205,9 @@ public class IntegerType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value lessThanOrEqualToFloat(ExecutionContext executionContext, Value... values) {
-        Value left = values[0];
-        Value right = values[1];
+    private static Value lessThanOrEqualToFloat(MethodEvaluationContext evaluationContext) {
+        Value left = evaluationContext.getParameter(0);
+        Value right = evaluationContext.getParameter(1);
 
         if (!left.hasValue() || !right.hasValue()) {
             return DirectValue.build(Types.NULLABLE_BOOLEAN);
@@ -220,20 +220,19 @@ public class IntegerType extends BaseType {
         return DirectValue.build(false);
     }
 
-    private static Value biggerThanInteger(ExecutionContext executionContext, Value... values) {
-        return BooleanType.not(executionContext, lessThanOrEqualToInteger(executionContext, values));
+    private static Value biggerThanInteger(MethodEvaluationContext evaluationContext) {
+        return BooleanType.not(new MethodEvaluationContext(evaluationContext.getExecutionContext(), lessThanOrEqualToInteger(evaluationContext)));
     }
 
-    private static Value biggerThanFloat(ExecutionContext executionContext, Value... values) {
-        return BooleanType.not(executionContext, lessThanOrEqualToFloat(executionContext, values));
+    private static Value biggerThanFloat(MethodEvaluationContext evaluationContext) {
+        return BooleanType.not(new MethodEvaluationContext(evaluationContext.getExecutionContext(), lessThanOrEqualToFloat(evaluationContext)));
     }
 
-
-    private static Value biggerThanOrEqualToInteger(ExecutionContext executionContext, Value... values) {
-        return BooleanType.not(executionContext, lessThanInteger(executionContext, values));
+    private static Value biggerThanOrEqualToInteger(MethodEvaluationContext evaluationContext) {
+        return BooleanType.not(new MethodEvaluationContext(evaluationContext.getExecutionContext(), lessThanInteger(evaluationContext)));
     }
 
-    private static Value biggerThanOrEqualToFloat(ExecutionContext executionContext, Value... values) {
-        return BooleanType.not(executionContext, lessThanFloat(executionContext, values));
+    private static Value biggerThanOrEqualToFloat(MethodEvaluationContext evaluationContext) {
+        return BooleanType.not(new MethodEvaluationContext(evaluationContext.getExecutionContext(), lessThanFloat(evaluationContext)));
     }
 }

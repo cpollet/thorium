@@ -16,6 +16,7 @@
 
 package net.cpollet.thorium.types;
 
+import net.cpollet.thorium.data.method.MethodEvaluationContext;
 import net.cpollet.thorium.data.method.MethodTable;
 import net.cpollet.thorium.execution.ExecutionContext;
 import net.cpollet.thorium.values.DirectValue;
@@ -70,9 +71,9 @@ public class BooleanType extends BaseType {
         return "Boolean" + super.toString();
     }
 
-    private static Value or(ExecutionContext executionContext, Value... values) {
-        Value left = values[0];
-        Value right = values[1];
+    private static Value or(MethodEvaluationContext evaluationContext) {
+        Value left = evaluationContext.getParameter(0);
+        Value right = evaluationContext.getParameter(1);
 
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
@@ -94,9 +95,9 @@ public class BooleanType extends BaseType {
         return value.hasValue() && (Boolean) (value.value().internalValue());
     }
 
-    private static Value and(ExecutionContext executionContext, Value... values) {
-        Value left = values[0];
-        Value right = values[1];
+    private static Value and(MethodEvaluationContext evaluationContext) {
+        Value left = evaluationContext.getParameter(0);
+        Value right = evaluationContext.getParameter(1);
 
         if (left.hasValue() && right.hasValue()) {
             return DirectValue.build(
@@ -118,8 +119,8 @@ public class BooleanType extends BaseType {
         return value.hasValue() && !(Boolean) (value.value().internalValue());
     }
 
-    public static Value not(ExecutionContext executionContext, Value... values) {
-        Value value = values[0];
+    public static Value not(MethodEvaluationContext evaluationContext) {
+        Value value = evaluationContext.getParameter(0);
 
         if (!value.hasValue()) {
             return DirectValue.build(Types.NULLABLE_BOOLEAN);

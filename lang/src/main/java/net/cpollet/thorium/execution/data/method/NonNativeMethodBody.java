@@ -18,7 +18,7 @@ package net.cpollet.thorium.execution.data.method;
 
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.method.MethodBody;
-import net.cpollet.thorium.execution.ExecutionContext;
+import net.cpollet.thorium.data.method.MethodEvaluationContext;
 import net.cpollet.thorium.execution.ExecutionVisitor;
 import net.cpollet.thorium.values.Value;
 
@@ -33,10 +33,10 @@ public class NonNativeMethodBody implements MethodBody {
     }
 
     @Override
-    public Value apply(ExecutionContext executionContext, Value... values) {
-        ExecutionVisitor executionVisitor = new ExecutionVisitor(executionContext);
+    public Value apply(MethodEvaluationContext evaluationContext) {
+        ExecutionVisitor executionVisitor = new ExecutionVisitor(evaluationContext.getExecutionContext());
         executionVisitor.visit(statementsContext);
 
-        return executionContext.getLastStatementValue();
+        return evaluationContext.getExecutionContext().getLastStatementValue();
     }
 }

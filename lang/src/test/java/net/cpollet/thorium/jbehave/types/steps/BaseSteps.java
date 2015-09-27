@@ -17,6 +17,7 @@
 package net.cpollet.thorium.jbehave.types.steps;
 
 import net.cpollet.thorium.data.method.Method;
+import net.cpollet.thorium.data.method.MethodEvaluationContext;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
 import net.cpollet.thorium.values.DirectValue;
@@ -83,7 +84,7 @@ public abstract class BaseSteps {
 
     @When("evaluate")
     public void evaluate() {
-        result = method.apply(null, left, right);
+        result = method.apply(new MethodEvaluationContext(null, left, right));
     }
 
     @Then("the result is <result>")

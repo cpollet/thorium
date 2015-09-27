@@ -33,16 +33,16 @@ import static org.fest.assertions.Assertions.assertThat;
 public class TestMethodTable {
     private MethodTable methodTable;
     private MethodBody[] methodBodies = {
-            (context, values) -> DirectValue.build(0L),
-            (context, values) -> DirectValue.build(1L),
-            (context, values) -> DirectValue.build(2L),
-            (context, values) -> DirectValue.build(3L),
-            (context, values) -> DirectValue.build(4L),
-            (context, values) -> DirectValue.build(5L),
-            (context, values) -> DirectValue.build(6L),
-            (context, values) -> DirectValue.build(7L),
-            (context, values) -> DirectValue.build(8L),
-            (context, values) -> DirectValue.build(9L),
+            (evaluationContext) -> DirectValue.build(0L),
+            (evaluationContext) -> DirectValue.build(1L),
+            (evaluationContext) -> DirectValue.build(2L),
+            (evaluationContext) -> DirectValue.build(3L),
+            (evaluationContext) -> DirectValue.build(4L),
+            (evaluationContext) -> DirectValue.build(5L),
+            (evaluationContext) -> DirectValue.build(6L),
+            (evaluationContext) -> DirectValue.build(7L),
+            (evaluationContext) -> DirectValue.build(8L),
+            (evaluationContext) -> DirectValue.build(9L),
     };
 
     @Before

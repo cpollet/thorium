@@ -16,12 +16,10 @@
 
 package net.cpollet.thorium.data.method;
 
-import net.cpollet.thorium.execution.ExecutionContext;
-
 /**
  * @author Christophe Pollet
  */
 @FunctionalInterface
 public interface MultivaluedOperator<T> {
-    T apply(ExecutionContext executionContext, T... values);
+    T apply(MethodEvaluationContext evaluationContext);
 }

@@ -17,6 +17,7 @@
 package net.cpollet.thorium.execution.data.method;
 
 import net.cpollet.thorium.data.method.MethodBody;
+import net.cpollet.thorium.data.method.MethodEvaluationContext;
 import net.cpollet.thorium.data.method.MultivaluedOperator;
 import net.cpollet.thorium.execution.ExecutionContext;
 import net.cpollet.thorium.values.Value;
@@ -32,7 +33,7 @@ public class NativeMethodBody implements MethodBody {
     }
 
     @Override
-    public Value apply(ExecutionContext executionContext, Value... values) {
-        return methodBody.apply(executionContext, values);
+    public Value apply(MethodEvaluationContext evaluationContext) {
+        return methodBody.apply(evaluationContext);
     }
 }

@@ -19,6 +19,7 @@ package net.cpollet.thorium.execution;
 import net.cpollet.thorium.antlr.ThoriumBaseVisitor;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.method.Method;
+import net.cpollet.thorium.data.method.MethodEvaluationContext;
 import net.cpollet.thorium.data.method.MethodSignature;
 import net.cpollet.thorium.execution.data.method.NonNativeMethodBody;
 import net.cpollet.thorium.execution.values.Symbol;
@@ -175,7 +176,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
         Method method = left.type().lookupMethod(operator, Collections.singletonList(right.type()));
 
-        context.pushStack(method.apply(context, left, right));
+        context.pushStack(method.apply(new MethodEvaluationContext(context, left, right)));
     }
 
     @Override
@@ -207,7 +208,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
         Method method = value.type().lookupMethod(operator, Collections.emptyList());
 
-        context.pushStack(method.apply(context, value));
+        context.pushStack(method.apply(new MethodEvaluationContext(context, value)));
     }
 
     @Override
@@ -249,7 +250,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
             context.insertSymbol(new Variable(signature.getParameterName(i), parameterValues.get(i).value()));
         }
 
-        Value returnValue = method.apply(context, parameterValues);
+        Value returnValue = method.apply(new MethodEvaluationContext(context, parameterValues));
 
         context = context.unwrap();
 

@@ -16,10 +16,7 @@
 
 package net.cpollet.thorium.data.method;
 
-import net.cpollet.thorium.execution.ExecutionContext;
 import net.cpollet.thorium.values.Value;
-
-import java.util.List;
 
 /**
  * @author Christophe Pollet
@@ -37,11 +34,7 @@ public class Method {
         return methodSignature;
     }
 
-    public Value apply(ExecutionContext executionContext, List<Value> values) {
-        return apply(executionContext, values.toArray(new Value[values.size()]));
-    }
-
-    public Value apply(ExecutionContext executionContext, Value... values) {
-        return methodBody.apply(executionContext, values);
+    public Value apply(MethodEvaluationContext evaluationContext) {
+        return methodBody.apply(evaluationContext);
     }
 }
