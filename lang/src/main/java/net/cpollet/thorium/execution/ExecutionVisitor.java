@@ -62,7 +62,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     private Symbol createSymbol(String identifier, ThoriumParser.ExpressionContext exprCtx) {
         if (!context.symbolDefined(identifier)) {
-            Symbol symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead?
+            Symbol symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead? -> yes it probably eases the thing with def, etc.
 
             context.updateSymbol(symbol);
 
