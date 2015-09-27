@@ -92,6 +92,10 @@ public class ExecutionContext {
         return symbolsTable.isDefined(name);
     }
 
+    public boolean symbolDefinedInCurrentScope(String name) {
+        return symbolsTable.isDefinedInCurrentScope(name);
+    }
+
     public void insertMethod(String name, MethodBody methodBody, Type targetType, Type returnType, List<Type> parameterTypes, List<String> parameterNames) {
         methodTable.put(name, methodBody, targetType, returnType, parameterTypes, parameterNames);
     }

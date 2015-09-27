@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author Christophe Pollet
- * @todo handle variable definition, we currently override parent scope
  */
 public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
     private ExecutionContext context;
@@ -49,14 +48,14 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitVariableDeclarationStatement(ThoriumParser.VariableDeclarationStatementContext ctx) {
-        createSymbol(ctx.LCFirstIdentifier().getText(), ctx.expression());
+        createSymbolInCurrentScope(ctx.LCFirstIdentifier().getText(), ctx.expression());
 
         return null;
     }
 
     @Override
     public Void visitConstantDeclarationStatement(ThoriumParser.ConstantDeclarationStatementContext ctx) {
-        createSymbol(ctx.UCIdentifier().getText(), ctx.expression());
+        createSymbolInCurrentScope(ctx.UCIdentifier().getText(), ctx.expression());
 
         return null;
     }
@@ -64,14 +63,30 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
     private Symbol createSymbol(String identifier, ThoriumParser.ExpressionContext exprCtx) {
         if (!context.symbolDefined(identifier)) {
             Symbol symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead? -> yes it probably eases the thing with def, etc.
+            updateValue(symbol, exprCtx);
 
             context.updateSymbol(symbol);
 
-            if (exprCtx != null) {
-                visit(exprCtx);
-                symbol.setValue(context.popStack().value());
-                symbol.setType(symbol.value().type());
-            }
+            return symbol;
+        }
+
+        return context.lookupSymbol(identifier);
+    }
+
+    private void updateValue(Symbol symbol, ThoriumParser.ExpressionContext exprCtx) {
+        if (exprCtx != null) {
+            visit(exprCtx);
+            symbol.setValue(context.popStack().value());
+            symbol.setType(symbol.value().type());
+        }
+    }
+
+    private Symbol createSymbolInCurrentScope(String identifier, ThoriumParser.ExpressionContext exprCtx) {
+        if (!context.symbolDefinedInCurrentScope(identifier)) {
+            Symbol symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead? -> yes it probably eases the thing with def, etc.
+            updateValue(symbol, exprCtx);
+
+            context.insertSymbol(symbol);
 
             return symbol;
         }
@@ -359,7 +374,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitForLoopStatementInitVariableDeclaration(ThoriumParser.ForLoopStatementInitVariableDeclarationContext ctx) {
-        Symbol symbol = createSymbol(ctx.LCFirstIdentifier().getText(), ctx.expression());
+        Symbol symbol = createSymbolInCurrentScope(ctx.LCFirstIdentifier().getText(), ctx.expression());
         context.pushStack(symbol.value());
 
         return null;

@@ -33,6 +33,10 @@ Examples:
 | def Integer? a;                                               | a         |           | Void?                     |                   |
 | def a = 1;                                                    | a         | 1         | Integer                   |                   |
 | def A = 1;                                                    | A         | 1         | Integer                   |                   |
+| def a = 1; { a = 2; }                                         | a         | 2         | Integer                   |                   |
+| def a = 1; { def a = 2; }                                     | a         | 1         | Integer                   |                   |
+| def a = 1; def b = 0; { a = 2; b = a + 1; }                   | a,b       | 2,3       | Integer,Integer           |                   |
+| def a = 1; def b = 0; { def a = 2; b = a + 1; }               | a,b       | 1,3       | Integer,Integer           |                   |
 
 Scenario: statements with result
 Given a list of statements <statements>
