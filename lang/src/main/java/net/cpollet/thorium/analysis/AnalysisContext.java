@@ -17,6 +17,7 @@
 package net.cpollet.thorium.analysis;
 
 import net.cpollet.thorium.ThoriumException;
+import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.analysis.values.Symbol;
 import net.cpollet.thorium.data.symbol.SymbolTable;
 import net.cpollet.thorium.types.Type;
@@ -35,9 +36,13 @@ public class AnalysisContext {
     private final ParseTreeTypes types = new ParseTreeTypes();
     private final ParseTreeSymbolTables symbolTables = new ParseTreeSymbolTables();
     private final List<Symbol> symbols = new LinkedList<>();
-    private final List<ThoriumException> exceptions = new ArrayList<>();
+    private final List<ThoriumSemanticException> exceptions = new ArrayList<>();
 
     private SymbolTable<Symbol> currentSymbolTable;
+
+    public AnalysisContext() {
+        this.currentSymbolTable = new SymbolTable<>();
+    }
 
     public AnalysisContext(SymbolTable<Symbol> currentSymbolTable) {
         this.currentSymbolTable = currentSymbolTable;
@@ -85,11 +90,11 @@ public class AnalysisContext {
         symbols.add(symbol);
     }
 
-    public void addException(ThoriumException exception) {
+    public void addException(ThoriumSemanticException exception) {
         exceptions.add(exception);
     }
 
-    public List<ThoriumException> getExceptions() {
+    public List<ThoriumSemanticException> getExceptions() {
         return exceptions;
     }
 }

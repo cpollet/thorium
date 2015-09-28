@@ -16,6 +16,7 @@
 
 package net.cpollet.thorium.jbehave;
 
+import net.cpollet.thorium.analysis.AnalysisResult;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.symbol.SymbolTable;
 import net.cpollet.thorium.execution.ExecutionContext;
@@ -34,7 +35,7 @@ public class JBehaveStoryContext {
     public ThoriumParser parser;
     public SymbolTable<net.cpollet.thorium.execution.values.Symbol> evaluationBaseScope;
     public SymbolTable<net.cpollet.thorium.analysis.values.Symbol> analysisBaseScope;
-    public ParseTreeProperty<Type> types;
     public String thoriumCode;
     public int exceptionsExpected;
+    public AnalysisResult analysisResult;
 }

@@ -17,6 +17,7 @@
 package net.cpollet.thorium.integration;
 
 import net.cpollet.thorium.ThoriumException;
+import net.cpollet.thorium.analysis.AnalysisContext;
 import net.cpollet.thorium.analysis.SemanticAnalyser;
 import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.antlr.ThoriumLexer;
@@ -95,11 +96,12 @@ public class TestIntegration {
         ThoriumLexer lexer = new ThoriumLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         ThoriumParser parser = new ThoriumParser(tokens);
+        AnalysisContext analysisContext = new AnalysisContext();
 
         // WHEN
         ParseTree tree = parser.compilationUnit();
 
-        SemanticAnalyser semanticAnalyser = new SemanticAnalyser(new SymbolTable<>(), parser, tree);
+        SemanticAnalyser semanticAnalyser = new SemanticAnalyser(analysisContext, parser, tree);
 
         try {
             // semanticAnalyser.analyze();

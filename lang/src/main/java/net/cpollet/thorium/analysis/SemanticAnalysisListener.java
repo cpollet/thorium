@@ -20,6 +20,7 @@ import net.cpollet.thorium.ThoriumException;
 import net.cpollet.thorium.analysis.exceptions.InvalidAssignmentException;
 import net.cpollet.thorium.analysis.exceptions.InvalidSymbolException;
 import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
+import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.analysis.values.Symbol;
 import net.cpollet.thorium.antlr.ThoriumBaseListener;
 import net.cpollet.thorium.antlr.ThoriumParser;
@@ -55,17 +56,13 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     private final ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
     private final ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
 
-    public SemanticAnalysisListener(Parser parser, SymbolTable<Symbol> baseScope) {
+    public SemanticAnalysisListener(Parser parser, AnalysisContext analysisContext) {
         this.ruleNames = Arrays.asList(parser.getRuleNames());
-        analysisContext = new AnalysisContext(baseScope);
+        this.analysisContext = analysisContext;
     }
 
-    public List<ThoriumException> getExceptions() {
-        return analysisContext.getExceptions();
-    }
-
-    public ParseTreeProperty<Type> getTypes() {
-        return analysisContext.getTypesOfAllNodes();
+    public AnalysisResult getResult() {
+        return new AnalysisResult(analysisContext.getTypesOfAllNodes(), analysisContext.getExceptions());
     }
 
     private Type getNodeType(ParserRuleContext ctx) {

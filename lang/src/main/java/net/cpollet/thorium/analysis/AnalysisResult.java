@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-package net.cpollet.thorium.analysis.exceptions;
+package net.cpollet.thorium.analysis;
 
-import net.cpollet.thorium.ThoriumException;
+import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
+import net.cpollet.thorium.types.Type;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Christophe Pollet
  */
-public class ThoriumSemanticException extends ThoriumException {
+public class AnalysisResult {
+
+    private final ParseTreeProperty<Type> nodesTypes;
     private final List<ThoriumSemanticException> exceptions;
 
-    public ThoriumSemanticException(String message, List<ThoriumSemanticException> exceptions) {
-        super(message);
+    public AnalysisResult(ParseTreeProperty<Type> nodesTypes, List<ThoriumSemanticException> exceptions) {
+        this.nodesTypes = nodesTypes;
         this.exceptions = exceptions;
     }
 
-    public ThoriumSemanticException(String message) {
-        this(message, Collections.<ThoriumSemanticException>emptyList());
+    public ParseTreeProperty<Type> getNodesTypes() {
+        return nodesTypes;
     }
 
-    public List<ThoriumSemanticException> getCauses() {
+    public List<ThoriumSemanticException> getExceptions() {
         return exceptions;
     }
 }

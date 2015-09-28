@@ -16,39 +16,32 @@
 
 package net.cpollet.thorium.analysis;
 
-import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.analysis.values.Symbol;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.symbol.SymbolTable;
-import net.cpollet.thorium.types.Type;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
  * @author Christophe Pollet
  */
 public class SemanticAnalyser {
-    private final SymbolTable<Symbol> scope;
     private final ParseTree tree;
     private final ThoriumParser parser;
+    private final AnalysisContext analysisContext;
 
-    public SemanticAnalyser(SymbolTable<Symbol> scope, ThoriumParser parser, ParseTree tree) {
-        this.scope = scope;
+    public SemanticAnalyser(AnalysisContext analysisContext, ThoriumParser parser, ParseTree tree) {
+        this.analysisContext=analysisContext;
         this.parser = parser;
         this.tree = tree;
     }
 
-    public ParseTreeProperty<Type> analyze() {
+    public AnalysisResult analyze() {
         ParseTreeWalker walker = new ParseTreeWalker();
-        SemanticAnalysisListener listener = new SemanticAnalysisListener(parser, scope);
+        SemanticAnalysisListener listener = new SemanticAnalysisListener(parser, analysisContext);
 
         walker.walk(listener, tree);
 
-        if (!listener.getExceptions().isEmpty()) {
-            throw new ThoriumSemanticException(listener.getExceptions().size() + " semantic errors occurred.", listener.getExceptions());
-        }
-
-        return listener.getTypes();
+        return listener.getResult();
     }
 }

@@ -16,7 +16,6 @@
 
 package net.cpollet.thorium.analysis.exceptions;
 
-import net.cpollet.thorium.ThoriumException;
 import org.antlr.v4.runtime.Token;
 
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.List;
 public class InvalidAssignmentException extends ThoriumSemanticException {
     private static final String INVALID_ASSIGNMENT = "Invalid assignment found on line {0}: unable to change a constant value.";
 
-    public InvalidAssignmentException(String message, List<ThoriumException> exceptions) {
+    public InvalidAssignmentException(String message, List<ThoriumSemanticException> exceptions) {
         super(message, exceptions);
     }
 

@@ -16,7 +16,6 @@
 
 package net.cpollet.thorium.analysis.exceptions;
 
-import net.cpollet.thorium.ThoriumException;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.utils.CollectionUtils;
 import org.antlr.v4.runtime.Token;
@@ -39,11 +38,11 @@ public class InvalidSymbolException extends ThoriumSemanticException {
         return new InvalidSymbolException(formatMessage(METHOD_NOT_FOUND, location(token), methodName, CollectionUtils.concat(parametersTypes), leftType.toString()));
     }
 
-    public static ThoriumException identifierNotFound(Token token, String name) {
+    public static InvalidSymbolException identifierNotFound(Token token, String name) {
         return new InvalidSymbolException(formatMessage(IDENTIFIER_NOT_FOUND, location(token), name));
     }
 
-    public static ThoriumException alreadyDefined(Token token, String name, Token original) {
+    public static InvalidSymbolException alreadyDefined(Token token, String name, Token original) {
         return new InvalidSymbolException(formatMessage(ALREADY_DEFINED, location(token), name, location(original)));
     }
 }

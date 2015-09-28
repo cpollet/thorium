@@ -17,6 +17,7 @@
 package net.cpollet.thorium.jbehave.analysis.steps;
 
 import net.cpollet.thorium.ThoriumException;
+import net.cpollet.thorium.analysis.AnalysisContext;
 import net.cpollet.thorium.analysis.SemanticAnalyser;
 import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.analysis.values.Symbol;
@@ -28,6 +29,8 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -68,10 +71,15 @@ public class SemanticAnalysisSteps extends BaseSteps {
 
     @When("types are attached to nodes")
     public void attachTypes() throws Exception {
-        SemanticAnalyser semanticAnalyser = new SemanticAnalyser(storyContext.analysisBaseScope, storyContext.parser, storyContext.tree);
+        SemanticAnalyser semanticAnalyser = new SemanticAnalyser(new AnalysisContext(storyContext.analysisBaseScope), storyContext.parser, storyContext.tree);
 
         try {
-            storyContext.types = semanticAnalyser.analyze();
+            storyContext.analysisResult = semanticAnalyser.analyze();
+
+            // TODO dont throw exception, refactor
+            if (!storyContext.analysisResult.getExceptions().isEmpty()) {
+                throw new ThoriumSemanticException(storyContext.analysisResult.getExceptions().size() + " semantic errors occurred.", storyContext.analysisResult.getExceptions());
+            }
         } catch (ThoriumSemanticException e) {
             if (storyContext.exceptionExpected && storyContext.exception == null) {
                 if (e.getCauses().size() == 1) {
@@ -96,7 +104,7 @@ public class SemanticAnalysisSteps extends BaseSteps {
     @Then("root node is of type <type>")
     @Alias("root node is of type $type")
     public void assertRootNodeIsOfTypes(@Named("type") String type) {
-        Assertions.assertThat(storyContext.types.get(storyContext.tree).toString())
+        Assertions.assertThat(storyContext.analysisResult.getNodesTypes().get(storyContext.tree).toString())
                 .isEqualTo(type);
     }
 
