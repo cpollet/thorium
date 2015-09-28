@@ -21,6 +21,7 @@ import net.cpollet.thorium.values.DirectValue;
 
 /**
  * @author Christophe Pollet
+ * @todo DESIGN can be merged into Symbol
  */
 public class Variable extends Symbol {
     public Variable(String name) {

@@ -76,7 +76,7 @@ public class SemanticAnalysisSteps extends BaseSteps {
         try {
             storyContext.analysisResult = semanticAnalyser.analyze();
 
-            // TODO dont throw exception, refactor
+            // TODO DESIGN don't throw exception, refactor
             if (!storyContext.analysisResult.getExceptions().isEmpty()) {
                 throw new ThoriumSemanticException(storyContext.analysisResult.getExceptions().size() + " semantic errors occurred.", storyContext.analysisResult.getExceptions());
             }

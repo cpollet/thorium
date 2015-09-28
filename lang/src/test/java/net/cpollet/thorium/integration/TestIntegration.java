@@ -104,7 +104,7 @@ public class TestIntegration {
         SemanticAnalyser semanticAnalyser = new SemanticAnalyser(analysisContext, parser, tree);
 
         try {
-            // TODO enable again after method analysis is implemented
+            // TODO SEM enable again after method analysis is implemented
             // semanticAnalyser.analyze();
         } catch (ThoriumSemanticException e) {
             for (ThoriumException thoriumException : e.getCauses()) {

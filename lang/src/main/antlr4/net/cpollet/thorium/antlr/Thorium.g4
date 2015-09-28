@@ -95,7 +95,7 @@ type
 // EXPRESSIONS
 
 methodDefinition
-    : visibility type? methodName '(' formalParameters? ')' '{' statements '}'
+    : visibility type methodName '(' formalParameters? ')' '{' statements '}' // TODO in a future version, types on method could be made optional
     ;
 formalParameter
     : type LCFirstIdentifier
