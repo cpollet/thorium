@@ -16,11 +16,9 @@
 
 package net.cpollet.thorium.analysis;
 
-import net.cpollet.thorium.ThoriumException;
 import net.cpollet.thorium.analysis.exceptions.InvalidAssignmentException;
 import net.cpollet.thorium.analysis.exceptions.InvalidSymbolException;
 import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
-import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.analysis.values.Symbol;
 import net.cpollet.thorium.antlr.ThoriumBaseListener;
 import net.cpollet.thorium.antlr.ThoriumParser;
@@ -32,7 +30,6 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -235,7 +232,6 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     //endregion
 
     //region If Statement
-
 
     @Override
     public void enterIfStatement(ThoriumParser.IfStatementContext ctx) {
