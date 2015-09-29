@@ -124,11 +124,6 @@ public class DirectValue implements Value {
     }
 
     @Override
-    public boolean isWritable() {
-        return false;
-    }
-
-    @Override
     public String getName() {
         return null;
     }

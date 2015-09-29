@@ -33,7 +33,7 @@ public class TestSymbol {
     @Test
     public void toStringWithOnlyName() {
         // GIVEN
-        Symbol symbol = new SymbolForTests("name");
+        Symbol symbol = new Symbol("name");
 
         // WHEN
         String string = symbol.toString();
@@ -45,7 +45,7 @@ public class TestSymbol {
     @Test
     public void toStringWithType() {
         // GIVEN
-        Symbol symbol = new SymbolForTests("name", Types.NULLABLE_INTEGER);
+        Symbol symbol = new Symbol("name", Types.NULLABLE_INTEGER);
 
         // WHEN
         String string = symbol.toString();
@@ -57,31 +57,12 @@ public class TestSymbol {
     @Test
     public void toStringWithValue() {
         // GIVEN
-        Symbol symbol = new SymbolForTests("name", DirectValue.build(1L));
+        Symbol symbol = new Symbol("name", DirectValue.build(1L));
 
         // WHEN
         String string = symbol.toString();
 
         // THEN
         assertThat(string).isEqualTo("Symbol(name: Integer(1))");
-    }
-
-    private class SymbolForTests extends Symbol {
-        public SymbolForTests(String name) {
-            super(name);
-        }
-
-        public SymbolForTests(String name, DirectValue value) {
-            super(name, value);
-        }
-
-        public SymbolForTests(String name, Type type) {
-            super(name, type);
-        }
-
-        @Override
-        public boolean isWritable() {
-            return false;
-        }
     }
 }

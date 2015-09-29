@@ -22,8 +22,6 @@ import net.cpollet.thorium.types.Type;
  * @author Christophe Pollet
  */
 public interface Value {
-    boolean isWritable();
-
     String getName();
 
     Type type();

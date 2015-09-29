@@ -24,16 +24,12 @@ import net.cpollet.thorium.values.Value;
 /**
  * @author Christophe Pollet
  */
-public abstract class Symbol implements Value {
-    public enum SymbolType {
-        VARIABLE, CONSTANT
-    }
-
+public class Symbol implements Value {
     private String name;
     private Type type;
     private DirectValue value;
 
-    protected Symbol(String name) {
+    public Symbol(String name) {
         this.name = name;
         this.type = Types.NULLABLE_VOID;
         this.value = DirectValue.build();

@@ -24,7 +24,6 @@ import net.cpollet.thorium.data.method.MethodSignature;
 import net.cpollet.thorium.data.method.ParameterSignature;
 import net.cpollet.thorium.execution.data.method.NonNativeMethodBody;
 import net.cpollet.thorium.execution.values.Symbol;
-import net.cpollet.thorium.execution.values.Variable;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
 import net.cpollet.thorium.values.DirectValue;
@@ -66,7 +65,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
             throw new IllegalStateException("Symbol " + identifier + " already defined in current scope");
         }
 
-        Symbol symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead? -> yes it probably eases the thing with def, etc.
+        Symbol symbol = new Symbol(identifier);
         updateValue(symbol, exprCtx);
 
         context.insertSymbol(symbol);
@@ -250,7 +249,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
         context = context.wrap();
 
         for (int i = 0; i < parameterValues.size(); i++) {
-            context.insertSymbol(new Variable(signature.getParameterName(i), parameterValues.get(i).value()));
+            context.insertSymbol(new Symbol(signature.getParameterName(i), parameterValues.get(i).value()));
         }
 
         Value returnValue = method.apply(new MethodEvaluationContext(context, parameterValues));
@@ -450,7 +449,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     private Symbol createOrUpdateSymbol(String identifier, ThoriumParser.ExpressionContext exprCtx) {
         if (!context.symbolDefined(identifier)) {
-            Symbol symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead? -> yes it probably eases the thing with def, etc.
+            Symbol symbol = new Symbol(identifier);
             updateValue(symbol, exprCtx);
 
             context.updateOrInsertSymbol(symbol);
