@@ -62,20 +62,6 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         return new AnalysisResult(analysisContext.getTypesOfAllNodes(), analysisContext.getExceptions());
     }
 
-    private Type getNodeType(ParserRuleContext ctx) {
-        Set<Type> possibleTypes = analysisContext.getTypesOf(ctx);
-        if (possibleTypes.size() != 1) {
-            analysisContext.addException(InvalidTypeException.ambiguousType(ctx.getStart(), possibleTypes));
-            return Types.NULLABLE_VOID;
-        }
-
-        return possibleTypes.iterator().next();
-    }
-
-    private Set<Type> getNodeTypes(ParseTree ctx) {
-        return analysisContext.getTypesOf(ctx);
-    }
-
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
         analysisContext.storeSymbolTable(ctx);
@@ -601,6 +587,20 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
             default:
                 throw new IllegalStateException("Invalid type");
         }
+    }
+
+    private Type getNodeType(ParserRuleContext ctx) {
+        Set<Type> possibleTypes = analysisContext.getTypesOf(ctx);
+        if (possibleTypes.size() != 1) {
+            analysisContext.addException(InvalidTypeException.ambiguousType(ctx.getStart(), possibleTypes));
+            return Types.NULLABLE_VOID;
+        }
+
+        return possibleTypes.iterator().next();
+    }
+
+    private Set<Type> getNodeTypes(ParseTree ctx) {
+        return analysisContext.getTypesOf(ctx);
     }
 
     /**

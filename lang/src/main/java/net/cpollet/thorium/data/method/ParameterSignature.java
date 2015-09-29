@@ -29,6 +29,7 @@ public class ParameterSignature {
         this.type = type;
         this.name = name;
     }
+
     public ParameterSignature(Type type) {
         this.type = type;
         this.name = null;
