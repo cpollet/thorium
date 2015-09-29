@@ -23,7 +23,7 @@ import net.cpollet.thorium.data.method.MethodEvaluationContext;
 import net.cpollet.thorium.data.method.MethodSignature;
 import net.cpollet.thorium.data.method.ParameterSignature;
 import net.cpollet.thorium.execution.data.method.NonNativeMethodBody;
-import net.cpollet.thorium.execution.values.Symbol;
+import net.cpollet.thorium.execution.data.symbol.Symbol;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
 import net.cpollet.thorium.values.DirectValue;

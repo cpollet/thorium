@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.cpollet.thorium.analysis.values;
+package net.cpollet.thorium.analysis.data.symbol;
 
 import net.cpollet.thorium.types.Type;
 import org.antlr.v4.runtime.Token;
@@ -23,20 +23,20 @@ import org.antlr.v4.runtime.Token;
  * @author Christophe Pollet
  */
 public class ConstantSymbol extends Symbol {
-    private boolean writeable;
+    private boolean writable;
 
     public ConstantSymbol(String name, Token token, Type type) {
         super(name, token, type);
-        this.writeable = true;
+        this.writable = true;
     }
 
     @Override
     public void lock() {
-        writeable = false;
+        writable = false;
     }
 
     @Override
     public boolean isWritable() {
-        return writeable;
+        return writable;
     }
 }

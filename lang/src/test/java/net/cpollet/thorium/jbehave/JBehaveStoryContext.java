@@ -20,9 +20,8 @@ import net.cpollet.thorium.analysis.AnalysisResult;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.symbol.SymbolTable;
 import net.cpollet.thorium.execution.ExecutionContext;
-import net.cpollet.thorium.types.Type;
+import net.cpollet.thorium.execution.data.symbol.Symbol;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 /**
  * @author Christophe Pollet
@@ -33,8 +32,8 @@ public class JBehaveStoryContext {
     public Throwable exception;
     public boolean exceptionExpected;
     public ThoriumParser parser;
-    public SymbolTable<net.cpollet.thorium.execution.values.Symbol> evaluationBaseScope;
-    public SymbolTable<net.cpollet.thorium.analysis.values.Symbol> analysisBaseScope;
+    public SymbolTable<Symbol> evaluationBaseScope;
+    public SymbolTable<net.cpollet.thorium.analysis.data.symbol.Symbol> analysisBaseScope;
     public String thoriumCode;
     public int exceptionsExpected;
     public AnalysisResult analysisResult;

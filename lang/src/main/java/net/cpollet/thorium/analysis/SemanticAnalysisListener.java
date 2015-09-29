@@ -19,7 +19,7 @@ package net.cpollet.thorium.analysis;
 import net.cpollet.thorium.analysis.exceptions.InvalidAssignmentException;
 import net.cpollet.thorium.analysis.exceptions.InvalidSymbolException;
 import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
-import net.cpollet.thorium.analysis.values.Symbol;
+import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.antlr.ThoriumBaseListener;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.method.Method;

@@ -17,7 +17,7 @@
 package net.cpollet.thorium.analysis;
 
 import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
-import net.cpollet.thorium.analysis.values.Symbol;
+import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.data.symbol.SymbolTable;
 import net.cpollet.thorium.types.Type;
 import org.antlr.v4.runtime.tree.ParseTree;

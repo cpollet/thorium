@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.cpollet.thorium.analysis.values;
+package net.cpollet.thorium.analysis.data.symbol;
 
 import net.cpollet.thorium.types.Type;
 import org.antlr.v4.runtime.ParserRuleContext;

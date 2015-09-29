@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package net.cpollet.thorium.values;
+package net.cpollet.thorium.execution.data.symbol;
 
-import net.cpollet.thorium.execution.values.Symbol;
-import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
+import net.cpollet.thorium.values.DirectValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

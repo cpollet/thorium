@@ -20,7 +20,7 @@ import net.cpollet.thorium.ThoriumException;
 import net.cpollet.thorium.analysis.AnalysisContext;
 import net.cpollet.thorium.analysis.SemanticAnalyser;
 import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
-import net.cpollet.thorium.analysis.values.Symbol;
+import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.jbehave.JBehaveStoryContext;
 import net.cpollet.thorium.jbehave.grammar.steps.BaseSteps;
 import org.fest.assertions.Assertions;
@@ -29,8 +29,6 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
-
-import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.cpollet.thorium.execution.values;
+package net.cpollet.thorium.execution.data.symbol;
 
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;

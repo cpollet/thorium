@@ -22,7 +22,7 @@ import net.cpollet.thorium.data.method.MethodNotFoundException;
 import net.cpollet.thorium.data.method.MethodTable;
 import net.cpollet.thorium.data.method.ParameterSignature;
 import net.cpollet.thorium.data.symbol.SymbolTable;
-import net.cpollet.thorium.execution.values.Symbol;
+import net.cpollet.thorium.execution.data.symbol.Symbol;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
 import net.cpollet.thorium.values.Value;
