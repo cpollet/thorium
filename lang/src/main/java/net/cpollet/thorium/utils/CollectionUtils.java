@@ -16,7 +16,6 @@
 
 package net.cpollet.thorium.utils;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -25,10 +24,6 @@ import java.util.Collection;
 public class CollectionUtils {
     private CollectionUtils() {
         // nothing
-    }
-
-    public static <T> String concat(T... objects) {
-        return concat(Arrays.asList(objects));
     }
 
     public static String concat(Collection<?> collection) {

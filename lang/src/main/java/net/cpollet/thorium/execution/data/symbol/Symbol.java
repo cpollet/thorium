@@ -41,12 +41,6 @@ public class Symbol implements Value {
         this.value = value;
     }
 
-    public Symbol(String name, Type type) {
-        this.name = name;
-        this.type = type;
-        this.value = DirectValue.build();
-    }
-
     @Override
     public String getName() {
         return name;

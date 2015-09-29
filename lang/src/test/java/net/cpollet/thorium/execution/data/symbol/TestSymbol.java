@@ -42,18 +42,6 @@ public class TestSymbol {
     }
 
     @Test
-    public void toStringWithType() {
-        // GIVEN
-        Symbol symbol = new Symbol("name", Types.NULLABLE_INTEGER);
-
-        // WHEN
-        String string = symbol.toString();
-
-        // THEN
-        assertThat(string).isEqualTo("Symbol(name: Integer?)");
-    }
-
-    @Test
     public void toStringWithValue() {
         // GIVEN
         Symbol symbol = new Symbol("name", DirectValue.build(1L));

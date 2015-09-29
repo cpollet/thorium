@@ -75,10 +75,6 @@ public class ObserverRegistry<T> {
         return observers.get(observable);
     }
 
-    public List<ParserRuleContext> getUnresolvedObservers() {
-        return observers.values().stream().flatMap(List::stream).collect(Collectors.toList());
-    }
-
     private void log(String prefix, ParserRuleContext observer, T observable) {
         LOG.debug(prefix + " " + observer.getClass().getSimpleName() + observer.toString() + "@" + System.identityHashCode(observer) + ": " + observer.getText() + " for " + observable.toString());
     }
