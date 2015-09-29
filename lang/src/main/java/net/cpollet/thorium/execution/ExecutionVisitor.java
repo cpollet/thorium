@@ -21,6 +21,7 @@ import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.method.Method;
 import net.cpollet.thorium.data.method.MethodEvaluationContext;
 import net.cpollet.thorium.data.method.MethodSignature;
+import net.cpollet.thorium.data.method.ParameterSignature;
 import net.cpollet.thorium.execution.data.method.NonNativeMethodBody;
 import net.cpollet.thorium.execution.values.Symbol;
 import net.cpollet.thorium.execution.values.Variable;
@@ -32,6 +33,7 @@ import net.cpollet.thorium.values.Value;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -371,20 +373,18 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
     @Override
     public Void visitMethodDefinition(ThoriumParser.MethodDefinitionContext ctx) {
-        List<Type> formalParametersTypes = new LinkedList<>();
-        List<String> formalParametersNames = new LinkedList<>();
+        List<ParameterSignature> parameterSignatures = Collections.emptyList();
         ThoriumParser.FormalParametersContext formalParametersCtx = ctx.formalParameters();
 
         if (formalParametersCtx != null) {
-            for (ThoriumParser.FormalParameterContext formalParameter : formalParametersCtx.formalParameter()) {
-                formalParametersTypes.add(decode(formalParameter.type()));
-                formalParametersNames.add(formalParameter.LCFirstIdentifier().getText());
-            }
+            parameterSignatures = formalParametersCtx.formalParameter().stream()
+                    .map((parameterCtx) -> new ParameterSignature(decode(parameterCtx.type()), parameterCtx.LCFirstIdentifier().getText()))
+                    .collect(Collectors.toList());
         }
 
         NonNativeMethodBody methodBody = new NonNativeMethodBody(ctx.statements());
 
-        context.insertMethod(ctx.methodName().getText(), methodBody, Types.VOID, Types.VOID, formalParametersTypes, formalParametersNames);
+        context.insertMethod(ctx.methodName().getText(), methodBody, Types.VOID, Types.VOID, parameterSignatures);
 
         return null;
     }

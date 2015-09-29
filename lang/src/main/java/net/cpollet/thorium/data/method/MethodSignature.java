@@ -21,6 +21,7 @@ import net.cpollet.thorium.utils.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Christophe Pollet
@@ -29,16 +30,13 @@ public class MethodSignature {
     private final String name;
     private final Type targetType;
     private final Type returnType;
-    private final List<Type> parameterTypes;
-    private final List<String> parameterNames;
+    private final List<ParameterSignature> parameterSignatures;
 
-    // TODO DESIGN have parameterTypes and parameterNames in a wrapper object
-    public MethodSignature(String name, Type targetType, Type returnType, List<Type> parameterTypes, List<String> parameterNames) {
+    public MethodSignature(String name, Type targetType, Type returnType, List<ParameterSignature> parameterSignatures) {
         this.name = name;
         this.targetType = targetType;
         this.returnType = returnType;
-        this.parameterTypes = parameterTypes;
-        this.parameterNames = parameterNames;
+        this.parameterSignatures = parameterSignatures;
     }
 
     public String getName() {
@@ -54,16 +52,18 @@ public class MethodSignature {
     }
 
     public List<Type> getParameterTypes() {
-        return parameterTypes;
+        return parameterSignatures.stream()
+                .map(ParameterSignature::getType)
+                .collect(Collectors.toList());
     }
 
     public String getParameterName(int index) {
-        return parameterNames.get(index);
+        return parameterSignatures.get(index).getName();
     }
 
     @Override
     public String toString() {
-        return name + "(" + CollectionUtils.concat(parameterTypes, ", ") + ") : " + returnType.toString();
+        return name + "(" + CollectionUtils.concat(getParameterTypes(), ", ") + ") : " + returnType.toString();
     }
 
     @Override
@@ -80,11 +80,11 @@ public class MethodSignature {
         return Objects.equals(name, that.name) &&
                 Objects.equals(targetType, that.targetType) &&
                 Objects.equals(returnType, that.returnType) &&
-                Objects.equals(parameterTypes, that.parameterTypes);
+                Objects.equals(getParameterTypes(), that.getParameterTypes());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, targetType, returnType, parameterTypes);
+        return Objects.hash(name, targetType, returnType, getParameterTypes());
     }
 }

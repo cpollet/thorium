@@ -20,6 +20,7 @@ import net.cpollet.thorium.data.method.Method;
 import net.cpollet.thorium.data.method.MethodBody;
 import net.cpollet.thorium.data.method.MethodNotFoundException;
 import net.cpollet.thorium.data.method.MethodTable;
+import net.cpollet.thorium.data.method.ParameterSignature;
 import net.cpollet.thorium.data.symbol.SymbolTable;
 import net.cpollet.thorium.execution.values.Symbol;
 import net.cpollet.thorium.types.Type;
@@ -96,8 +97,8 @@ public class ExecutionContext {
         return symbolsTable.isDefinedInCurrentScope(name);
     }
 
-    public void insertMethod(String name, MethodBody methodBody, Type targetType, Type returnType, List<Type> parameterTypes, List<String> parameterNames) {
-        methodTable.put(name, methodBody, targetType, returnType, parameterTypes, parameterNames);
+    public void insertMethod(String name, MethodBody methodBody, Type targetType, Type returnType, List<ParameterSignature> parameterSignatures) {
+        methodTable.put(name, methodBody, targetType, returnType, parameterSignatures);
     }
 
     public Method lookupMethod(String name, List<Type> parameterTypes) {

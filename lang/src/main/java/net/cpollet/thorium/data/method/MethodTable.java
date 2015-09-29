@@ -41,10 +41,14 @@ public class MethodTable {
     }
 
     public void put(String name, MethodBody methodBody, Type targetType, Type returnType, Type... parameterTypes) {
-        put(name, methodBody, targetType, returnType, Arrays.asList(parameterTypes), Collections.emptyList());
+        List<ParameterSignature> parameterSignatures = Arrays.asList(parameterTypes).stream()
+                .map(ParameterSignature::new)
+                .collect(Collectors.toList());
+
+        put(name, methodBody, targetType, returnType, parameterSignatures);
     }
 
-    public void put(String name, MethodBody methodBody, Type targetType, Type returnType, List<Type> parameterTypes, List<String> parameterNames) {
+    public void put(String name, MethodBody methodBody, Type targetType, Type returnType, List<ParameterSignature> parameterSignatures) {
         if (table.get(name) == null) {
             table.put(name, new HashMap<>());
         }
@@ -52,15 +56,13 @@ public class MethodTable {
         MethodSignature methodSignature = MethodSignatureBuilder.method(name)
                 .withReturnType(returnType)
                 .withTargetType(targetType)
-                .withParameterTypes(parameterTypes)
-                .withParameterNames(parameterNames)
+                .withParameterSignatures(parameterSignatures)
                 .build();
 
         table.get(name).put(methodSignature, methodBody);
 
-        cache.put(getCacheKey(name, targetType, parameterTypes), new Method(methodSignature, methodBody));
+        cache.put(getCacheKey(name, targetType, methodSignature.getParameterTypes()), new Method(methodSignature, methodBody));
     }
-
 
     private String getCacheKey(String name, Type targetType, List<Type> parameterTypes) {
         return targetType.toString() + "." + name + "(" + CollectionUtils.concat(parameterTypes) + ")";
@@ -174,4 +176,5 @@ public class MethodTable {
 
         return potentialMatches.get(0);
     }
+
 }
