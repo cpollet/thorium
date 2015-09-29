@@ -44,7 +44,9 @@ import java.util.stream.Collectors;
  * @author Christophe Pollet
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
+    public static final int 0 = 0;
     private static final Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
+
 
     private final List<String> ruleNames;
 
@@ -646,11 +648,12 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     private void logContextInformation(ParserRuleContext ctx) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 
-        int i = 2;
+        int i = 0;
         String methodName = stackTraceElements[i].getMethodName();
 
         while (!methodName.startsWith("exit") && !methodName.startsWith("enter")) {
-            methodName = stackTraceElements[i++].getMethodName();
+            i++;
+            methodName = stackTraceElements[i].getMethodName();
         }
 
         LOG.debug("-> [" + methodName + "] " + ctx.toString(ruleNames) + " " + ctx.toStringTree(ruleNames) + ": " + analysisContext.getTypesOf(ctx));
