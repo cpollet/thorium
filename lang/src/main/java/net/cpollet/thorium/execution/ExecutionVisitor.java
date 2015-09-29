@@ -62,16 +62,16 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
     }
 
     private Symbol createSymbolInCurrentScope(String identifier, ThoriumParser.ExpressionContext exprCtx) {
-        if (!context.symbolDefinedInCurrentScope(identifier)) {
-            Symbol symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead? -> yes it probably eases the thing with def, etc.
-            updateValue(symbol, exprCtx);
-
-            context.insertSymbol(symbol);
-
-            return symbol;
+        if (context.symbolDefinedInCurrentScope(identifier)) {
+            throw new IllegalStateException("Symbol " + identifier + " already defined in current scope");
         }
 
-        return context.lookupSymbol(identifier);
+        Symbol symbol = new Variable(identifier); // TODO EVAL: should be symbol reference instead? -> yes it probably eases the thing with def, etc.
+        updateValue(symbol, exprCtx);
+
+        context.insertSymbol(symbol);
+
+        return symbol;
     }
 
     private void updateValue(Symbol symbol, ThoriumParser.ExpressionContext exprCtx) {
