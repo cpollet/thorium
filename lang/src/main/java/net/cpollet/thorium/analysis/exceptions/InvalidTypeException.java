@@ -22,6 +22,7 @@ import net.cpollet.thorium.utils.CollectionUtils;
 import org.antlr.v4.runtime.Token;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 /**
  * @author Christophe Pollet
@@ -41,7 +42,8 @@ public class InvalidTypeException extends ThoriumSemanticException {
     }
 
     public static InvalidTypeException ambiguousType(Token token, Collection<Type> types) {
-        return new InvalidTypeException(ThoriumException.formatMessage(AMBIGUOUS_TYPE, ThoriumException.location(token), CollectionUtils.concat(types)));
+        Stream<String> sortedTypesStream = types.stream().map(Object::toString).sorted(String::compareTo);
+        return new InvalidTypeException(ThoriumException.formatMessage(AMBIGUOUS_TYPE, ThoriumException.location(token), CollectionUtils.concat(sortedTypesStream)));
     }
 
     public static InvalidTypeException typeExpected(Token token) {

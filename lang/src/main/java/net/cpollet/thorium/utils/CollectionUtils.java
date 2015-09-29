@@ -17,6 +17,7 @@
 package net.cpollet.thorium.utils;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 /**
  * @author Christophe Pollet
@@ -30,7 +31,15 @@ public class CollectionUtils {
         return concat(collection, ", ");
     }
 
+    public static String concat(Stream<?> stream) {
+        return concat(stream, ", ");
+    }
+
     public static String concat(Collection<?> collection, String separator) {
-        return collection.stream().map(Object::toString).sorted(String::compareTo).reduce("", (l, r) -> l + (l.isEmpty() ? "" : separator) + r);
+        return concat(collection.stream(), separator);
+    }
+
+    public static String concat(Stream<?> stream, String separator) {
+        return stream.map(Object::toString).reduce("", (l, r) -> l + (l.isEmpty() ? "" : separator) + r);
     }
 }
