@@ -33,7 +33,6 @@ import net.cpollet.thorium.values.Value;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -378,7 +377,7 @@ public class ExecutionVisitor extends ThoriumBaseVisitor<Void> {
 
         if (formalParametersCtx != null) {
             parameterSignatures = formalParametersCtx.formalParameter().stream()
-                    .map((parameterCtx) -> new ParameterSignature(decode(parameterCtx.type()), parameterCtx.LCFirstIdentifier().getText()))
+                    .map(parameterCtx -> new ParameterSignature(decode(parameterCtx.type()), parameterCtx.LCFirstIdentifier().getText()))
                     .collect(Collectors.toList());
         }
 

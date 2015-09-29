@@ -16,7 +16,6 @@
 
 package net.cpollet.thorium.analysis;
 
-import net.cpollet.thorium.ThoriumException;
 import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.analysis.values.Symbol;
 import net.cpollet.thorium.data.symbol.SymbolTable;
