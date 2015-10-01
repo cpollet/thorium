@@ -38,15 +38,15 @@ import java.util.Set;
 /**
  * @author Christophe Pollet
  */
-public abstract class BaseSemanticAnalysisListener {
+public abstract class BaseListener {
     private final ParseTreeListener parseTreeListener;
     private final AnalysisContext analysisContext;
     private final ObserverRegistry<Symbol> symbolObserverRegistry;
     private final ObserverRegistry<ParserRuleContext> nodeObserverRegistry;
 
-    public BaseSemanticAnalysisListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
-                                        ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
-                                        ObserverRegistry<Symbol> symbolObserverRegistry) {
+    public BaseListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
+                        ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
+                        ObserverRegistry<Symbol> symbolObserverRegistry) {
         this.analysisContext = analysisContext;
         this.parseTreeListener = parseTreeListener;
         this.nodeObserverRegistry = nodeObserverRegistry;

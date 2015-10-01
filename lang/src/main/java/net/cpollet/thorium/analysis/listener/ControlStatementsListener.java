@@ -34,10 +34,10 @@ import java.util.stream.Collectors;
 /**
  * @author Christophe Pollet
  */
-public class ControlStatementsSemanticAnalysisListener extends BaseSemanticAnalysisListener {
-    public ControlStatementsSemanticAnalysisListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
-                                                     ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
-                                                     ObserverRegistry<Symbol> symbolObserverRegistry) {
+public class ControlStatementsListener extends BaseListener {
+    public ControlStatementsListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
+                                     ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
+                                     ObserverRegistry<Symbol> symbolObserverRegistry) {
         super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
     }
 

@@ -29,10 +29,10 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 /**
  * @author Christophe Pollet
  */
-public class MiscSemanticAnalysisListener extends BaseSemanticAnalysisListener {
-    public MiscSemanticAnalysisListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
-                                        ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
-                                        ObserverRegistry<Symbol> symbolObserverRegistry) {
+public class MiscListener extends BaseListener {
+    public MiscListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
+                        ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
+                        ObserverRegistry<Symbol> symbolObserverRegistry) {
         super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
     }
 

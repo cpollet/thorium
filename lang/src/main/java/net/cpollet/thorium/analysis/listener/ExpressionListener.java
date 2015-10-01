@@ -37,10 +37,10 @@ import java.util.Set;
 /**
  * @author Christophe Pollet
  */
-public class ExpressionSemanticAnalysisListener extends BaseSemanticAnalysisListener {
-    public ExpressionSemanticAnalysisListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
-                                              ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
-                                              ObserverRegistry<Symbol> symbolObserverRegistry) {
+public class ExpressionListener extends BaseListener {
+    public ExpressionListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
+                              ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
+                              ObserverRegistry<Symbol> symbolObserverRegistry) {
         super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
     }
 

@@ -29,10 +29,10 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 /**
  * @author Christophe Pollet
  */
-public class ConditionalStatementsSemanticAnalysisListener extends BaseSemanticAnalysisListener {
-    public ConditionalStatementsSemanticAnalysisListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
-                                                         ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
-                                                         ObserverRegistry<Symbol> symbolObserverRegistry) {
+public class ConditionalStatementsListener extends BaseListener {
+    public ConditionalStatementsListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
+                                         ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
+                                         ObserverRegistry<Symbol> symbolObserverRegistry) {
         super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
     }
 

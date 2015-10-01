@@ -17,12 +17,12 @@
 package net.cpollet.thorium.analysis;
 
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
-import net.cpollet.thorium.analysis.listener.ConditionalStatementsSemanticAnalysisListener;
-import net.cpollet.thorium.analysis.listener.ControlStatementsSemanticAnalysisListener;
-import net.cpollet.thorium.analysis.listener.ExpressionSemanticAnalysisListener;
-import net.cpollet.thorium.analysis.listener.MiscSemanticAnalysisListener;
-import net.cpollet.thorium.analysis.listener.StatementsSemanticAnalysisListener;
-import net.cpollet.thorium.analysis.listener.ValuesSemanticAnalysisListener;
+import net.cpollet.thorium.analysis.listener.ConditionalStatementsListener;
+import net.cpollet.thorium.analysis.listener.ControlStatementsListener;
+import net.cpollet.thorium.analysis.listener.ExpressionListener;
+import net.cpollet.thorium.analysis.listener.MiscListener;
+import net.cpollet.thorium.analysis.listener.StatementsListener;
+import net.cpollet.thorium.analysis.listener.ValuesListener;
 import net.cpollet.thorium.antlr.ThoriumBaseListener;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -31,23 +31,23 @@ import org.antlr.v4.runtime.ParserRuleContext;
  * @author Christophe Pollet
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
-    private final StatementsSemanticAnalysisListener statementsListener;
-    private final ControlStatementsSemanticAnalysisListener controlStatementListener;
-    private final ExpressionSemanticAnalysisListener expressionListener;
-    private final ConditionalStatementsSemanticAnalysisListener conditionalStatementsListener;
-    private final ValuesSemanticAnalysisListener valuesListener;
-    private final MiscSemanticAnalysisListener miscListener;
+    private final StatementsListener statementsListener;
+    private final ControlStatementsListener controlStatementListener;
+    private final ExpressionListener expressionListener;
+    private final ConditionalStatementsListener conditionalStatementsListener;
+    private final ValuesListener valuesListener;
+    private final MiscListener miscListener;
 
     public SemanticAnalysisListener(AnalysisContext context) {
         ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
         ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
 
-        controlStatementListener = new ControlStatementsSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
-        statementsListener = new StatementsSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
-        expressionListener = new ExpressionSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
-        conditionalStatementsListener = new ConditionalStatementsSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
-        valuesListener = new ValuesSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
-        miscListener = new MiscSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        controlStatementListener = new ControlStatementsListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        statementsListener = new StatementsListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        expressionListener = new ExpressionListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        conditionalStatementsListener = new ConditionalStatementsListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        valuesListener = new ValuesListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        miscListener = new MiscListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
     }
 
     @Override

@@ -16,12 +16,6 @@
 
 package net.cpollet.thorium.analysis;
 
-import net.cpollet.thorium.analysis.listener.ConditionalStatementsSemanticAnalysisListener;
-import net.cpollet.thorium.analysis.listener.ControlStatementsSemanticAnalysisListener;
-import net.cpollet.thorium.analysis.listener.ExpressionSemanticAnalysisListener;
-import net.cpollet.thorium.analysis.listener.MiscSemanticAnalysisListener;
-import net.cpollet.thorium.analysis.listener.StatementsSemanticAnalysisListener;
-import net.cpollet.thorium.analysis.listener.ValuesSemanticAnalysisListener;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
