@@ -16,6 +16,7 @@
 
 package net.cpollet.thorium.analysis;
 
+import net.cpollet.thorium.analysis.listener.SemanticAnalysisListener;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 

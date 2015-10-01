@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package net.cpollet.thorium.analysis;
+package net.cpollet.thorium.analysis.listener;
 
+import net.cpollet.thorium.analysis.AnalysisContext;
+import net.cpollet.thorium.analysis.ObserverRegistry;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.analysis.listener.ConditionalStatementsListener;
 import net.cpollet.thorium.analysis.listener.ControlStatementsListener;
