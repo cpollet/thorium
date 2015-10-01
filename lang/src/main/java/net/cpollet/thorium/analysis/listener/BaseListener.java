@@ -125,8 +125,6 @@ public abstract class BaseListener {
         } else {
             nodeObserverRegistry.notifyObservers(parent, parseTreeListener);
         }
-
-        // logContextInformation(parent);
     }
 
     /**
@@ -147,8 +145,6 @@ public abstract class BaseListener {
         } else {
             nodeObserverRegistry.notifyObservers(parent, parseTreeListener);
         }
-
-        // logContextInformation(parent);
     }
 
     protected void registerVariableOrConstant(ParserRuleContext ctx, Symbol.SymbolKind symbolKind, String name, ThoriumParser.TypeContext typeCtx, ThoriumParser.ExpressionContext expressionCtx) {

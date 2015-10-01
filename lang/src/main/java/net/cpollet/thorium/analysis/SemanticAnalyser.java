@@ -16,7 +16,6 @@
 
 package net.cpollet.thorium.analysis;
 
-import net.cpollet.thorium.antlr.ThoriumParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
@@ -25,12 +24,10 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
  */
 public class SemanticAnalyser {
     private final ParseTree tree;
-    private final ThoriumParser parser;
     private final AnalysisContext analysisContext;
 
-    public SemanticAnalyser(AnalysisContext analysisContext, ThoriumParser parser, ParseTree tree) {
+    public SemanticAnalyser(AnalysisContext analysisContext, ParseTree tree) {
         this.analysisContext = analysisContext;
-        this.parser = parser;
         this.tree = tree;
     }
 

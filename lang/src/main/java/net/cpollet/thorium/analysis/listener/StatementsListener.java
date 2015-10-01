@@ -78,15 +78,11 @@ public class StatementsListener extends BaseListener {
 
     public void exitVariableDeclarationStatement(ThoriumParser.VariableDeclarationStatementContext ctx) {
         registerVariableOrConstant(ctx, Symbol.SymbolKind.VARIABLE, ctx.LCFirstIdentifier().getText(), ctx.type(), ctx.expression());
-
-        // logContextInformation(ctx);
     }
 
     public void exitConstantDeclarationStatement(ThoriumParser.ConstantDeclarationStatementContext ctx) {
         registerVariableOrConstant(ctx, Symbol.SymbolKind.CONSTANT, ctx.UCIdentifier().getText(), ctx.type(), ctx.expression());
 
         getSymbolTable().lookup(ctx.UCIdentifier().getText()).lock();
-
-        // logContextInformation(ctx);
     }
 }

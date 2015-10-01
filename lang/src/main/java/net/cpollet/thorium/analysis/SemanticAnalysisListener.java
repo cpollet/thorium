@@ -250,7 +250,6 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     @Override
     public void exitConstantName(ThoriumParser.ConstantNameContext ctx) {
         valuesListener.exitConstantName(ctx);
-        // exitVariableOrConstantName(ctx, ctx.UCIdentifier().getText(), Symbol.SymbolKind.CONSTANT);
     }
 
     //endregion

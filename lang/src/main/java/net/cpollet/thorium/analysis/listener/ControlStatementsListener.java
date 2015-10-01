@@ -88,8 +88,6 @@ public class ControlStatementsListener extends BaseListener {
         setTypesOf(ctx, possibleTypes);
 
         unwrapSymbolTable();
-
-        // logContextInformation(ctx);
     }
 
     private static <T> Set<T> intersect(Set<T> left, Set<T> right) {
@@ -152,8 +150,6 @@ public class ControlStatementsListener extends BaseListener {
         possibleTypes = possibleTypes.stream().map(Type::nullable).collect(Collectors.toSet());
 
         setTypesOf(ctx, possibleTypes);
-
-        // logContextInformation(ctx);
     }
 
     // endregion

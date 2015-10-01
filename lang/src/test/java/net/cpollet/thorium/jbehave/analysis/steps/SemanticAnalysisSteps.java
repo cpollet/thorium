@@ -19,8 +19,8 @@ package net.cpollet.thorium.jbehave.analysis.steps;
 import net.cpollet.thorium.ThoriumException;
 import net.cpollet.thorium.analysis.AnalysisContext;
 import net.cpollet.thorium.analysis.SemanticAnalyser;
-import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
+import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.jbehave.JBehaveStoryContext;
 import net.cpollet.thorium.jbehave.grammar.steps.BaseSteps;
 import org.fest.assertions.Assertions;
@@ -69,7 +69,7 @@ public class SemanticAnalysisSteps extends BaseSteps {
 
     @When("types are attached to nodes")
     public void attachTypes() throws Exception {
-        SemanticAnalyser semanticAnalyser = new SemanticAnalyser(new AnalysisContext(storyContext.analysisBaseScope), storyContext.parser, storyContext.tree);
+        SemanticAnalyser semanticAnalyser = new SemanticAnalyser(new AnalysisContext(storyContext.analysisBaseScope), storyContext.tree);
 
         try {
             storyContext.analysisResult = semanticAnalyser.analyze();

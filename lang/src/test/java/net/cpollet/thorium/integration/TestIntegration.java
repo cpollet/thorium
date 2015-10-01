@@ -100,7 +100,7 @@ public class TestIntegration {
         // WHEN
         ParseTree tree = parser.compilationUnit();
 
-        SemanticAnalyser semanticAnalyser = new SemanticAnalyser(analysisContext, parser, tree);
+        SemanticAnalyser semanticAnalyser = new SemanticAnalyser(analysisContext, tree);
 
         try {
             // TODO SEM enable again after method analysis is implemented

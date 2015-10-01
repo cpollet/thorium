@@ -59,8 +59,6 @@ public class ExpressionListener extends BaseListener {
             setTypesOf(ctx, asSet(resultType));
             notifyNodeObservers(ctx);
         }
-
-        // logContextInformation(ctx);
     }
 
     public void exitMultiplicationExpression(ThoriumParser.MultiplicationExpressionContext ctx) {
@@ -85,8 +83,6 @@ public class ExpressionListener extends BaseListener {
             setTypesOf(ctx, asSet(resultType));
             notifyNodeObservers(ctx);
         }
-
-        // logContextInformation(ctx);
     }
 
     private Type inferMethodType(Token token, String methodName, Type leftType, Type... parameterTypes) {
@@ -131,7 +127,6 @@ public class ExpressionListener extends BaseListener {
         if (rightType == Types.NULLABLE_VOID) {
             setTypesOf(ctx, asSet(Types.NULLABLE_VOID));
             registerNodeObserver(ctx, ctx.expression());
-            // logContextInformation(ctx);
             return;
         }
 

@@ -37,17 +37,14 @@ public class ValuesListener extends BaseListener {
 
     public void exitBooleanLiteral(ThoriumParser.BooleanLiteralContext ctx) {
         setTypesOf(ctx, asSet(Types.BOOLEAN));
-        // logContextInformation(ctx);
     }
 
     public void exitIntegerLiteral(ThoriumParser.IntegerLiteralContext ctx) {
         setTypesOf(ctx, asSet(Types.INTEGER));
-        // logContextInformation(ctx);
     }
 
     public void exitFloatLiteral(ThoriumParser.FloatLiteralContext ctx) {
         setTypesOf(ctx, asSet(Types.FLOAT));
-        // logContextInformation(ctx);
     }
 
     public void exitIdentifierLiteral(ThoriumParser.IdentifierLiteralContext ctx) {
@@ -72,8 +69,6 @@ public class ValuesListener extends BaseListener {
         } else {
             notifyNodeObservers(ctx);
         }
-
-        // logContextInformation(ctx);
     }
 
     public void exitConstantName(ThoriumParser.ConstantNameContext ctx) {
