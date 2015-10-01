@@ -17,26 +17,27 @@
 package net.cpollet.thorium.analysis.listener;
 
 import net.cpollet.thorium.analysis.AnalysisContext;
+import net.cpollet.thorium.analysis.ObserverRegistry;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.types.Types;
-import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
  * @author Christophe Pollet
  */
 public class StatementsSemanticAnalysisListener extends BaseSemanticAnalysisListener {
-    public StatementsSemanticAnalysisListener(Parser parser, AnalysisContext analysisContext, ParseTreeListener parseTreeListener) {
-        super(parser, analysisContext, parseTreeListener);
+    public StatementsSemanticAnalysisListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
+                                              ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
+                                              ObserverRegistry<Symbol> symbolObserverRegistry) {
+        super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
     }
 
-    @Override
-    public void enterBlock(ThoriumParser.BlockContext ctx) {
-        context().wrapSymbolTable();
+    public void enterBlock() {
+        wrapSymbolTable();
     }
 
-    @Override
     public void exitBlock(ThoriumParser.BlockContext ctx) {
         if (ctx.ifStatement() != null) {
             findNodeTypes(ctx, ctx.ifStatement());
@@ -50,20 +51,17 @@ public class StatementsSemanticAnalysisListener extends BaseSemanticAnalysisList
             throw new IllegalStateException("Unhandled block type");
         }
 
-        context().unwrapSymbolTable();
+        unwrapSymbolTable();
     }
 
-    @Override
     public void exitStatementsBlock(ThoriumParser.StatementsBlockContext ctx) {
         findNodeTypes(ctx, ctx.statements());
     }
 
-    @Override
     public void exitStatements(ThoriumParser.StatementsContext ctx) {
         findNodeTypes(ctx, ctx.statement(ctx.statement().size() - 1));
     }
 
-    @Override
     public void exitStatement(ThoriumParser.StatementContext ctx) {
         if (ctx.block() != null) {
             findNodeTypes(ctx, ctx.block());
@@ -72,24 +70,22 @@ public class StatementsSemanticAnalysisListener extends BaseSemanticAnalysisList
         } else if (ctx.variableOrConstantDeclarationStatement() != null) {
             findNodeTypes(ctx, ctx.variableOrConstantDeclarationStatement());
         } else if (";".equals(ctx.getText())) {
-            context().setTypesOf(ctx, asSet(Types.NULLABLE_VOID));
+            setTypesOf(ctx, asSet(Types.NULLABLE_VOID));
         } else {
             throw new IllegalStateException();
         }
     }
 
-    @Override
     public void exitVariableDeclarationStatement(ThoriumParser.VariableDeclarationStatementContext ctx) {
         registerVariableOrConstant(ctx, Symbol.SymbolKind.VARIABLE, ctx.LCFirstIdentifier().getText(), ctx.type(), ctx.expression());
 
         // logContextInformation(ctx);
     }
 
-    @Override
     public void exitConstantDeclarationStatement(ThoriumParser.ConstantDeclarationStatementContext ctx) {
         registerVariableOrConstant(ctx, Symbol.SymbolKind.CONSTANT, ctx.UCIdentifier().getText(), ctx.type(), ctx.expression());
 
-        context().getSymbolTable().lookup(ctx.UCIdentifier().getText()).lock();
+        getSymbolTable().lookup(ctx.UCIdentifier().getText()).lock();
 
         // logContextInformation(ctx);
     }

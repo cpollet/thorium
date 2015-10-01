@@ -17,12 +17,12 @@
 package net.cpollet.thorium.analysis.listener;
 
 import net.cpollet.thorium.analysis.AnalysisContext;
+import net.cpollet.thorium.analysis.ObserverRegistry;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -30,38 +30,38 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * @author Christophe Pollet
  */
 public class MiscSemanticAnalysisListener extends BaseSemanticAnalysisListener {
-    public MiscSemanticAnalysisListener(Parser parser, AnalysisContext analysisContext, ParseTreeListener parseTreeListener) {
-        super(parser, analysisContext, parseTreeListener);
+    public MiscSemanticAnalysisListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
+                                        ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
+                                        ObserverRegistry<Symbol> symbolObserverRegistry) {
+        super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
     }
 
-    @Override
     public void enterEveryRule(ParserRuleContext ctx) {
-        context().storeSymbolTable(ctx);
+        storeSymbolTable(ctx);
     }
 
-    @Override
     public void exitCompilationUnit(ThoriumParser.CompilationUnitContext ctx) {
         //noinspection Convert2streamapi
-        for (Symbol symbol : context().getSymbols()) {
+        for (Symbol symbol : getSymbols()) {
             if (symbol.getType() == Types.NULLABLE_VOID) {
-                context().addException(InvalidTypeException.typeExpected(symbol.getToken()));
+                addException(InvalidTypeException.typeExpected(symbol.getToken()));
             }
         }
     }
 
-    @Override
+    // TODO not the best way to deduce types...
     public void exitType(ThoriumParser.TypeContext ctx) {
         Type.Nullable nullable = ctx.nullable != null ? Type.Nullable.YES : Type.Nullable.NO;
 
         switch (ctx.UCFirstIdentifier().getText()) {
             case "Integer":
-                context().setTypesOf(ctx, asSet(Types.get(Types.INTEGER, nullable)));
+                setTypesOf(ctx, asSet(Types.get(Types.INTEGER, nullable)));
                 break;
             case "Float":
-                context().setTypesOf(ctx, asSet(Types.get(Types.FLOAT, nullable)));
+                setTypesOf(ctx, asSet(Types.get(Types.FLOAT, nullable)));
                 break;
             case "Boolean":
-                context().setTypesOf(ctx, asSet(Types.get(Types.BOOLEAN, nullable)));
+                setTypesOf(ctx, asSet(Types.get(Types.BOOLEAN, nullable)));
                 break;
             default:
                 throw new IllegalStateException("Invalid type");

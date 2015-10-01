@@ -17,11 +17,12 @@
 package net.cpollet.thorium.analysis.listener;
 
 import net.cpollet.thorium.analysis.AnalysisContext;
+import net.cpollet.thorium.analysis.ObserverRegistry;
+import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -29,16 +30,16 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * @author Christophe Pollet
  */
 public class ConditionalStatementsSemanticAnalysisListener extends BaseSemanticAnalysisListener {
-    public ConditionalStatementsSemanticAnalysisListener(Parser parser, AnalysisContext analysisContext, ParseTreeListener parseTreeListener) {
-        super(parser, analysisContext, parseTreeListener);
+    public ConditionalStatementsSemanticAnalysisListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
+                                                         ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
+                                                         ObserverRegistry<Symbol> symbolObserverRegistry) {
+        super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
     }
 
-    @Override
     public void exitUnconditionalStatement(ThoriumParser.UnconditionalStatementContext ctx) {
         findNodeType(ctx, ctx.expression());
     }
 
-    @Override
     public void exitConditionalIfStatement(ThoriumParser.ConditionalIfStatementContext ctx) {
         conditionalOrRepeatedStatement(ctx, ctx.expression(0), ctx.expression(1));
     }
@@ -48,26 +49,23 @@ public class ConditionalStatementsSemanticAnalysisListener extends BaseSemanticA
 
         // conditional statements are always nullable, as we are not sure they will actually by executed and thus that
         // they will return an actual non-null value...
-        context().setTypesOf(ctx, asSet(getNodeType(ctx).nullable()));
+        setTypesOf(ctx, asSet(getNodeType(ctx).nullable()));
 
         Type type = getNodeType(conditionCtx);
 
         if (type != Types.BOOLEAN) {
-            context().addException(InvalidTypeException.invalidType(conditionCtx.getStart(), Types.BOOLEAN, type));
+            addException(InvalidTypeException.invalidType(conditionCtx.getStart(), Types.BOOLEAN, type));
         }
     }
 
-    @Override
     public void exitConditionalUnlessStatement(ThoriumParser.ConditionalUnlessStatementContext ctx) {
         conditionalOrRepeatedStatement(ctx, ctx.expression(0), ctx.expression(1));
     }
 
-    @Override
     public void exitRepeatedWhileStatement(ThoriumParser.RepeatedWhileStatementContext ctx) {
         conditionalOrRepeatedStatement(ctx, ctx.expression(0), ctx.expression(1));
     }
 
-    @Override
     public void exitRepeatedUntilStatement(ThoriumParser.RepeatedUntilStatementContext ctx) {
         conditionalOrRepeatedStatement(ctx, ctx.expression(0), ctx.expression(1));
     }

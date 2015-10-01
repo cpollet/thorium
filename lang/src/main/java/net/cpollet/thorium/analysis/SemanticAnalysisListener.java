@@ -17,8 +17,6 @@
 package net.cpollet.thorium.analysis;
 
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
-import net.cpollet.thorium.analysis.exceptions.InvalidSymbolException;
-import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
 import net.cpollet.thorium.analysis.listener.ConditionalStatementsSemanticAnalysisListener;
 import net.cpollet.thorium.analysis.listener.ControlStatementsSemanticAnalysisListener;
 import net.cpollet.thorium.analysis.listener.ExpressionSemanticAnalysisListener;
@@ -27,30 +25,12 @@ import net.cpollet.thorium.analysis.listener.StatementsSemanticAnalysisListener;
 import net.cpollet.thorium.analysis.listener.ValuesSemanticAnalysisListener;
 import net.cpollet.thorium.antlr.ThoriumBaseListener;
 import net.cpollet.thorium.antlr.ThoriumParser;
-import net.cpollet.thorium.data.symbol.SymbolTable;
-import net.cpollet.thorium.types.Type;
-import net.cpollet.thorium.types.Types;
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author Christophe Pollet
  */
 public class SemanticAnalysisListener extends ThoriumBaseListener {
-    private static final Logger LOG = LoggerFactory.getLogger(SemanticAnalysisListener.class);
-
-    private final List<String> ruleNames;
-
-    private final AnalysisContext analysisContext;
-
     private final StatementsSemanticAnalysisListener statementsListener;
     private final ControlStatementsSemanticAnalysisListener controlStatementListener;
     private final ExpressionSemanticAnalysisListener expressionListener;
@@ -58,40 +38,16 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     private final ValuesSemanticAnalysisListener valuesListener;
     private final MiscSemanticAnalysisListener miscListener;
 
-    public SemanticAnalysisListener(Parser parser, AnalysisContext analysisContext) {
-        this.ruleNames = Arrays.asList(parser.getRuleNames());
-        this.analysisContext = analysisContext;
-
+    public SemanticAnalysisListener(AnalysisContext context) {
         ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
         ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
 
-        this.controlStatementListener = new ControlStatementsSemanticAnalysisListener(parser, analysisContext, this);
-        this.controlStatementListener.setNodeObserverRegistry(nodeObserverRegistry);
-        this.controlStatementListener.setSymbolObserverRegistry(symbolObserverRegistry);
-
-        this.statementsListener = new StatementsSemanticAnalysisListener(parser, analysisContext, this);
-        this.statementsListener.setNodeObserverRegistry(nodeObserverRegistry);
-        this.statementsListener.setSymbolObserverRegistry(symbolObserverRegistry);
-
-        this.expressionListener = new ExpressionSemanticAnalysisListener(parser, analysisContext, this);
-        this.expressionListener.setNodeObserverRegistry(nodeObserverRegistry);
-        this.expressionListener.setSymbolObserverRegistry(symbolObserverRegistry);
-
-        this.conditionalStatementsListener = new ConditionalStatementsSemanticAnalysisListener(parser, analysisContext, this);
-        this.conditionalStatementsListener.setNodeObserverRegistry(nodeObserverRegistry);
-        this.conditionalStatementsListener.setSymbolObserverRegistry(symbolObserverRegistry);
-
-        this.valuesListener = new ValuesSemanticAnalysisListener(parser, analysisContext, this);
-        this.valuesListener.setNodeObserverRegistry(nodeObserverRegistry);
-        this.valuesListener.setSymbolObserverRegistry(symbolObserverRegistry);
-
-        this.miscListener = new MiscSemanticAnalysisListener(parser, analysisContext, this);
-        this.miscListener.setNodeObserverRegistry(nodeObserverRegistry);
-        this.miscListener.setSymbolObserverRegistry(symbolObserverRegistry);
-    }
-
-    public AnalysisResult getResult() {
-        return new AnalysisResult(analysisContext.getTypesOfAllNodes(), analysisContext.getExceptions());
+        controlStatementListener = new ControlStatementsSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        statementsListener = new StatementsSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        expressionListener = new ExpressionSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        conditionalStatementsListener = new ConditionalStatementsSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        valuesListener = new ValuesSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        miscListener = new MiscSemanticAnalysisListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
     }
 
     @Override
@@ -113,7 +69,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void enterBlock(ThoriumParser.BlockContext ctx) {
-        statementsListener.enterBlock(ctx);
+        statementsListener.enterBlock();
     }
 
     @Override
@@ -152,7 +108,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void enterIfStatement(ThoriumParser.IfStatementContext ctx) {
-        controlStatementListener.enterIfStatement(ctx);
+        controlStatementListener.enterIfStatement();
     }
 
     @Override
@@ -162,7 +118,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void enterElseStatement(ThoriumParser.ElseStatementContext ctx) {
-        controlStatementListener.enterElseStatement(ctx);
+        controlStatementListener.enterElseStatement();
     }
 
     @Override
@@ -298,9 +254,4 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     //endregion
-
-    private static Set<Type> asSet(Type... types) {
-        return new HashSet<>(Arrays.asList(types));
-    }
-
 }

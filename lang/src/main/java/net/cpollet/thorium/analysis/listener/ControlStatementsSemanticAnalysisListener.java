@@ -17,12 +17,12 @@
 package net.cpollet.thorium.analysis.listener;
 
 import net.cpollet.thorium.analysis.AnalysisContext;
+import net.cpollet.thorium.analysis.ObserverRegistry;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -35,23 +35,23 @@ import java.util.stream.Collectors;
  * @author Christophe Pollet
  */
 public class ControlStatementsSemanticAnalysisListener extends BaseSemanticAnalysisListener {
-    public ControlStatementsSemanticAnalysisListener(Parser parser, AnalysisContext analysisContext, ParseTreeListener parseTreeListener) {
-        super(parser, analysisContext, parseTreeListener);
+    public ControlStatementsSemanticAnalysisListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
+                                                     ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
+                                                     ObserverRegistry<Symbol> symbolObserverRegistry) {
+        super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
     }
 
     // region Conditionals
 
-    @Override
-    public void enterIfStatement(ThoriumParser.IfStatementContext ctx) {
-        context().wrapSymbolTable();
+    public void enterIfStatement() {
+        wrapSymbolTable();
     }
 
-    @Override
     public void exitIfStatement(ThoriumParser.IfStatementContext ctx) {
         Type conditionType = getNodeType(ctx.expression());
 
         if (conditionType != Types.BOOLEAN) {
-            context().addException(InvalidTypeException.invalidType(ctx.expression().getStart(), Types.BOOLEAN, conditionType));
+            addException(InvalidTypeException.invalidType(ctx.expression().getStart(), Types.BOOLEAN, conditionType));
         }
 
         Set<Type> leftBranchTypes = getNodeTypes(ctx.statements());
@@ -85,9 +85,9 @@ public class ControlStatementsSemanticAnalysisListener extends BaseSemanticAnaly
         possibleTypes.addAll(rightBranchTypes);
         possibleTypes.addAll(bothBranchTypes);
 
-        context().setTypesOf(ctx, possibleTypes);
+        setTypesOf(ctx, possibleTypes);
 
-        context().unwrapSymbolTable();
+        unwrapSymbolTable();
 
         // logContextInformation(ctx);
     }
@@ -102,12 +102,10 @@ public class ControlStatementsSemanticAnalysisListener extends BaseSemanticAnaly
         return result;
     }
 
-    @Override
-    public void enterElseStatement(ThoriumParser.ElseStatementContext ctx) {
-        context().wrapSymbolTable();
+    public void enterElseStatement() {
+        wrapSymbolTable();
     }
 
-    @Override
     public void exitElseStatement(ThoriumParser.ElseStatementContext ctx) {
         if (ctx.statements() != null) {
             findNodeTypes(ctx, ctx.statements());
@@ -117,24 +115,21 @@ public class ControlStatementsSemanticAnalysisListener extends BaseSemanticAnaly
             throw new IllegalArgumentException();
         }
 
-        context().unwrapSymbolTable();
+        unwrapSymbolTable();
     }
 
     // endregion
 
     // region Loops
 
-    @Override
     public void exitForLoopStatement(ThoriumParser.ForLoopStatementContext ctx) {
         exitLoopStatement(ctx, ctx.statements(), ctx.condition);
     }
 
-    @Override
     public void exitForLoopStatementInitVariableDeclaration(ThoriumParser.ForLoopStatementInitVariableDeclarationContext ctx) {
         registerVariableOrConstant(ctx, Symbol.SymbolKind.VARIABLE, ctx.LCFirstIdentifier().getText(), ctx.type(), ctx.expression());
     }
 
-    @Override
     public void exitWhileLoopStatement(ThoriumParser.WhileLoopStatementContext ctx) {
         exitLoopStatement(ctx, ctx.statements(), ctx.expression());
     }
@@ -143,7 +138,7 @@ public class ControlStatementsSemanticAnalysisListener extends BaseSemanticAnaly
         Type conditionType = getNodeType(exprCtx);
 
         if (conditionType != Types.BOOLEAN) {
-            context().addException(InvalidTypeException.invalidType(exprCtx.getStart(), Types.BOOLEAN, conditionType));
+            addException(InvalidTypeException.invalidType(exprCtx.getStart(), Types.BOOLEAN, conditionType));
         }
 
         Set<Type> possibleTypes = getNodeTypes(stmtsCtx);
@@ -156,7 +151,7 @@ public class ControlStatementsSemanticAnalysisListener extends BaseSemanticAnaly
         // we are not sure a loop will be executed once, so types are always nullable...
         possibleTypes = possibleTypes.stream().map(Type::nullable).collect(Collectors.toSet());
 
-        context().setTypesOf(ctx, possibleTypes);
+        setTypesOf(ctx, possibleTypes);
 
         // logContextInformation(ctx);
     }

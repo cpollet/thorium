@@ -21,12 +21,11 @@ import net.cpollet.thorium.analysis.ObserverRegistry;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.analysis.exceptions.InvalidSymbolException;
 import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
-import net.cpollet.thorium.antlr.ThoriumBaseListener;
+import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.symbol.SymbolTable;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -39,34 +38,43 @@ import java.util.Set;
 /**
  * @author Christophe Pollet
  */
-public abstract class BaseSemanticAnalysisListener extends ThoriumBaseListener {
-    private ObserverRegistry<Symbol> symbolObserverRegistry;
-    private ObserverRegistry<ParserRuleContext> nodeObserverRegistry;
-
-    private final List<String> ruleNames;
-
-    private final AnalysisContext analysisContext;
-
+public abstract class BaseSemanticAnalysisListener {
     private final ParseTreeListener parseTreeListener;
+    private final AnalysisContext analysisContext;
+    private final ObserverRegistry<Symbol> symbolObserverRegistry;
+    private final ObserverRegistry<ParserRuleContext> nodeObserverRegistry;
 
-    public BaseSemanticAnalysisListener(Parser parser, AnalysisContext analysisContext, ParseTreeListener parseTreeListener) {
-        this.ruleNames = Arrays.asList(parser.getRuleNames());
+    public BaseSemanticAnalysisListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
+                                        ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
+                                        ObserverRegistry<Symbol> symbolObserverRegistry) {
         this.analysisContext = analysisContext;
         this.parseTreeListener = parseTreeListener;
-    }
-
-    // TODO move to constructor
-    public void setSymbolObserverRegistry(ObserverRegistry<Symbol> symbolObserverRegistry) {
+        this.nodeObserverRegistry = nodeObserverRegistry;
         this.symbolObserverRegistry = symbolObserverRegistry;
     }
 
-    // TODO move to constructor
-    public void setNodeObserverRegistry(ObserverRegistry<ParserRuleContext> nodeObserverRegistry) {
-        this.nodeObserverRegistry = nodeObserverRegistry;
+    protected void storeSymbolTable(ParseTree ctx) {
+        analysisContext.storeSymbolTable(ctx);
     }
 
-    protected AnalysisContext context() {
-        return analysisContext;
+    protected SymbolTable<Symbol> getSymbolTable() {
+        return analysisContext.getSymbolTable();
+    }
+
+    protected List<Symbol> getSymbols() {
+        return analysisContext.getSymbols();
+    }
+
+    protected void wrapSymbolTable() {
+        analysisContext.wrapSymbolTable();
+    }
+
+    protected void unwrapSymbolTable() {
+        analysisContext.unwrapSymbolTable();
+    }
+
+    protected void addException(ThoriumSemanticException exception) {
+        analysisContext.addException(exception);
     }
 
     protected void registerNodeObserver(ParserRuleContext observer, ParserRuleContext observable) {
@@ -83,6 +91,14 @@ public abstract class BaseSemanticAnalysisListener extends ThoriumBaseListener {
 
     protected void notifySymbolObservers(Symbol observable) {
         symbolObserverRegistry.notifyObservers(observable, parseTreeListener);
+    }
+
+    protected void setTypesOf(ParseTree ctx, Set<Type> types) {
+        analysisContext.setTypesOf(ctx, types);
+    }
+
+    protected Set<Type> getTypesOf(ParseTree ctx) {
+        return analysisContext.getTypesOf(ctx);
     }
 
     protected Type getNodeType(ParserRuleContext ctx) {

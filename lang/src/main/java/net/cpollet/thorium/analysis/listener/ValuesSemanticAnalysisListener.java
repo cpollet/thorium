@@ -17,11 +17,11 @@
 package net.cpollet.thorium.analysis.listener;
 
 import net.cpollet.thorium.analysis.AnalysisContext;
+import net.cpollet.thorium.analysis.ObserverRegistry;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.analysis.exceptions.InvalidSymbolException;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.types.Types;
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -29,46 +29,43 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * @author Christophe Pollet
  */
 public class ValuesSemanticAnalysisListener extends BaseSemanticAnalysisListener {
-    public ValuesSemanticAnalysisListener(Parser parser, AnalysisContext analysisContext, ParseTreeListener parseTreeListener) {
-        super(parser, analysisContext, parseTreeListener);
+    public ValuesSemanticAnalysisListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
+                                          ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
+                                          ObserverRegistry<Symbol> symbolObserverRegistry) {
+        super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
     }
 
-    @Override
     public void exitBooleanLiteral(ThoriumParser.BooleanLiteralContext ctx) {
-        context().setTypesOf(ctx, asSet(Types.BOOLEAN));
+        setTypesOf(ctx, asSet(Types.BOOLEAN));
         // logContextInformation(ctx);
     }
 
-    @Override
     public void exitIntegerLiteral(ThoriumParser.IntegerLiteralContext ctx) {
-        context().setTypesOf(ctx, asSet(Types.INTEGER));
+        setTypesOf(ctx, asSet(Types.INTEGER));
         // logContextInformation(ctx);
     }
 
-    @Override
     public void exitFloatLiteral(ThoriumParser.FloatLiteralContext ctx) {
-        context().setTypesOf(ctx, asSet(Types.FLOAT));
+        setTypesOf(ctx, asSet(Types.FLOAT));
         // logContextInformation(ctx);
     }
 
-    @Override
     public void exitIdentifierLiteral(ThoriumParser.IdentifierLiteralContext ctx) {
         findNodeType(ctx, ctx.identifier());
     }
 
-    @Override
     public void exitVariableName(ThoriumParser.VariableNameContext ctx) {
         exitVariableOrConstantName(ctx, ctx.LCFirstIdentifier().getText(), Symbol.SymbolKind.VARIABLE);
     }
 
     private void exitVariableOrConstantName(ParserRuleContext ctx, String name, Symbol.SymbolKind kind) {
-        if (!context().getSymbolTable().isDefined(name)) {
-            context().addException(InvalidSymbolException.identifierNotFound(ctx.getStart(), name));
+        if (!getSymbolTable().isDefined(name)) {
+            addException(InvalidSymbolException.identifierNotFound(ctx.getStart(), name));
             registerSymbol(kind, name, Types.NULLABLE_VOID, ctx);
         }
 
-        Symbol symbol = context().getSymbolTable().lookup(name);
-        context().setTypesOf(ctx, asSet(symbol.getType()));
+        Symbol symbol = getSymbolTable().lookup(name);
+        setTypesOf(ctx, asSet(symbol.getType()));
 
         if (symbol.getType() == Types.NULLABLE_VOID) {
             registerSymbolObserver(ctx, symbol);
@@ -79,7 +76,6 @@ public class ValuesSemanticAnalysisListener extends BaseSemanticAnalysisListener
         // logContextInformation(ctx);
     }
 
-    @Override
     public void exitConstantName(ThoriumParser.ConstantNameContext ctx) {
         exitVariableOrConstantName(ctx, ctx.UCIdentifier().getText(), Symbol.SymbolKind.CONSTANT);
     }
