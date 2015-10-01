@@ -41,12 +41,9 @@ public class MiscListener extends BaseListener {
     }
 
     public void exitCompilationUnit() {
-        //noinspection Convert2streamapi
-        for (Symbol symbol : getSymbols()) {
-            if (symbol.getType() == Types.NULLABLE_VOID) {
-                addException(InvalidTypeException.typeExpected(symbol.getToken()));
-            }
-        }
+        getSymbols().parallelStream()
+                .filter(symbol -> symbol.getType() == Types.NULLABLE_VOID)
+                .forEach(symbol -> addException(InvalidTypeException.typeExpected(symbol.getToken())));
     }
 
     // TODO not the best way to deduce types...
