@@ -40,7 +40,7 @@ public class MiscListener extends BaseListener {
         storeSymbolTable(ctx);
     }
 
-    public void exitCompilationUnit(ThoriumParser.CompilationUnitContext ctx) {
+    public void exitCompilationUnit() {
         //noinspection Convert2streamapi
         for (Symbol symbol : getSymbols()) {
             if (symbol.getType() == Types.NULLABLE_VOID) {

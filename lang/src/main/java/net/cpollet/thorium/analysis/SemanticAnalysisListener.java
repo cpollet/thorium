@@ -57,7 +57,7 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
 
     @Override
     public void exitCompilationUnit(ThoriumParser.CompilationUnitContext ctx) {
-        miscListener.exitCompilationUnit(ctx);
+        miscListener.exitCompilationUnit();
     }
 
     @Override
