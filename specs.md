@@ -20,7 +20,7 @@ Statements can be suffixed with with either ```if expression``` or ```unless exp
     // a = min(a, 5)
     a = 5 if a < 5;
     // a = max(a, 5)
-    a = 5 unless a < 5
+    a = 5 unless a < 5;
 
 ## Repeatable statements
 Much like conditional statements, a statement can be suffixed with ```while expression``` or ```until expression``` to repeat it as long as needed:
@@ -28,7 +28,7 @@ Much like conditional statements, a statement can be suffixed with ```while expr
     // make sure a > 0
     a = a * 10 while a < 0;
     // make sure a > 0
-    a = a * 10 until a >= 0
+    a = a * 10 until a >= 0;
 
 # Control structures
 Thorium supports standard control structures: ```if```, ```for```, ```while```. ```{``` and ```}``` ae mandatory. General symtax is:
@@ -185,7 +185,7 @@ Work in progress...
         other.method(.method3());
     }
 
-is a syntaxic sugar for
+is a syntactic sugar for
 
     {
         def e = expression;
@@ -201,7 +201,7 @@ x         | class | subclasses | package | world
 :-------- | :---: | :--------: | :-----: | :---: 
           | Y     | N          | N       | N     
 private   | Y     | N          | N       | N     
-public    | Y     | Y          | Y       | Y     
-package   | Y     | Y          | Y       | N     
 protected | Y     | Y          | N       | N     
+package   | Y     | Y          | Y       | N     
+public    | Y     | Y          | Y       | Y     
 
