@@ -19,12 +19,6 @@ package net.cpollet.thorium.analysis.listener;
 import net.cpollet.thorium.analysis.AnalysisContext;
 import net.cpollet.thorium.analysis.ObserverRegistry;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
-import net.cpollet.thorium.analysis.listener.ConditionalStatementsListener;
-import net.cpollet.thorium.analysis.listener.ControlStatementsListener;
-import net.cpollet.thorium.analysis.listener.ExpressionListener;
-import net.cpollet.thorium.analysis.listener.MiscListener;
-import net.cpollet.thorium.analysis.listener.StatementsListener;
-import net.cpollet.thorium.analysis.listener.ValuesListener;
 import net.cpollet.thorium.antlr.ThoriumBaseListener;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -43,13 +37,16 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     public SemanticAnalysisListener(AnalysisContext context) {
         ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
         ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
+        ObserverRegistry<String> methodObserverRegistry = new ObserverRegistry<>();
 
-        controlStatementListener = new ControlStatementsListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
-        statementsListener = new StatementsListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
-        expressionListener = new ExpressionListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
-        conditionalStatementsListener = new ConditionalStatementsListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
-        valuesListener = new ValuesListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
-        miscListener = new MiscListener(context, this, nodeObserverRegistry, symbolObserverRegistry);
+        BaseListener.Observers observers = new BaseListener.Observers(nodeObserverRegistry, symbolObserverRegistry, methodObserverRegistry);
+
+        controlStatementListener = new ControlStatementsListener(context, this, observers);
+        statementsListener = new StatementsListener(context, this, observers);
+        expressionListener = new ExpressionListener(context, this, observers);
+        conditionalStatementsListener = new ConditionalStatementsListener(context, this, observers);
+        valuesListener = new ValuesListener(context, this, observers);
+        miscListener = new MiscListener(context, this, observers);
     }
 
     @Override

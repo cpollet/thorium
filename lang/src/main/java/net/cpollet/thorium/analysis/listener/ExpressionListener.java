@@ -17,7 +17,6 @@
 package net.cpollet.thorium.analysis.listener;
 
 import net.cpollet.thorium.analysis.AnalysisContext;
-import net.cpollet.thorium.analysis.ObserverRegistry;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.analysis.exceptions.InvalidAssignmentException;
 import net.cpollet.thorium.analysis.exceptions.InvalidSymbolException;
@@ -38,10 +37,8 @@ import java.util.Set;
  * @author Christophe Pollet
  */
 public class ExpressionListener extends BaseListener {
-    public ExpressionListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
-                              ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
-                              ObserverRegistry<Symbol> symbolObserverRegistry) {
-        super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
+    public ExpressionListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener, Observers observers) {
+        super(analysisContext, parseTreeListener, observers);
     }
 
     public void exitLiteralExpression(ThoriumParser.LiteralExpressionContext ctx) {

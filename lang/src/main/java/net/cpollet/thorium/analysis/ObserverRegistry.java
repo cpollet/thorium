@@ -31,12 +31,12 @@ import java.util.Map;
 /**
  * @author Christophe Pollet
  */
-public class ObserverRegistry<T> {
+public class ObserverRegistry<Observable> {
     private static final Logger LOG = LoggerFactory.getLogger(ObserverRegistry.class);
 
-    private final Map<T, List<ParserRuleContext>> observers = new IdentityHashMap<>();
+    private final Map<Observable, List<ParserRuleContext>> observers = new IdentityHashMap<>();
 
-    public void registerObserver(ParserRuleContext observer, T observable) {
+    public void registerObserver(ParserRuleContext observer, Observable observable) {
         log("Register", observer, observable);
 
         if (observers.get(observable) == null) {
@@ -48,11 +48,11 @@ public class ObserverRegistry<T> {
         }
     }
 
-    private void resetRegisteredObservers(T observable) {
+    private void resetRegisteredObservers(Observable observable) {
         observers.put(observable, new LinkedList<>());
     }
 
-    public void notifyObservers(T observable, ParseTreeListener parseTreeListener) {
+    public void notifyObservers(Observable observable, ParseTreeListener parseTreeListener) {
         ParseTreeWalker walker = new ParseTreeWalker();
 
         Iterator<ParserRuleContext> it = getRegisteredObservers(observable).iterator();
@@ -67,14 +67,14 @@ public class ObserverRegistry<T> {
         }
     }
 
-    private List<ParserRuleContext> getRegisteredObservers(T observable) {
+    private List<ParserRuleContext> getRegisteredObservers(Observable observable) {
         if (observers.get(observable) == null) {
             resetRegisteredObservers(observable);
         }
         return observers.get(observable);
     }
 
-    private void log(String prefix, ParserRuleContext observer, T observable) {
+    private void log(String prefix, ParserRuleContext observer, Observable observable) {
         LOG.debug(prefix + " " + observer.getClass().getSimpleName() + observer.toString() + "@" + System.identityHashCode(observer) + ": " + observer.getText() + " for " + observable.toString());
     }
 

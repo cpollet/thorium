@@ -17,7 +17,6 @@
 package net.cpollet.thorium.analysis.listener;
 
 import net.cpollet.thorium.analysis.AnalysisContext;
-import net.cpollet.thorium.analysis.ObserverRegistry;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.analysis.exceptions.InvalidSymbolException;
 import net.cpollet.thorium.antlr.ThoriumParser;
@@ -29,10 +28,8 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * @author Christophe Pollet
  */
 public class ValuesListener extends BaseListener {
-    public ValuesListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
-                          ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
-                          ObserverRegistry<Symbol> symbolObserverRegistry) {
-        super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
+    public ValuesListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener, Observers observers) {
+        super(analysisContext, parseTreeListener, observers);
     }
 
     public void exitBooleanLiteral(ThoriumParser.BooleanLiteralContext ctx) {

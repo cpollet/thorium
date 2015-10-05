@@ -43,14 +43,26 @@ public abstract class BaseListener {
     private final AnalysisContext analysisContext;
     private final ObserverRegistry<Symbol> symbolObserverRegistry;
     private final ObserverRegistry<ParserRuleContext> nodeObserverRegistry;
+    private final ObserverRegistry<String> methodObserverRegistry;
 
-    public BaseListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
-                        ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
-                        ObserverRegistry<Symbol> symbolObserverRegistry) {
+    public static class Observers {
+        private final ObserverRegistry<ParserRuleContext> nodeObserverRegistry;
+        private final ObserverRegistry<Symbol> symbolObserverRegistry;
+        private final ObserverRegistry<String> methodObserverRegistry;
+
+        public Observers(ObserverRegistry<ParserRuleContext> nodeObserverRegistry, ObserverRegistry<Symbol> symbolObserverRegistry, ObserverRegistry<String> methodObserverRegistry) {
+            this.nodeObserverRegistry = nodeObserverRegistry;
+            this.symbolObserverRegistry = symbolObserverRegistry;
+            this.methodObserverRegistry = methodObserverRegistry;
+        }
+    }
+
+    public BaseListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener, Observers observers) {
         this.analysisContext = analysisContext;
         this.parseTreeListener = parseTreeListener;
-        this.nodeObserverRegistry = nodeObserverRegistry;
-        this.symbolObserverRegistry = symbolObserverRegistry;
+        this.nodeObserverRegistry = observers.nodeObserverRegistry;
+        this.symbolObserverRegistry = observers.symbolObserverRegistry;
+        this.methodObserverRegistry = observers.methodObserverRegistry;
     }
 
     protected void storeSymbolTable(ParseTree ctx) {

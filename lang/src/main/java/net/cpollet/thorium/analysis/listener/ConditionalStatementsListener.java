@@ -17,8 +17,6 @@
 package net.cpollet.thorium.analysis.listener;
 
 import net.cpollet.thorium.analysis.AnalysisContext;
-import net.cpollet.thorium.analysis.ObserverRegistry;
-import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.types.Type;
@@ -30,10 +28,8 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * @author Christophe Pollet
  */
 public class ConditionalStatementsListener extends BaseListener {
-    public ConditionalStatementsListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
-                                         ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
-                                         ObserverRegistry<Symbol> symbolObserverRegistry) {
-        super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
+    public ConditionalStatementsListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener, Observers observers) {
+        super(analysisContext, parseTreeListener, observers);
     }
 
     public void exitUnconditionalStatement(ThoriumParser.UnconditionalStatementContext ctx) {

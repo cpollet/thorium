@@ -17,7 +17,6 @@
 package net.cpollet.thorium.analysis.listener;
 
 import net.cpollet.thorium.analysis.AnalysisContext;
-import net.cpollet.thorium.analysis.ObserverRegistry;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
 import net.cpollet.thorium.antlr.ThoriumParser;
@@ -35,10 +34,8 @@ import java.util.stream.Collectors;
  * @author Christophe Pollet
  */
 public class ControlStatementsListener extends BaseListener {
-    public ControlStatementsListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener,
-                                     ObserverRegistry<ParserRuleContext> nodeObserverRegistry,
-                                     ObserverRegistry<Symbol> symbolObserverRegistry) {
-        super(analysisContext, parseTreeListener, nodeObserverRegistry, symbolObserverRegistry);
+    public ControlStatementsListener(AnalysisContext analysisContext, ParseTreeListener parseTreeListener, Observers observers) {
+        super(analysisContext, parseTreeListener, observers);
     }
 
     // region Conditionals
