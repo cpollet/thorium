@@ -19,8 +19,13 @@ package net.cpollet.thorium.analysis.listener;
 import net.cpollet.thorium.analysis.AnalysisContext;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
 import net.cpollet.thorium.antlr.ThoriumParser;
+import net.cpollet.thorium.data.method.ParameterSignature;
+import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Christophe Pollet
@@ -80,5 +85,17 @@ public class StatementsListener extends BaseListener {
         registerVariableOrConstant(ctx, Symbol.SymbolKind.CONSTANT, ctx.UCIdentifier().getText(), ctx.type(), ctx.expression());
 
         getSymbolTable().lookup(ctx.UCIdentifier().getText()).lock();
+    }
+
+    public void exitMethodDefinition(ThoriumParser.MethodDefinitionContext ctx) {
+        String methodName = ctx.methodName().getText();
+        Type returnType = getNodeType(ctx.type());
+        List<ParameterSignature> formalParameters = ctx.formalParameters().formalParameter().stream()
+                .map(e -> new ParameterSignature(getNodeType(e.type()), e.LCFirstIdentifier().getText()))
+                .collect(Collectors.toList());
+
+        getMethodTable().put(methodName, null, Types.VOID, returnType, formalParameters);
+
+        notifyMethodObservers(methodName);
     }
 }

@@ -18,6 +18,7 @@ package net.cpollet.thorium.analysis;
 
 import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.analysis.data.symbol.Symbol;
+import net.cpollet.thorium.data.method.MethodTable;
 import net.cpollet.thorium.data.symbol.SymbolTable;
 import net.cpollet.thorium.types.Type;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -38,9 +39,11 @@ public class AnalysisContext {
     private final List<ThoriumSemanticException> exceptions = new ArrayList<>();
 
     private SymbolTable<Symbol> currentSymbolTable;
+    private MethodTable methodTable;
 
     public AnalysisContext() {
         this.currentSymbolTable = new SymbolTable<>();
+        this.methodTable = new MethodTable();
     }
 
     public AnalysisContext(SymbolTable<Symbol> currentSymbolTable) {
@@ -95,5 +98,9 @@ public class AnalysisContext {
 
     public List<ThoriumSemanticException> getExceptions() {
         return exceptions;
+    }
+
+    public MethodTable getMethodTable() {
+        return methodTable;
     }
 }

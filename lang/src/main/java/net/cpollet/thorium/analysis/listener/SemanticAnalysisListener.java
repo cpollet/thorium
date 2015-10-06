@@ -217,6 +217,11 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
         expressionListener.exitBlockExpression(ctx);
     }
 
+    @Override
+    public void exitMethodCallExpression(ThoriumParser.MethodCallExpressionContext ctx) {
+        expressionListener.exitMethodCallExpression(ctx);
+    }
+
     //endregion
 
     //region Values
@@ -252,4 +257,9 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     }
 
     //endregion
+
+    @Override
+    public void exitMethodDefinition(ThoriumParser.MethodDefinitionContext ctx) {
+        statementsListener.exitMethodDefinition(ctx);// TODO move this in another class
+    }
 }

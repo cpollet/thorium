@@ -23,6 +23,7 @@ import net.cpollet.thorium.analysis.exceptions.InvalidSymbolException;
 import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
 import net.cpollet.thorium.antlr.ThoriumParser;
 import net.cpollet.thorium.data.method.Method;
+import net.cpollet.thorium.data.method.MethodNotFoundException;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -32,6 +33,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Christophe Pollet
@@ -153,5 +155,31 @@ public class ExpressionListener extends BaseListener {
         }
 
         findNodeType(ctx, ctx.block());
+    }
+
+    public void exitMethodCallExpression(ThoriumParser.MethodCallExpressionContext ctx) {
+        ctx.parameters().expression().stream()
+                .filter(expr -> getNodeType(expr).nonNullable() == Types.VOID)
+                .forEach(expressionContext -> registerNodeObserver(ctx, expressionContext));
+
+        List<Type> parameterTypes = ctx.parameters().expression().stream()
+                .map(this::getNodeType)
+                .collect(Collectors.toList());
+
+        boolean weHaveVoidTypes = parameterTypes.stream().noneMatch(e -> e.nonNullable() == Types.VOID);
+
+        if (weHaveVoidTypes) {
+            setTypesOf(ctx, asSet(Types.VOID));
+            return;
+        }
+
+        String methodName = ctx.methodName().getText();
+        try {
+            Method methodSignature = getMethodTable().lookup(methodName, Types.VOID, parameterTypes);
+
+            setTypesOf(ctx, asSet(methodSignature.getMethodSignature().getReturnType()));
+        } catch (MethodNotFoundException e) {
+            registerMethodObserver(ctx, methodName);
+        }
     }
 }

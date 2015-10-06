@@ -23,6 +23,7 @@ import net.cpollet.thorium.analysis.exceptions.InvalidSymbolException;
 import net.cpollet.thorium.analysis.exceptions.InvalidTypeException;
 import net.cpollet.thorium.analysis.exceptions.ThoriumSemanticException;
 import net.cpollet.thorium.antlr.ThoriumParser;
+import net.cpollet.thorium.data.method.MethodTable;
 import net.cpollet.thorium.data.symbol.SymbolTable;
 import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
@@ -85,6 +86,10 @@ public abstract class BaseListener {
         analysisContext.unwrapSymbolTable();
     }
 
+    protected MethodTable getMethodTable() {
+        return analysisContext.getMethodTable();
+    }
+
     protected void addException(ThoriumSemanticException exception) {
         analysisContext.addException(exception);
     }
@@ -103,6 +108,14 @@ public abstract class BaseListener {
 
     protected void notifySymbolObservers(Symbol observable) {
         symbolObserverRegistry.notifyObservers(observable, parseTreeListener);
+    }
+
+    protected void registerMethodObserver(ParserRuleContext observer, String observable) {
+        methodObserverRegistry.registerObserver(observer, observable);
+    }
+
+    protected void notifyMethodObservers(String observable) {
+        methodObserverRegistry.notifyObservers(observable, parseTreeListener);
     }
 
     protected void setTypesOf(ParseTree ctx, Set<Type> types) {
