@@ -24,6 +24,7 @@ import net.cpollet.thorium.types.Type;
 import net.cpollet.thorium.types.Types;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,13 +42,13 @@ public class StatementsListener extends BaseListener {
 
     public void exitBlock(ThoriumParser.BlockContext ctx) {
         if (ctx.ifStatement() != null) {
-            findNodeTypes(ctx, ctx.ifStatement());
+            inferNodeTypes(ctx, ctx.ifStatement());
         } else if (ctx.statementsBlock() != null) {
-            findNodeTypes(ctx, ctx.statementsBlock());
+            inferNodeTypes(ctx, ctx.statementsBlock());
         } else if (ctx.forLoopStatement() != null) {
-            findNodeTypes(ctx, ctx.forLoopStatement());
+            inferNodeTypes(ctx, ctx.forLoopStatement());
         } else if (ctx.whileLoopStatement() != null) {
-            findNodeTypes(ctx, ctx.whileLoopStatement());
+            inferNodeTypes(ctx, ctx.whileLoopStatement());
         } else {
             throw new IllegalStateException("Unhandled block type");
         }
@@ -56,22 +57,24 @@ public class StatementsListener extends BaseListener {
     }
 
     public void exitStatementsBlock(ThoriumParser.StatementsBlockContext ctx) {
-        findNodeTypes(ctx, ctx.statements());
+        inferNodeTypes(ctx, ctx.statements());
     }
 
     public void exitStatements(ThoriumParser.StatementsContext ctx) {
-        findNodeTypes(ctx, ctx.statement(ctx.statement().size() - 1));
+        inferNodeTypes(ctx, ctx.statement(ctx.statement().size() - 1));
     }
 
     public void exitStatement(ThoriumParser.StatementContext ctx) {
         if (ctx.block() != null) {
-            findNodeTypes(ctx, ctx.block());
+            inferNodeTypes(ctx, ctx.block());
         } else if (ctx.expressionStatement() != null) {
-            findNodeTypes(ctx, ctx.expressionStatement());
+            inferNodeTypes(ctx, ctx.expressionStatement());
         } else if (ctx.variableOrConstantDeclarationStatement() != null) {
-            findNodeTypes(ctx, ctx.variableOrConstantDeclarationStatement());
+            inferNodeTypes(ctx, ctx.variableOrConstantDeclarationStatement());
+        } else if (ctx.methodDefinition() != null) {
+            setNodeTypes(ctx, asSet(Types.NULLABLE_VOID));
         } else if (";".equals(ctx.getText())) {
-            setTypesOf(ctx, asSet(Types.NULLABLE_VOID));
+            setNodeTypes(ctx, asSet(Types.NULLABLE_VOID));
         } else {
             throw new IllegalStateException();
         }
@@ -90,12 +93,20 @@ public class StatementsListener extends BaseListener {
     public void exitMethodDefinition(ThoriumParser.MethodDefinitionContext ctx) {
         String methodName = ctx.methodName().getText();
         Type returnType = getNodeType(ctx.type());
-        List<ParameterSignature> formalParameters = ctx.formalParameters().formalParameter().stream()
-                .map(e -> new ParameterSignature(getNodeType(e.type()), e.LCFirstIdentifier().getText()))
-                .collect(Collectors.toList());
+        List<ParameterSignature> formalParameters = extractParameterSignatures(ctx);
 
         getMethodTable().put(methodName, null, Types.VOID, returnType, formalParameters);
 
         notifyMethodObservers(methodName);
+    }
+
+    private List<ParameterSignature> extractParameterSignatures(ThoriumParser.MethodDefinitionContext ctx) {
+        if (ctx.formalParameters() == null) {
+            return Collections.emptyList();
+        }
+
+        return ctx.formalParameters().formalParameter().stream()
+                .map(e -> new ParameterSignature(getNodeType(e.type()), e.LCFirstIdentifier().getText()))
+                .collect(Collectors.toList());
     }
 }

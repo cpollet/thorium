@@ -33,7 +33,7 @@ public class ConditionalStatementsListener extends BaseListener {
     }
 
     public void exitUnconditionalStatement(ThoriumParser.UnconditionalStatementContext ctx) {
-        findNodeType(ctx, ctx.expression());
+        inferNodeType(ctx, ctx.expression());
     }
 
     public void exitConditionalIfStatement(ThoriumParser.ConditionalIfStatementContext ctx) {
@@ -41,11 +41,11 @@ public class ConditionalStatementsListener extends BaseListener {
     }
 
     private void conditionalOrRepeatedStatement(ParserRuleContext ctx, ThoriumParser.ExpressionContext expressionCtx, ThoriumParser.ExpressionContext conditionCtx) {
-        findNodeType(ctx, expressionCtx);
+        inferNodeType(ctx, expressionCtx);
 
         // conditional statements are always nullable, as we are not sure they will actually by executed and thus that
         // they will return an actual non-null value...
-        setTypesOf(ctx, asSet(getNodeType(ctx).nullable()));
+        setNodeTypes(ctx, asSet(getNodeType(ctx).nullable()));
 
         Type type = getNodeType(conditionCtx);
 

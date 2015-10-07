@@ -35,9 +35,10 @@ public class SemanticAnalysisListener extends ThoriumBaseListener {
     private final MiscListener miscListener;
 
     public SemanticAnalysisListener(AnalysisContext context) {
-        ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>();
-        ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>();
-        ObserverRegistry<String> methodObserverRegistry = new ObserverRegistry<>();
+        ObserverRegistry<ParserRuleContext> nodeObserverRegistry = new ObserverRegistry<>(ObserverRegistry.ObservableLookupStrategy.IDENTITY);
+        ObserverRegistry<Symbol> symbolObserverRegistry = new ObserverRegistry<>(ObserverRegistry.ObservableLookupStrategy.IDENTITY);
+        // TODO should not be on String but on MethodSignature...
+        ObserverRegistry<String> methodObserverRegistry = new ObserverRegistry<>(ObserverRegistry.ObservableLookupStrategy.EQUALITY);
 
         BaseListener.Observers observers = new BaseListener.Observers(nodeObserverRegistry, symbolObserverRegistry, methodObserverRegistry);
 

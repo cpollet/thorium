@@ -33,19 +33,19 @@ public class ValuesListener extends BaseListener {
     }
 
     public void exitBooleanLiteral(ThoriumParser.BooleanLiteralContext ctx) {
-        setTypesOf(ctx, asSet(Types.BOOLEAN));
+        setNodeTypes(ctx, asSet(Types.BOOLEAN));
     }
 
     public void exitIntegerLiteral(ThoriumParser.IntegerLiteralContext ctx) {
-        setTypesOf(ctx, asSet(Types.INTEGER));
+        setNodeTypes(ctx, asSet(Types.INTEGER));
     }
 
     public void exitFloatLiteral(ThoriumParser.FloatLiteralContext ctx) {
-        setTypesOf(ctx, asSet(Types.FLOAT));
+        setNodeTypes(ctx, asSet(Types.FLOAT));
     }
 
     public void exitIdentifierLiteral(ThoriumParser.IdentifierLiteralContext ctx) {
-        findNodeType(ctx, ctx.identifier());
+        inferNodeType(ctx, ctx.identifier());
     }
 
     public void exitVariableName(ThoriumParser.VariableNameContext ctx) {
@@ -59,7 +59,7 @@ public class ValuesListener extends BaseListener {
         }
 
         Symbol symbol = getSymbolTable().lookup(name);
-        setTypesOf(ctx, asSet(symbol.getType()));
+        setNodeTypes(ctx, asSet(symbol.getType()));
 
         if (symbol.getType() == Types.NULLABLE_VOID) {
             registerSymbolObserver(ctx, symbol);

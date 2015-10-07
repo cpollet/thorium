@@ -48,13 +48,13 @@ public class MiscListener extends BaseListener {
 
         switch (ctx.UCFirstIdentifier().getText()) {
             case "Integer":
-                setTypesOf(ctx, asSet(Types.get(Types.INTEGER, nullable)));
+                setNodeTypes(ctx, asSet(Types.get(Types.INTEGER, nullable)));
                 break;
             case "Float":
-                setTypesOf(ctx, asSet(Types.get(Types.FLOAT, nullable)));
+                setNodeTypes(ctx, asSet(Types.get(Types.FLOAT, nullable)));
                 break;
             case "Boolean":
-                setTypesOf(ctx, asSet(Types.get(Types.BOOLEAN, nullable)));
+                setNodeTypes(ctx, asSet(Types.get(Types.BOOLEAN, nullable)));
                 break;
             default:
                 throw new IllegalStateException("Invalid type");

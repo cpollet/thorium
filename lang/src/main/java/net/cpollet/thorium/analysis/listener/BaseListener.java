@@ -118,16 +118,17 @@ public abstract class BaseListener {
         methodObserverRegistry.notifyObservers(observable, parseTreeListener);
     }
 
-    protected void setTypesOf(ParseTree ctx, Set<Type> types) {
-        analysisContext.setTypesOf(ctx, types);
+    protected void setNodeTypes(ParseTree ctx, Set<Type> types) {
+        analysisContext.setNodeTypes(ctx, types);
     }
 
-    protected Set<Type> getTypesOf(ParseTree ctx) {
-        return analysisContext.getTypesOf(ctx);
+    protected Set<Type> getNodeTypes(ParseTree ctx) {
+        return analysisContext.getNodeTypes(ctx);
     }
 
     protected Type getNodeType(ParserRuleContext ctx) {
-        Set<Type> possibleTypes = analysisContext.getTypesOf(ctx);
+        Set<Type> possibleTypes = getNodeTypes(ctx);
+
         if (possibleTypes.size() != 1) {
             analysisContext.addException(InvalidTypeException.ambiguousType(ctx.getStart(), possibleTypes));
             return Types.NULLABLE_VOID;
@@ -136,14 +137,10 @@ public abstract class BaseListener {
         return possibleTypes.iterator().next();
     }
 
-    protected Set<Type> getNodeTypes(ParseTree ctx) {
-        return analysisContext.getTypesOf(ctx);
-    }
-
-    protected void findNodeTypes(ParserRuleContext parent, ParserRuleContext child) {
+    protected void inferNodeTypes(ParserRuleContext parent, ParserRuleContext child) {
         Set<Type> childTypes = getNodeTypes(child);
 
-        analysisContext.setTypesOf(parent, childTypes);
+        analysisContext.setNodeTypes(parent, childTypes);
 
         if (childTypes.contains(Types.NULLABLE_VOID)) {
             nodeObserverRegistry.registerObserver(parent, child);
@@ -160,10 +157,10 @@ public abstract class BaseListener {
      * @param parent the node for which we want to determine the type
      * @param child  the node from which we try to find the type
      */
-    protected void findNodeType(ParserRuleContext parent, ParserRuleContext child) {
+    protected void inferNodeType(ParserRuleContext parent, ParserRuleContext child) {
         Type childType = getNodeType(child);
 
-        analysisContext.setTypesOf(parent, asSet(childType));
+        analysisContext.setNodeTypes(parent, asSet(childType));
 
         if (childType == Types.NULLABLE_VOID) {
             nodeObserverRegistry.registerObserver(parent, child);
@@ -197,7 +194,7 @@ public abstract class BaseListener {
             symbol.setType(symbolType);
         }
 
-        analysisContext.setTypesOf(ctx, asSet(symbol.getType()));
+        analysisContext.setNodeTypes(ctx, asSet(symbol.getType()));
 
         if (symbol.getType() != Types.NULLABLE_VOID) {
             nodeObserverRegistry.notifyObservers(ctx, parseTreeListener);

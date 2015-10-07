@@ -22,11 +22,13 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author Christophe Pollet
@@ -34,7 +36,28 @@ import java.util.Map;
 public class ObserverRegistry<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ObserverRegistry.class);
 
-    private final Map<T, List<ParserRuleContext>> observers = new IdentityHashMap<>();
+    private final Map<T, List<ParserRuleContext>> observers;
+
+    @SuppressWarnings("rawtypes")
+    public static class ObservableLookupStrategy {
+        public static final ObservableLookupStrategy IDENTITY = new ObservableLookupStrategy(IdentityHashMap::new);
+        public static final ObservableLookupStrategy EQUALITY = new ObservableLookupStrategy(HashMap::new);
+
+        private final Supplier<Map> mapSupplier;
+
+        private ObservableLookupStrategy(Supplier<Map> mapSupplier) {
+            this.mapSupplier = mapSupplier;
+        }
+
+        private Map buildMap() {
+            return mapSupplier.get();
+        }
+    }
+
+    public ObserverRegistry(ObservableLookupStrategy observableLookupStrategy) {
+        //noinspection unchecked
+        observers = observableLookupStrategy.buildMap();
+    }
 
     public void registerObserver(ParserRuleContext observer, T observable) {
         log("Register", observer, observable);

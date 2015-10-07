@@ -31,6 +31,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class ExpressionListener extends BaseListener {
     }
 
     public void exitLiteralExpression(ThoriumParser.LiteralExpressionContext ctx) {
-        findNodeType(ctx, ctx.literal());
+        inferNodeType(ctx, ctx.literal());
     }
 
     public void exitNotExpression(ThoriumParser.NotExpressionContext ctx) {
@@ -52,10 +53,10 @@ public class ExpressionListener extends BaseListener {
 
         if (type == Types.NULLABLE_VOID) {
             registerNodeObserver(ctx, ctx.expression());
-            setTypesOf(ctx, asSet(Types.NULLABLE_VOID));
+            setNodeTypes(ctx, asSet(Types.NULLABLE_VOID));
         } else {
             Type resultType = inferMethodType(ctx.getStart(), ctx.op.getText(), type);
-            setTypesOf(ctx, asSet(resultType));
+            setNodeTypes(ctx, asSet(resultType));
             notifyNodeObservers(ctx);
         }
     }
@@ -76,10 +77,10 @@ public class ExpressionListener extends BaseListener {
         }
 
         if (leftType == Types.NULLABLE_VOID || rightType == Types.NULLABLE_VOID) {
-            setTypesOf(ctx, asSet(Types.NULLABLE_VOID));
+            setNodeTypes(ctx, asSet(Types.NULLABLE_VOID));
         } else {
             Type resultType = inferMethodType(ctx.getStart(), operator, leftType, rightType);
-            setTypesOf(ctx, asSet(resultType));
+            setNodeTypes(ctx, asSet(resultType));
             notifyNodeObservers(ctx);
         }
     }
@@ -106,7 +107,7 @@ public class ExpressionListener extends BaseListener {
     }
 
     public void exitParenthesisExpression(ThoriumParser.ParenthesisExpressionContext ctx) {
-        findNodeType(ctx, ctx.expression());
+        inferNodeType(ctx, ctx.expression());
     }
 
     public void exitAssignmentExpression(ThoriumParser.AssignmentExpressionContext ctx) {
@@ -117,69 +118,80 @@ public class ExpressionListener extends BaseListener {
 
         if (!symbol.isWritable()) {
             addException(InvalidAssignmentException.build(ctx.start));
-            setTypesOf(ctx, asSet(Types.NULLABLE_VOID));
+            setNodeTypes(ctx, asSet(Types.NULLABLE_VOID));
             return;
         }
 
         symbol.lock();
 
         if (rightType == Types.NULLABLE_VOID) {
-            setTypesOf(ctx, asSet(Types.NULLABLE_VOID));
+            setNodeTypes(ctx, asSet(Types.NULLABLE_VOID));
             registerNodeObserver(ctx, ctx.expression());
             return;
         }
 
         if (leftType == Types.NULLABLE_VOID) {
             symbol.setType(rightType.nullable());
-            setTypesOf(ctx, asSet(rightType.nullable()));
+            setNodeTypes(ctx, asSet(rightType.nullable()));
             notifySymbolObservers(symbol);
             notifyNodeObservers(ctx);
         } else if (rightType.isAssignableTo(leftType)) {
-            setTypesOf(ctx, asSet(leftType));
+            setNodeTypes(ctx, asSet(leftType));
             notifySymbolObservers(symbol);
             notifyNodeObservers(ctx);
         } else {
             addException(InvalidTypeException.notCompatible(ctx.getStart(), rightType, leftType));
-            setTypesOf(ctx, asSet(Types.NULLABLE_VOID));
+            setNodeTypes(ctx, asSet(Types.NULLABLE_VOID));
         }
     }
 
 
     public void exitBlockExpression(ThoriumParser.BlockExpressionContext ctx) {
-        Set<Type> possibleTypes = getTypesOf(ctx.block());
+        Set<Type> possibleTypes = getNodeTypes(ctx.block());
 
         if (possibleTypes.size() > 1) {
             addException(InvalidTypeException.ambiguousType(ctx.getStart(), possibleTypes));
-            setTypesOf(ctx, asSet(Types.NULLABLE_VOID));
+            setNodeTypes(ctx, asSet(Types.NULLABLE_VOID));
             return;
         }
 
-        findNodeType(ctx, ctx.block());
+        inferNodeType(ctx, ctx.block());
     }
 
     public void exitMethodCallExpression(ThoriumParser.MethodCallExpressionContext ctx) {
-        ctx.parameters().expression().stream()
-                .filter(expr -> getNodeType(expr).nonNullable() == Types.VOID)
-                .forEach(expressionContext -> registerNodeObserver(ctx, expressionContext));
+        List<Type> parameterTypes = extractParameterTypes(ctx);
 
-        List<Type> parameterTypes = ctx.parameters().expression().stream()
-                .map(this::getNodeType)
-                .collect(Collectors.toList());
+        boolean someParameterTypesAreNotResolved = parameterTypes.stream()
+                .anyMatch(e -> e.nonNullable() == Types.VOID);
 
-        boolean weHaveVoidTypes = parameterTypes.stream().noneMatch(e -> e.nonNullable() == Types.VOID);
-
-        if (weHaveVoidTypes) {
-            setTypesOf(ctx, asSet(Types.VOID));
+        if (someParameterTypesAreNotResolved) {
+            setNodeTypes(ctx, asSet(Types.VOID));
             return;
         }
 
         String methodName = ctx.methodName().getText();
         try {
-            Method methodSignature = getMethodTable().lookup(methodName, Types.VOID, parameterTypes);
+            Method method = getMethodTable().lookup(methodName, Types.VOID, parameterTypes);
 
-            setTypesOf(ctx, asSet(methodSignature.getMethodSignature().getReturnType()));
+            setNodeTypes(ctx, asSet(method.getMethodSignature().getReturnType()));
+            notifyNodeObservers(ctx);
         } catch (MethodNotFoundException e) {
             registerMethodObserver(ctx, methodName);
+            setNodeTypes(ctx, asSet(Types.NULLABLE_VOID));
         }
+    }
+
+    private List<Type> extractParameterTypes(ThoriumParser.MethodCallExpressionContext ctx) {
+        if (ctx.parameters() == null) {
+            return Collections.emptyList();
+        }
+
+        ctx.parameters().expression().stream()
+                .filter(expr -> getNodeType(expr).nonNullable() == Types.VOID)
+                .forEach(expressionContext -> registerNodeObserver(ctx, expressionContext));
+
+        return ctx.parameters().expression().stream()
+                .map(this::getNodeType)
+                .collect(Collectors.toList());
     }
 }

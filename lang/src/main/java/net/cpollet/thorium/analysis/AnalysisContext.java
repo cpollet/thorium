@@ -48,13 +48,14 @@ public class AnalysisContext {
 
     public AnalysisContext(SymbolTable<Symbol> currentSymbolTable) {
         this.currentSymbolTable = currentSymbolTable;
+        this.methodTable = new MethodTable();
     }
 
-    public Set<Type> getTypesOf(ParseTree ctx) {
+    public Set<Type> getNodeTypes(ParseTree ctx) {
         return types.get(ctx);
     }
 
-    public void setTypesOf(ParseTree ctx, Set<Type> types) {
+    public void setNodeTypes(ParseTree ctx, Set<Type> types) {
         this.types.put(ctx, types);
     }
 

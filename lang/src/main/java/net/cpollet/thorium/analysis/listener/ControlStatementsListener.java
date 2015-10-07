@@ -82,7 +82,7 @@ public class ControlStatementsListener extends BaseListener {
         possibleTypes.addAll(rightBranchTypes);
         possibleTypes.addAll(bothBranchTypes);
 
-        setTypesOf(ctx, possibleTypes);
+        setNodeTypes(ctx, possibleTypes);
 
         unwrapSymbolTable();
     }
@@ -103,9 +103,9 @@ public class ControlStatementsListener extends BaseListener {
 
     public void exitElseStatement(ThoriumParser.ElseStatementContext ctx) {
         if (ctx.statements() != null) {
-            findNodeTypes(ctx, ctx.statements());
+            inferNodeTypes(ctx, ctx.statements());
         } else if (ctx.ifStatement() != null) {
-            findNodeTypes(ctx, ctx.ifStatement());
+            inferNodeTypes(ctx, ctx.ifStatement());
         } else {
             throw new IllegalArgumentException();
         }
@@ -146,7 +146,7 @@ public class ControlStatementsListener extends BaseListener {
         // we are not sure a loop will be executed once, so types are always nullable...
         possibleTypes = possibleTypes.stream().map(Type::nullable).collect(Collectors.toSet());
 
-        setTypesOf(ctx, possibleTypes);
+        setNodeTypes(ctx, possibleTypes);
     }
 
     // endregion
