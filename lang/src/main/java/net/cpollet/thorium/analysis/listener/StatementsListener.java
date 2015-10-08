@@ -71,9 +71,7 @@ public class StatementsListener extends BaseListener {
             inferNodeTypes(ctx, ctx.expressionStatement());
         } else if (ctx.variableOrConstantDeclarationStatement() != null) {
             inferNodeTypes(ctx, ctx.variableOrConstantDeclarationStatement());
-        } else if (ctx.methodDefinition() != null) {
-            setNodeTypes(ctx, asSet(Types.NULLABLE_VOID));
-        } else if (";".equals(ctx.getText())) {
+        } else if (ctx.methodDefinition() != null || ";".equals(ctx.getText())) {
             setNodeTypes(ctx, asSet(Types.NULLABLE_VOID));
         } else {
             throw new IllegalStateException();
