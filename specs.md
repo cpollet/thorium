@@ -6,7 +6,7 @@ This document is a work in progress, its content may change at any time.
 
 Both variables and constants must be declared using the following syntax: ```def (Type)? varname (= expression)? ;```
 
-I other words, in one of the following ways:
+In other words, in one of the following ways:
 
     def a;
     def Integer a;
